@@ -93,6 +93,11 @@ public class NativeServerInstance extends Service {
         }
 
         @Override
+        public int GetServerPID() {
+            return serverPID;
+        }
+
+        @Override
         public List<ServiceParcelable> GetServices() {
             List<ServiceParcelable> parcelables = new ArrayList<>();
             for (IService service : services)

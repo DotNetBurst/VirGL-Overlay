@@ -19,8 +19,8 @@ android {
         minSdkVersion 23
         //noinspection OldTargetApi
         targetSdkVersion 30
-        versionCode 220
-        versionName '0.2.2'
+        versionCode 240
+        versionName '0.2.4'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {

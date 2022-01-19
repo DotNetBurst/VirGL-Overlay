@@ -20,6 +20,7 @@ public class ServerController implements AndLinker.BindCallback {
     private AndLinker mLinker;
     private IServerRemoteService mRemoteService;
     private boolean started;
+    private int serverPID = -1;
     private IServerRemoteCallback serverRemoteCallback;
 
     private IServerStopRemoteCallback serverStopRemoteCallback = () -> {
@@ -81,7 +82,16 @@ public class ServerController implements AndLinker.BindCallback {
                     Dbg.Error(x);
                 }
             }
+            try {
+                if (serverPID != -1) {
+                    Process.killProcess(serverPID);
+                    serverPID = -1;
+                }
+            } catch (Exception x) {
+                Dbg.Error(x);
+            }
             serverRemoteCallback.onServerStopped();
+            Dbg.Msg("STOPPED force = " + forced);
         }
     }
 
@@ -94,6 +104,8 @@ public class ServerController implements AndLinker.BindCallback {
         mRemoteService = mLinker.create(IServerRemoteService.class);
         mRemoteService.RegisterCallback(serverRemoteCallback);
         mRemoteService.RegisterStopCallback(serverStopRemoteCallback);
+        serverPID = mRemoteService.GetServerPID();
+        Dbg.Msg("BINDED!");
     }
 
     @Override
