@@ -1,0 +1,64 @@
+<resources>
+    <string name="app_name">VIRGL</string>
+    <string name="socket_path_text">Socket path (/tmp/.virgl_test):</string>
+    <string name="ring_path_text">Ring buffer path (/dev/shm):</string>
+    <string name="start_text">Start services</string>
+    <string name="clean_text">Clean services</string>
+    <string name="use_ring_text">Use ring buffer instead of socket</string>
+    <string name="use_gles_text">Use GL ES 3.x instead of OpenGL</string>
+    <string name="use_threads_text">Use multi-thread egl access</string>
+    <string name="overlay_centered_text">Set overlay centered instead of top-left</string>
+    <string name="hacks_text">Use hacks:</string>
+    <string name="hack1_text">Shader hack</string>
+    <string name="hack2_text">Blend hack</string>
+    <string name="hack11_text">StencilMirror</string>
+    <string name="hack12_text">HDR, DoF</string>
+    <string name="dxtn_decompress_text">DXTn decompress</string>
+    <string name="information1">Original APK with native library by mittorn</string>
+    <string name="information2">https://github.com/mittorn/virglrenderer-android</string>
+    <string name="information3">https://github.com/mittorn/virglrenderer</string>
+    <string name="information4">Rebuild APK v.0.0.6 (mod debug) by alexvorxx</string>
+    <string name="information5">The following code was used in this version:</string>
+    <string name="information6">virglrenderer-0.9.1</string>
+    <string name="information7">https://github.com/freedesktop/virglrenderer</string>
+    <string name="information8">libepoxy-1.5.9</string>
+    <string name="information9">https://github.com/anholt/libepoxy</string>
+    <string name="information10">gl4es-1.1.4</string>
+    <string name="information11">https://github.com/ptitSeb/gl4es</string>
+    <string name="information12">Special thanks to mittorn for help and advices</string>
+    <string name="title_activity_virgl">virgl</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="servicesTab">SERVICES</string>
+    <string name="settingsTab">SETTINGS</string>
+    <string name="aboutTab">ABOUT</string>
+
+    <string name="renderingSettingsTab">RENDER</string>
+    <string name="systemSettingsTab">SYSTEM</string>
+    <string name="inputSettingsTab">INPUT</string>
+    <string name="overlaySettingsTab">OVERLAY</string>
+
+    <string name="aboutDesc">Mittorn (original app)\nAlexvorxx (new features, hacks)\nDotNetBurst (new app, features)\nWe need you here! :)\n
+    </string>
+    <string name="configuration_profiles">Configuration profiles</string>
+    <string name="dummy"> </string>
+    <string name="settings_warning_text">Server launched, if you want to apply settings - restart server manually, automatic mode restart will be implemented later!</string>
+    <string name="about_app_name">VirGL Overlay v</string>
+    <string name="dwn_text_lab">Downloading…</string>
+    <string name="rtv_text_lab">Retrieving…</string>
+    <string name="save_text_lab">Saving…</string>
+    <string name="installing_text_lab">Installing…</string>
+    <string name="srv_thrd_name">Name : %1$s</string>
+    <string name="srv_id">ID : %1$d</string>
+    <string name="srv_fd">FD : %1$s</string>
+    <string name="app_name_p1">VIR</string>
+    <string name="app_name_p2">GL</string>
+    <string name="app_name_p3">OVERLAY</string>
+    <string name="automatic_mode">Automatic mode</string>
+</resources>

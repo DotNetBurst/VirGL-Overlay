@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp"
+    android:layout_height="match_parent">
+
+    <com.catfixture.virgloverlay.ui.custom.WarningComponent
+        android:id="@+id/serverLaunchedNotif"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="-10dp"
+        android:layout_height="wrap_content"
+        app:warningText="@string/settings_warning_text"/>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:text="@string/configuration_profiles" />
+
+    <LinearLayout
+        android:id="@+id/profilesPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp">
+
+        <Spinner
+            android:id="@+id/configProfileSelector"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/lightRecordBg"
+            android:textAlignment="center"
+            android:layout_marginEnd="5dp"
+            android:theme="@style/AppTheme.PopupOverlay"
+            android:popupBackground="@color/lightGray"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <ImageView
+            android:id="@+id/createNewConfigProfile"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="12dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="5dp"
+            android:background="@color/lightRecordBg"
+            android:layout_weight="0"
+            app:srcCompat="@drawable/create_ico"
+            android:contentDescription="@string/dummy"  />
+
+        <ImageView
+            android:id="@+id/editProfileName"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_weight="0"
+            android:layout_marginEnd="5dp"
+            android:background="@color/lightRecordBg"
+            android:padding="10dp"
+            app:srcCompat="@drawable/edit_ico"
+            android:contentDescription="@string/dummy" />
+
+        <ImageView
+            android:id="@+id/removeProfile"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_weight="0"
+            android:background="@color/lightRecordBg"
+            android:padding="10dp"
+            app:srcCompat="@drawable/delete_ico"
+            android:contentDescription="@string/dummy"  />
+    </LinearLayout>
+
+
+    <com.catfixture.virgloverlay.ui.custom.WarningComponent
+        android:id="@+id/noProfilesLabel"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:warningText="Create configuration profile first!"/>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/settingsTabs"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/lightestGray" />
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/settingsTabsPager"
+        android:layout_width="match_parent"
+        android:background="@color/lighterGray"
+        android:layout_height="match_parent" >
+
+    </androidx.viewpager.widget.ViewPager>
+
+</LinearLayout>

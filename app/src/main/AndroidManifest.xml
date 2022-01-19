@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.catfixture.virgloverlay">
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:name=".core.App"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.VirGLOverlay"
+        android:icon="@drawable/main_ico"
+        android:roundIcon="@drawable/main_ico"
+        android:fullBackupContent="true"
+        android:allowBackup="true"
+        android:requestLegacyExternalStorage="true">
+        <activity android:name="com.catfixture.virgloverlay.ui.activity.virgl.Virgl"
+            android:exported="true"
+            android:theme="@style/Theme.VirGLOverlay.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service android:name=".core.impl.android.NativeServerInstance"
+            android:enabled="true"
+            android:process=":nativeThread"
+            android:exported="true"
+            android:permission="android.permission.INTERNET">
+            <intent-filter>
+                <action android:name="com.catfixture.virgloverlay.REMOTE_SERVICE_ACTION" />
+            </intent-filter>
+        </service>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths">
+            </meta-data>
+        </provider>
+    </application>
+
+
+    <queries>
+        <package android:name="com.google.android.gm"/>
+        <intent>
+            <action android:name="android.intent.action.SEND_MULTIPLE" />
+        </intent>
+    </queries>
+</manifest>
