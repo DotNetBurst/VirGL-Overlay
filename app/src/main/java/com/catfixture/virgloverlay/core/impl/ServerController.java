@@ -27,7 +27,10 @@ public class ServerController implements AndLinker.BindCallback {
         try {
             if (app.GetConfigData().automaticMode) {
                 Dbg.Msg("RESTARTING FROM AUTOMODE!");
-                Stop(false);
+                Stop(true);
+                started = false;
+                Thread.sleep(1000);
+                started = true;
                 Start(serverRemoteCallback);
             } else {
                 Stop(false);
@@ -72,21 +75,19 @@ public class ServerController implements AndLinker.BindCallback {
 
     public void Stop(boolean forced) {
         if ( forced || started) {
-            if (mLinker.isBind()) {
-                try {
-                    mLinker.unRegisterObject(serverStopRemoteCallback);
-                    mLinker.unRegisterObject(serverRemoteCallback);
-                    mLinker.unbind();
-                    mLinker.setBindCallback(null);
-                } catch (Exception x) {
-                    Dbg.Error(x);
-                }
+            try {
+                mLinker.unRegisterObject(serverStopRemoteCallback);
+                mLinker.unRegisterObject(serverRemoteCallback);
+                mLinker.unbind();
+                mLinker.setBindCallback(null);
+            } catch (Exception x) {
+                Dbg.Error(x);
             }
             try {
                 if (serverPID != -1) {
                     Process.killProcess(serverPID);
                     serverPID = -1;
-                }
+                } else Dbg.Error("Wrong pid");
             } catch (Exception x) {
                 Dbg.Error(x);
             }
