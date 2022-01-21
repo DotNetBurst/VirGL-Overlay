@@ -3,9 +3,9 @@ package com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.fragmen
 import static com.catfixture.virgloverlay.core.App.app;
 
 import com.catfixture.virgloverlay.R;
-import com.catfixture.virgloverlay.core.types.delegates.Action;
-import com.catfixture.virgloverlay.core.types.Event;
-import com.catfixture.virgloverlay.core.objProvider.IObjectProvider;
+import com.catfixture.virgloverlay.core.utils.types.delegates.Action;
+import com.catfixture.virgloverlay.core.utils.types.Event;
+import com.catfixture.virgloverlay.core.utils.objProvider.IObjectProvider;
 import com.catfixture.virgloverlay.data.ConfigData;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common.MultiGroupEntry;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common.SettingItem;

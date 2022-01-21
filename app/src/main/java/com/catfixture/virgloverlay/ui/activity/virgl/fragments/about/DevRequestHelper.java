@@ -3,8 +3,8 @@ package com.catfixture.virgloverlay.ui.activity.virgl.fragments.about;
 import android.content.Context;
 import android.os.Environment;
 
-import com.catfixture.virgloverlay.core.android.AndroidUtils;
-import com.catfixture.virgloverlay.core.email.ShareDialog;
+import com.catfixture.virgloverlay.core.utils.android.AndroidUtils;
+import com.catfixture.virgloverlay.core.debug.email.ShareDialog;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const;
 
 public class DevRequestHelper {

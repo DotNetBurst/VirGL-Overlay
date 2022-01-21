@@ -1,6 +1,6 @@
 package com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common.settingItem;
 
-import com.catfixture.virgloverlay.core.objProvider.IObjectProvider;
+import com.catfixture.virgloverlay.core.utils.objProvider.IObjectProvider;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common.MultiGroupEntry;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common.SettingItem;

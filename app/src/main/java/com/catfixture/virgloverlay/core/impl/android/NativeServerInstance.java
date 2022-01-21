@@ -10,7 +10,6 @@ import static com.catfixture.virgloverlay.core.impl.states.NativeServerState.SER
 import static com.catfixture.virgloverlay.core.impl.states.NativeServerState.SERVER_STATE_RUNNING;
 import static com.catfixture.virgloverlay.core.impl.states.NativeServerState.SERVER_STATE_STARTING;
 import static com.catfixture.virgloverlay.core.impl.states.NativeServiceState.SERVICE_STATE_CONNECTED;
-import static com.catfixture.virgloverlay.core.impl.states.NativeServiceState.SERVICE_STATE_ERROR;
 import static com.catfixture.virgloverlay.core.impl.states.NativeServiceState.SERVICE_STATE_IDLE;
 import static com.catfixture.virgloverlay.core.impl.states.NativeServiceState.SERVICE_STATE_INITIALIZING;
 import static com.catfixture.virgloverlay.core.impl.states.NativeServiceState.SERVICE_STATE_LISTENING;
@@ -32,8 +31,8 @@ import android.widget.Toast;
 import androidx.core.app.NotificationCompat;
 
 import com.catfixture.virgloverlay.R;
-import com.catfixture.virgloverlay.core.android.AndroidUtils;
-import com.catfixture.virgloverlay.core.IService;
+import com.catfixture.virgloverlay.core.utils.android.AndroidUtils;
+import com.catfixture.virgloverlay.core.impl.handles.IService;
 import com.catfixture.virgloverlay.core.debug.Dbg;
 import com.catfixture.virgloverlay.core.debug.logging.GlobalExceptions;
 import com.catfixture.virgloverlay.core.impl.handles.ServiceHandle;
@@ -41,7 +40,7 @@ import com.catfixture.virgloverlay.core.ipc.IServerRemoteCallback;
 import com.catfixture.virgloverlay.core.ipc.IServerRemoteService;
 import com.catfixture.virgloverlay.core.ipc.IServerStopRemoteCallback;
 import com.catfixture.virgloverlay.core.ipc.ServiceParcelable;
-import com.catfixture.virgloverlay.core.types.delegates.Functions;
+import com.catfixture.virgloverlay.core.utils.types.delegates.Functions;
 import com.catfixture.virgloverlay.data.ConfigData;
 import com.catfixture.virgloverlay.data.ConfigProfile;
 import com.catfixture.virgloverlay.ui.activity.virgl.Virgl;
@@ -56,7 +55,7 @@ public class NativeServerInstance extends Service {
     private static native int runServer();
     private static native void stopSocket(int fileDescriptor);
     private static native int acceptSocket(int fileDescriptor);
-    private static native void runSocketLoop(Class<Windows> windowKlass, int fileDescriptor);
+    private static native void runSocketLoop(OverlayWindowsManager windowsManager, int fileDescriptor);
 
     private int state;
     private int mainSocketDescriptor;
@@ -66,6 +65,7 @@ public class NativeServerInstance extends Service {
     private AndLinkerBinder mLinkerBinder;
     private IServerRemoteCallback serverRemoteCallback;
     private IServerStopRemoteCallback serverStopRemoteCallback;
+    private OverlayWindowsManager windowsManager;
 
     //****REMOTE SERVICE IMPL******//
     @SuppressWarnings("unused")
@@ -98,6 +98,18 @@ public class NativeServerInstance extends Service {
         }
 
         @Override
+        public void Stop() {
+            serverRemoteCallback.onServerStopped();
+            serverStopRemoteCallback.onServerStopped();
+            try {
+                Process.killProcess(serverPID);
+                SetServerState(SERVER_STATE_IDLE);
+            } catch (Exception x) {
+                Dbg.Error("Cant kill server");
+            }
+        }
+
+        @Override
         public List<ServiceParcelable> GetServices() {
             List<ServiceParcelable> parcelables = new ArrayList<>();
             for (IService service : services)
@@ -116,6 +128,7 @@ public class NativeServerInstance extends Service {
         mLinkerBinder = AndLinkerBinder.Factory.newBinder();
         mLinkerBinder.registerObject(mRemoteService);
         cfgData = app.GetConfigData();
+        windowsManager = new OverlayWindowsManager();
 
         Intent notificationIntent = new Intent(this, Virgl.class);
         notificationIntent.putExtra("stopServer", "true");
@@ -140,9 +153,6 @@ public class NativeServerInstance extends Service {
         Notification notification = notificationBuilder.build();
         startForeground(Const.SERVER_THREAD_CODE, notification);
         ShowToast("Server started");
-
-
-        Windows.Init(this);
     }
 
     @Override
@@ -261,7 +271,7 @@ public class NativeServerInstance extends Service {
         Log.d(APP_TAG, "Running per socket loop");
         Log.d(APP_TAG, "Native-lib running");
         SetServiceState(service, SERVICE_STATE_RUNNING);
-        runSocketLoop(Windows.class, fileDescriptor);
+        runSocketLoop(windowsManager, fileDescriptor);
         Log.d(APP_TAG, "Loop ended");
         serverStopRemoteCallback.onServerStopped();
         try {

@@ -1,9 +1,9 @@
 package com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common;
 
 import com.catfixture.virgloverlay.core.debug.Dbg;
-import com.catfixture.virgloverlay.core.types.Event;
-import com.catfixture.virgloverlay.core.types.delegates.Action;
-import com.catfixture.virgloverlay.core.objProvider.IObjectProvider;
+import com.catfixture.virgloverlay.core.utils.types.Event;
+import com.catfixture.virgloverlay.core.utils.types.delegates.Action;
+import com.catfixture.virgloverlay.core.utils.objProvider.IObjectProvider;
 import com.catfixture.virgloverlay.ui.common.genAdapter.IMultiViewAdapterItem;
 
 import java.lang.reflect.Field;

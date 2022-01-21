@@ -117,7 +117,7 @@ class GLFunction(object):
         # bits wide, causing portability problems all over.  There are
         # prototype conflicts between things like
         # glAttachShader(GLuint program, GLuint shader) and
-        # glAttachObjectARB(GLhandleARB container, GLhandleARB obj),
+        # glAttachObjectARB(GLhandleARB container, GLhandleARB object),
         # even though they are marked as aliases in the XML (and being
         # aliases in Mesa).
         #

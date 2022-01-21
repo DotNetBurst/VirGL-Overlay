@@ -6,7 +6,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.catfixture.virgloverlay.core.debug.logging.GlobalExceptions;
-import com.catfixture.virgloverlay.core.types.delegates.Action;
+import com.catfixture.virgloverlay.core.utils.types.delegates.Action;
 import com.catfixture.virgloverlay.data.ConfigData;
 import com.catfixture.virgloverlay.data.ConfigProfile;
 import com.catfixture.virgloverlay.data.GenericConfig;
@@ -40,6 +40,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         app = this;
+
 
         GlobalExceptions.Init();
         String configPath = getFilesDir().getPath() + "/settings.json";

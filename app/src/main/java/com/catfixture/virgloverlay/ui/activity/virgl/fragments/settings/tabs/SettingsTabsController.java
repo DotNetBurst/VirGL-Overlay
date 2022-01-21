@@ -8,7 +8,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.catfixture.virgloverlay.R;
-import com.catfixture.virgloverlay.core.types.delegates.Action;
+import com.catfixture.virgloverlay.core.utils.types.delegates.Action;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.fragments.InputFragment;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.fragments.OverlayFragment;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.fragments.RenderingFragment;

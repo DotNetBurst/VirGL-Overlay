@@ -8,9 +8,9 @@ import android.util.Log;
 import android.view.View;
 
 import com.catfixture.virgloverlay.R;
-import com.catfixture.virgloverlay.core.android.AndroidUtils;
-import com.catfixture.virgloverlay.core.objProvider.IObjectProvider;
-import com.catfixture.virgloverlay.core.objProvider.SimpleObjectProvider;
+import com.catfixture.virgloverlay.core.utils.android.AndroidUtils;
+import com.catfixture.virgloverlay.core.utils.objProvider.IObjectProvider;
+import com.catfixture.virgloverlay.core.utils.objProvider.SimpleObjectProvider;
 import com.catfixture.virgloverlay.data.ConfigData;
 import com.catfixture.virgloverlay.data.ConfigProfile;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const;

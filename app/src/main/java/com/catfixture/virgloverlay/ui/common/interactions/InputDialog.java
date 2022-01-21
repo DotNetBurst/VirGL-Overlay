@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import androidx.appcompat.app.AlertDialog;
 
 import com.catfixture.virgloverlay.R;
-import com.catfixture.virgloverlay.core.types.delegates.Action;
+import com.catfixture.virgloverlay.core.utils.types.delegates.Action;
 import static android.widget.LinearLayout.LayoutParams;
 
 public class InputDialog {

@@ -109,8 +109,8 @@ struct vtest_renderer {
 #elif defined ANDROID_JNI
   struct jni_s
   {
-    jclass cls;
     JNIEnv *env;
+    jobject object;
     jmethodID create;
     jmethodID get_surface;
     jmethodID set_rect;
@@ -145,10 +145,9 @@ jstring socketPath;
 jstring ringBufferPath;
 
 JNIEXPORT void JNICALL Java_com_catfixture_virgloverlay_core_impl_android_NativeServerInstance_initialize(JNIEnv *env, jclass cls, jobject settings) {
-    //COULD BE DONE AT ONCE, USING MARSHALLING, BUT THIS IS MORE CUSTOMIZABLE TO STORE IN COMMON SETTINGS UI PROPS i.e
-    jclass klass = (*env)->GetObjectClass(env, settings);
+    jclass settingsKlass = (*env)->GetObjectClass(env, settings);
 
-    jmethodID GetCurrentProfileJNI = (*env)->GetMethodID(env, klass, "GetCurrentProfile", "()Lcom/catfixture/virgloverlay/data/ConfigProfile;");
+    jmethodID GetCurrentProfileJNI = (*env)->GetMethodID(env, settingsKlass, "GetCurrentProfile", "()Lcom/catfixture/virgloverlay/data/ConfigProfile;");
     jobject profileField = (*env)->CallObjectMethod(env, settings, GetCurrentProfileJNI);
 
     jclass profileKlass = (*env)->GetObjectClass(env, profileField);
@@ -222,16 +221,19 @@ JNIEXPORT void JNICALL Java_com_catfixture_virgloverlay_core_impl_android_Native
 JNIEXPORT jint JNICALL Java_com_catfixture_virgloverlay_core_impl_android_NativeServerInstance_acceptSocket(JNIEnv *env, jclass cls, jint fileDescriptor) {
     return wait_for_socket_accept(fileDescriptor);
 }
-JNIEXPORT void JNICALL Java_com_catfixture_virgloverlay_core_impl_android_NativeServerInstance_runSocketLoop(JNIEnv *env, jclass cls, jclass windowKlass, jint fileDescriptor) {
+JNIEXPORT void JNICALL Java_com_catfixture_virgloverlay_core_impl_android_NativeServerInstance_runSocketLoop(JNIEnv *env, jclass cls, jobject windowsManager, jint fileDescriptor) {
     static int ctx_id;
     ctx_id++;
     struct vtest_renderer *r = create_renderer( fileDescriptor, ctx_id);
+
+    jclass windowsManagerKlass = (*env)->GetObjectClass(env, windowsManager);
+
     r->jni.env = env;
-    r->jni.cls = windowKlass;
-    r->jni.create = (*env)->GetStaticMethodID(env,windowKlass, "CreateWindow", "(IIII)Landroid/view/SurfaceView;");
-    r->jni.get_surface = (*env)->GetStaticMethodID(env,windowKlass, "GetSurface", "(Landroid/view/SurfaceView;)Landroid/view/Surface;");
-    r->jni.set_rect = (*env)->GetStaticMethodID(env,windowKlass, "UpdateWindow", "(Landroid/view/SurfaceView;IIIII)V");
-    r->jni.destroy = (*env)->GetStaticMethodID(env,windowKlass, "DestroyWindow", "(Landroid/view/SurfaceView;)V");
+    r->jni.object = windowsManager;
+    r->jni.create = (*env)->GetMethodID(env, windowsManagerKlass, "CreateWindow", "(IIII)Landroid/view/SurfaceView;");
+    r->jni.get_surface = (*env)->GetMethodID(env, windowsManagerKlass, "GetSurface", "(Landroid/view/SurfaceView;)Landroid/view/Surface;");
+    r->jni.set_rect = (*env)->GetMethodID(env, windowsManagerKlass, "UpdateWindow", "(Landroid/view/SurfaceView;IIIII)V");
+    r->jni.destroy = (*env)->GetMethodID(env, windowsManagerKlass, "DestroyWindow", "(Landroid/view/SurfaceView;)V");
     //int fd = vtest_open_socket("/data/media/0/multirom/roms/Linux4TegraR231/root/tmp/.virgl_test");
     r->configProfile = commonConfigProfile;
     if( !r->configProfile->useSocket)
@@ -367,7 +369,7 @@ static bool vtest_egl_init(struct vtest_renderer *d, bool surfaceless, bool gles
     d->egl_fake_surf = eglCreateWindowSurface(d->egl_display, d->egl_conf, d->x11_fake_win, window_attribute_list);
 #elif defined ANDROID_JNI
 struct vtest_renderer *r = d;
-       jobject surf = (*r->jni.env)->CallStaticObjectMethod(r->jni.env, r->jni.cls, r->jni.get_surface,(*r->jni.env)->CallStaticObjectMethod(r->jni.env, r->jni.cls, r->jni.create, 0, 0, 0, 0));
+       jobject surf = (*r->jni.env)->CallStaticObjectMethod(r->jni.env, r->jni.object, r->jni.get_surface, (*r->jni.env)->CallStaticObjectMethod(r->jni.env, r->jni.object, r->jni.create, 0, 0, 0, 0));
 
        if(surf == 0) {exit(0);}
        ANativeWindow *window = ANativeWindow_fromSurface(r->jni.env, surf);
@@ -745,7 +747,7 @@ static void vtest_dt_destroy(struct vtest_renderer *r, struct dt_record *dt)
 {
 #ifdef ANDROID_JNI
    if( dt->java_surf )
-      (*r->jni.env)->CallStaticVoidMethod(r->jni.env, r->jni.cls, r->jni.destroy, dt->java_surf);
+      (*r->jni.env)->CallStaticVoidMethod(r->jni.env, r->jni.object, r->jni.destroy, dt->java_surf);
    dt->java_surf = 0;
 #elif defined X11
     if( dt->x11_win)
@@ -821,7 +823,7 @@ static void vtest_dt_flush(struct vtest_renderer *r, struct dt_record *dt, int h
 static void vtest_dt_set_rect(struct vtest_renderer *r, struct dt_record *dt, int visible, int x, int y, int w, int h)
 {
 #ifdef ANDROID_JNI
-   (*r->jni.env)->CallStaticVoidMethod(r->jni.env, r->jni.cls, r->jni.set_rect, dt->java_surf,x,y,w,h,visible);
+   (*r->jni.env)->CallStaticVoidMethod(r->jni.env, r->jni.object, r->jni.set_rect, dt->java_surf, x, y, w, h, visible);
 #elif defined X11
    if( r->flags & FL_OVERLAY )
    {
@@ -874,9 +876,9 @@ static void vtest_dt_create(struct vtest_renderer *r, struct dt_record *dt, int 
     if(!dt->egl_surf)
     {
         printf("CREATING WINDOW") ;
-       dt->java_surf = (*r->jni.env)->CallStaticObjectMethod(r->jni.env, r->jni.cls, r->jni.create, x, y, w, h);
+       dt->java_surf = (*r->jni.env)->CallStaticObjectMethod(r->jni.env, r->jni.object, r->jni.create, x, y, w, h);
         printf("Done WINDOW") ;
-       jobject surf = (*r->jni.env)->CallStaticObjectMethod(r->jni.env, r->jni.cls, r->jni.get_surface, dt->java_surf);
+       jobject surf = (*r->jni.env)->CallStaticObjectMethod(r->jni.env, r->jni.object, r->jni.get_surface, dt->java_surf);
         printf("Done SURF") ;
        ANativeWindow *window = ANativeWindow_fromSurface(r->jni.env, surf);
        int format;

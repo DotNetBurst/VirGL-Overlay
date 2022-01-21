@@ -16,10 +16,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.appcompat.widget.Toolbar;
 
-import com.catfixture.virgloverlay.core.android.IActivityLaunchable;
-import com.catfixture.virgloverlay.core.android.IPermissionGrantable;
+import com.catfixture.virgloverlay.core.utils.android.IActivityLaunchable;
+import com.catfixture.virgloverlay.core.utils.android.IPermissionGrantable;
 import com.catfixture.virgloverlay.core.debug.Dbg;
-import com.catfixture.virgloverlay.core.types.delegates.Action;
+import com.catfixture.virgloverlay.core.utils.types.delegates.Action;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const;
 import com.google.android.material.tabs.TabLayout;
 import com.catfixture.virgloverlay.R;

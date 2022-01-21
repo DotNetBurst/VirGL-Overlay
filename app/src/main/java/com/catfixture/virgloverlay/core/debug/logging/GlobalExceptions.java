@@ -1,12 +1,9 @@
 package com.catfixture.virgloverlay.core.debug.logging;
 
-import static com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const.APP_TAG;
-
-import android.util.Log;
-
 import com.catfixture.virgloverlay.core.debug.Dbg;
 
 public class GlobalExceptions {
+    //TODO IMPLEMENT FILE LOGGING (INTERNAL)
     private static Thread.UncaughtExceptionHandler handler = (paramThread, paramThrowable) -> {
         Throwable cause = paramThrowable.getCause();
         Dbg.Error(paramThrowable.getMessage());

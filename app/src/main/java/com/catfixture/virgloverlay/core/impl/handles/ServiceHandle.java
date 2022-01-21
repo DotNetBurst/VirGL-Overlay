@@ -2,8 +2,6 @@ package com.catfixture.virgloverlay.core.impl.handles;
 
 import static com.catfixture.virgloverlay.core.impl.states.NativeServiceState.SERVICE_STATE_IDLE;
 
-import com.catfixture.virgloverlay.core.IService;
-
 public class ServiceHandle implements IService {
     private final int id;
     private int fd;

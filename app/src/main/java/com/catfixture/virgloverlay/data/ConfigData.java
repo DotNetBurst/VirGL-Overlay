@@ -3,8 +3,8 @@ package com.catfixture.virgloverlay.data;
 
 import static com.catfixture.virgloverlay.core.App.app;
 
-import com.catfixture.virgloverlay.core.objProvider.ITypedProvider;
-import com.catfixture.virgloverlay.core.types.Event;
+import com.catfixture.virgloverlay.core.utils.objProvider.ITypedProvider;
+import com.catfixture.virgloverlay.core.utils.types.Event;
 
 import java.util.ArrayList;
 import java.util.List;

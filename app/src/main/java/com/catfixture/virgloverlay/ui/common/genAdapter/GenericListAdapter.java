@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.catfixture.virgloverlay.core.types.delegates.Action2;
+import com.catfixture.virgloverlay.core.utils.types.delegates.Action2;
 
 import java.util.ArrayList;
 import java.util.List;

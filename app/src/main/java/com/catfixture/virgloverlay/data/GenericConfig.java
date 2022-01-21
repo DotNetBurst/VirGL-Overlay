@@ -1,9 +1,9 @@
 package com.catfixture.virgloverlay.data;
 
-import com.catfixture.virgloverlay.core.android.AndroidUtils;
+import com.catfixture.virgloverlay.core.utils.android.AndroidUtils;
 import com.catfixture.virgloverlay.core.debug.Dbg;
-import com.catfixture.virgloverlay.core.objProvider.ITypedProvider;
-import com.catfixture.virgloverlay.core.types.Event;
+import com.catfixture.virgloverlay.core.utils.objProvider.ITypedProvider;
+import com.catfixture.virgloverlay.core.utils.types.Event;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;

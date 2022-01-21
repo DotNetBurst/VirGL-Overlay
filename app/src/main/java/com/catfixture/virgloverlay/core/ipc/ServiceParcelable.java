@@ -3,7 +3,7 @@ package com.catfixture.virgloverlay.core.ipc;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.catfixture.virgloverlay.core.IService;
+import com.catfixture.virgloverlay.core.impl.handles.IService;
 
 public class ServiceParcelable implements Parcelable {
     public final int id;

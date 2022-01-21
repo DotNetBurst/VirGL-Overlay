@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.catfixture.virgloverlay.R;
-import com.catfixture.virgloverlay.core.types.delegates.Action;
+import com.catfixture.virgloverlay.core.utils.types.delegates.Action;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common.MultiGroupEntry;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common.SettingItem;

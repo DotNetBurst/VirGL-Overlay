@@ -30,7 +30,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.catfixture.virgloverlay.R;
-import com.catfixture.virgloverlay.core.IService;
+import com.catfixture.virgloverlay.core.impl.handles.IService;
 import com.catfixture.virgloverlay.core.impl.ServerController;
 import com.catfixture.virgloverlay.core.impl.handles.ServiceHandle;
 import com.catfixture.virgloverlay.core.ipc.IServerRemoteCallback;

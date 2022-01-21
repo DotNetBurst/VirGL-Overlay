@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
-import com.catfixture.virgloverlay.core.types.delegates.Action2;
+import com.catfixture.virgloverlay.core.utils.types.delegates.Action2;
 
 public class GenericMultiViewListAdapter<T extends IMultiViewAdapterItem> extends GenericListAdapter<T> {
     private final int[] layouts;

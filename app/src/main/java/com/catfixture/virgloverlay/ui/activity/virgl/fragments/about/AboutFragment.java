@@ -16,11 +16,11 @@ import androidx.fragment.app.Fragment;
 
 import com.catfixture.virgloverlay.BuildConfig;
 import com.catfixture.virgloverlay.R;
-import com.catfixture.virgloverlay.core.android.AndroidUtils;
-import com.catfixture.virgloverlay.core.android.UpdateDTO;
-import com.catfixture.virgloverlay.core.android.UpdateInfo;
+import com.catfixture.virgloverlay.core.utils.android.AndroidUtils;
+import com.catfixture.virgloverlay.core.utils.android.UpdateDTO;
+import com.catfixture.virgloverlay.core.utils.android.UpdateInfo;
 import com.catfixture.virgloverlay.core.debug.Dbg;
-import com.catfixture.virgloverlay.core.types.delegates.Action;
+import com.catfixture.virgloverlay.core.utils.types.delegates.Action;
 import com.catfixture.virgloverlay.ui.common.interactions.ConfirmDialog;
 import com.google.gson.Gson;
 

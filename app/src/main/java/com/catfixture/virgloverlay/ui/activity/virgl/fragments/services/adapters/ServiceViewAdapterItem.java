@@ -1,6 +1,6 @@
 package com.catfixture.virgloverlay.ui.activity.virgl.fragments.services.adapters;
 
-import com.catfixture.virgloverlay.core.IService;
+import com.catfixture.virgloverlay.core.impl.handles.IService;
 import com.catfixture.virgloverlay.ui.common.genAdapter.IAdapterItem;
 
 @SuppressWarnings("unused")
