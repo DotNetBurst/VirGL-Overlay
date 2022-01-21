@@ -19,26 +19,30 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="-200dp"
-        android:translationX="250dp"
+        android:translationX="255dp"
         android:gravity="center"
         android:orientation="horizontal">
 
         <ImageView
+            android:id="@+id/keyboardToggle"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:src="@drawable/fx_ov_kb" />
         <ImageView
+            android:id="@+id/touchControlsToggle"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="20dp"
             android:src="@drawable/fx_ov_tc" />
 
         <ImageView
+            android:id="@+id/minimize"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginStart="50dp"
+            android:layout_marginStart="15dp"
             android:src="@drawable/fx_ov_min" />
         <ImageView
+            android:id="@+id/close"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="10dp"

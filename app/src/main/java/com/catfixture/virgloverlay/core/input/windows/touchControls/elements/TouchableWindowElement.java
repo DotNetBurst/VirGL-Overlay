@@ -8,8 +8,11 @@ import android.view.MotionEvent;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.catfixture.virgloverlay.core.input.data.InputConfig;
 import com.catfixture.virgloverlay.core.input.windows.IInputWindowElement;
 import com.catfixture.virgloverlay.core.utils.math.Int2;
+import com.catfixture.virgloverlay.core.utils.objProvider.IObjectProvider;
+import com.catfixture.virgloverlay.core.utils.objProvider.ITypedProvider;
 import com.catfixture.virgloverlay.core.utils.types.Event;
 
 
@@ -91,5 +94,9 @@ public class TouchableWindowElement extends LinearLayout implements IInputWindow
     @Override
     public Int2 GetPosition() {
         return pos;
+    }
+
+    protected void Save() {
+
     }
 }

@@ -36,6 +36,7 @@ public class GenericConfig<T extends ITypedProvider<Event>> {
             config = gson.fromJson(json, clazz);
 
             config.get().addObserver((observable, o) -> Save());
+            Dbg.Msg("Loaded config from path = " + path);
         } catch (IOException e) {
             Dbg.Error(e);
             Save();

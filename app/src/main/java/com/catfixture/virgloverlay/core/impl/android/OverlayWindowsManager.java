@@ -72,7 +72,7 @@ public class OverlayWindowsManager {
             }
         }
         Log.d(APP_TAG,"SURF " + window.GetContainer());
-        return window.GetContainer();
+        return (SurfaceView) window.GetView();
 
     }
 

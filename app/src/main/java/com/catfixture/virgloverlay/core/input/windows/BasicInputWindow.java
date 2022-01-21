@@ -2,6 +2,7 @@ package com.catfixture.virgloverlay.core.input.windows;
 
 import android.content.Context;
 
+import com.catfixture.virgloverlay.core.input.data.InputConfig;
 import com.catfixture.virgloverlay.core.utils.windows.IWindow;
 
 

@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(this)) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
@@ -40,13 +39,6 @@ public class MainActivity extends AppCompatActivity {
         if ( !allInputMethods.contains(BuildConfig.IME_ID)) {
             startActivity( new Intent(ACTION_INPUT_METHOD_SETTINGS));
         }
-
-
-
-        IInputProvider mainInputProvider = new MainInputProvider();
-        IInputDevice inputDevice = mainInputProvider.ResolveDevice(getApplicationContext());
-        inputDevice.Show();
-
     }
 
     @Override
@@ -65,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LOW_PROFILE
-                | View.SYSTEM_UI_FLAG_IMMERSIVE);
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
     private void ShowInputMethod(View view) {

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="panelBg">#77000000</color>
+    <color name="spinnerBg">#77FFFFFF</color>
+    <color name="yellow">#FFE500</color>
+</resources>

@@ -1,5 +1,7 @@
 package com.catfixture.virgloverlay.core.utils.windows;
 
+import android.view.SurfaceView;
+import android.view.View;
 import android.view.ViewGroup;
 
 public interface IWindow {
@@ -11,7 +13,8 @@ public interface IWindow {
     IWindow Detach();
 
 
-    <T> T GetContainer ();
+    View GetView ();
+    ViewGroup GetContainer ();
     IWindow SetContainer(ViewGroup container);
 
     IWindow SetFullscreen();

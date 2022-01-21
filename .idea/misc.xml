@@ -26,6 +26,9 @@
         <entry key="..\:/Users/dimas/Desktop/VirGL-Overlay-apk-10-v6/app/src/main/res/layout/layout_about.xml" value="0.23072916666666668" />
         <entry key="..\:/Users/dimas/Desktop/VirGL-Overlay-apk-10-v6/app/src/main/res/layout/multigroup_setting_item.xml" value="0.23072916666666668" />
         <entry key="..\:/Users/dimas/Desktop/VirGL-Overlay-apk-10-v6/app/src/main/res/layout/overlay_panel_layout.xml" value="0.536" />
+        <entry key="..\:/Users/dimas/Desktop/VirGL-Overlay-apk-10-v6/app/src/main/res/layout/overlay_settings_panel.xml" value="0.8262806236080178" />
+        <entry key="..\:/Users/dimas/Desktop/VirGL-Overlay-apk-10-v6/app/src/main/res/layout/plain_old_select.xml" value="0.264" />
+        <entry key="..\:/Users/dimas/Desktop/VirGL-Overlay-apk-10-v6/app/src/main/res/layout/plain_old_select_item.xml" value="0.19791666666666666" />
         <entry key="..\:/Users/dimas/Desktop/VirGL-Overlay-apk-10-v6/app/src/main/res/layout/row.xml" value="0.23072916666666668" />
         <entry key="..\:/Users/dimas/Desktop/VirGL-Overlay-apk-10-v6/app/src/main/res/layout/service_item.xml" value="0.536" />
         <entry key="..\:/Users/dimas/Desktop/VirGL-Overlay-apk-10-v6/app/src/main/res/layout/spinner_dropdown.xml" value="0.2234375" />
@@ -33,6 +36,8 @@
         <entry key="..\:/Users/dimas/Desktop/VirGL-Overlay-apk-10-v6/app/src/main/res/layout/tab_item.xml" value="0.23072916666666668" />
         <entry key="..\:/Users/dimas/Desktop/VirGL-Overlay-apk-10-v6/app/src/main/res/layout/tab_item_small.xml" value="0.23072916666666668" />
         <entry key="..\:/Users/dimas/Desktop/VirGL-Overlay-apk-10-v6/app/src/main/res/layout/text_setting_item.xml" value="0.536" />
+        <entry key="..\:/Users/dimas/Desktop/VirGL-Overlay-apk-10-v6/app/src/main/res/layout/touch_controls_editor.xml" value="0.2442116868798236" />
+        <entry key="..\:/Users/dimas/Desktop/VirGL-Overlay-apk-10-v6/app/src/main/res/layout/touch_controls_list_item.xml" value="0.19791666666666666" />
         <entry key="..\:/Users/dimas/Desktop/VirGL-Overlay-apk-10-v6/app/src/main/res/layout/warning_component.xml" value="0.7981927710843374" />
       </map>
     </option>

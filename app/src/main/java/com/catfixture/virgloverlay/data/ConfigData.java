@@ -19,21 +19,21 @@ public class ConfigData implements ITypedProvider<Event> {
 
     public boolean sELinuxPermissive;
 
-    public void SetSELinuxPermissive (Boolean sELinuxPermissive) {this.sELinuxPermissive=sELinuxPermissive; app.Save();}
+    public void SetSELinuxPermissive (Boolean sELinuxPermissive) {this.sELinuxPermissive=sELinuxPermissive; Save();}
 
 
     public void SetAutomaticMode(boolean b) {
         automaticMode = b;
-        app.Save();
+        Save();
     }
     public void SetLastSelectedMainTab(int tab) {
         lastSelectedMainTab = tab;
-        app.Save();
+        Save();
     }
 
     public void SetLastSelectedSettingsTab(int tab) {
         lastSelectedSettingsTab = tab;
-        app.Save();
+        Save();
     }
 
     public void SetCurrentProfile(int id) {
@@ -41,17 +41,17 @@ public class ConfigData implements ITypedProvider<Event> {
             currentProfile = 0;
         else
             currentProfile = id;
-        app.Save();
+        Save();
     }
 
     public void AddProfile(ConfigProfile newCfgProf) {
         profiles.add(newCfgProf);
-        app.Save();
+        Save();
     }
 
     public void RemoveProfile(int i) {
         profiles.remove(i);
-        app.Save();
+        Save();
     }
 
     public boolean HasCurrentProfile() {
@@ -69,6 +69,10 @@ public class ConfigData implements ITypedProvider<Event> {
                 return profile;
         }
         return null;
+    }
+
+    private void Save() {
+        onChanged.notifyObservers();
     }
 
     @Override

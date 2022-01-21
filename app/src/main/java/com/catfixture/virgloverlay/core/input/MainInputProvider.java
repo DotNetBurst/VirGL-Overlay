@@ -5,12 +5,14 @@ import static com.catfixture.virgloverlay.core.input.Devices.TOUCH_CONTROLS_DEVI
 
 import android.content.Context;
 
+import com.catfixture.virgloverlay.core.input.data.InputConfig;
 import com.catfixture.virgloverlay.core.input.devices.IInputDevice;
 import com.catfixture.virgloverlay.core.input.devices.touchControls.TouchControlsDevice;
 
 public class MainInputProvider implements IInputProvider {
     @Override
-    public IInputDevice ResolveDevice(Context context) {
+    public IInputDevice ResolveDevice(Context context, Object arg) {
+        InputConfig cfg = (InputConfig) arg;
         int currentDevice = TOUCH_CONTROLS_DEVICE;//TODO
 
         switch (currentDevice) {

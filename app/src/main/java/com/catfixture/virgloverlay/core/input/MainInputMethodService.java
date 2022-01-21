@@ -1,5 +1,7 @@
 package com.catfixture.virgloverlay.core.input;
 
+import static com.catfixture.virgloverlay.core.App.app;
+
 import android.inputmethodservice.InputMethodService;
 import android.util.Log;
 import android.view.View;
@@ -21,7 +23,8 @@ public class MainInputMethodService extends InputMethodService {
     @Override
     public void onWindowShown() {
         super.onWindowShown();
-        inputDevice = mainInputProvider.ResolveDevice(getApplicationContext());
+        inputDevice = mainInputProvider.ResolveDevice(getApplicationContext(),
+                app.GetInputController().GetConfigData());
         inputDevice.Show();
     }
 

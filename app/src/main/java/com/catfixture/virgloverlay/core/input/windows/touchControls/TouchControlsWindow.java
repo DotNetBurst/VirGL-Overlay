@@ -1,17 +1,33 @@
 package com.catfixture.virgloverlay.core.input.windows.touchControls;
 
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
+import static com.catfixture.virgloverlay.core.App.app;
+
 import android.content.Context;
 
+import com.catfixture.virgloverlay.core.input.data.InputConfig;
 import com.catfixture.virgloverlay.core.input.windows.BasicInputWindow;
-import com.catfixture.virgloverlay.core.input.windows.editor.OverlaySettingsPanel;
+import com.catfixture.virgloverlay.core.input.windows.editor.TouchControlsEditor;
+import com.catfixture.virgloverlay.core.input.windows.touchControls.elements.CircleButton;
+import com.catfixture.virgloverlay.core.input.windows.touchControls.elements.CrossButton;
+import com.catfixture.virgloverlay.core.input.windows.touchControls.elements.RoundButton;
+import com.catfixture.virgloverlay.core.input.windows.utils.DragAndDropHandle;
+import com.catfixture.virgloverlay.core.utils.math.Int2;
 import com.catfixture.virgloverlay.core.utils.windows.AndroidWindow;
 import com.catfixture.virgloverlay.core.utils.windows.IWindow;
 
 
 public class TouchControlsWindow extends BasicInputWindow {
+    private TouchControlsEditor touchControlsEditor;
+
+    public TouchControlsWindow(Context context) {
+        super(context);
+    }
+
     @Override
     public IWindow Init() {
-        IWindow window = new AndroidWindow(context);
+        window = new AndroidWindow(context);
         window.CreateRelativeLayoutContainer()
                 .EnableEvents()
                 .SetTranlucent()
@@ -21,40 +37,18 @@ public class TouchControlsWindow extends BasicInputWindow {
                 .SetAlpha(1f)
                 .Attach();
 
-        /*RoundButton roundButton = new RoundButton(context);
-        roundButton.SetAlpha(0.5f)
-                .SetPosition(new Int2(100,100))
-                .SetSize(new Int2(100,100));
-        roundButton.SetText("A");
-        new DragAndDropHandle(roundButton);
-        window.GetContainer().addView(roundButton);
-
-        CircleButton circleButton = new CircleButton(context);
-        circleButton.SetAlpha(0.5f)
-                .SetPosition(new Int2(200,200))
-                .SetSize(new Int2(100,100));
-        circleButton.SetText("X");
-        new DragAndDropHandle(circleButton);
-        window.GetContainer().addView(circleButton);
-
-        CrossButton crossButton = new CrossButton(context);
-        crossButton.SetAlpha(0.5f)
-                .SetPosition(new Int2(200,200))
-                .SetSize(new Int2(300,300));
-        new DragAndDropHandle(crossButton);
-        window.GetContainer().addView(crossButton);*/
-
-        OverlaySettingsPanel overlaySettingsPanel = new OverlaySettingsPanel(context, window.GetContainer());
-        overlaySettingsPanel.SetAlpha(0.5f);
-
-        //InputWindowElementEditor inputWindowElementEditor = new InputWindowElementEditor(context, window.GetContainer());
-        //inputWindowElementEditor.SetSize(new Int2(600, WRAP_CONTENT));
-
+        OpenTouchControlsEditor();
 
         return window;
     }
 
-    public TouchControlsWindow(Context context) {
-        super(context);
+    public void OpenTouchControlsEditor() {
+        touchControlsEditor = new TouchControlsEditor(context, window.GetContainer());
+    }
+
+    @Override
+    public void Destroy() {
+        super.Destroy();
+        touchControlsEditor.Destroy();
     }
 }

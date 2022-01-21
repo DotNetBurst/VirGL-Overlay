@@ -19,15 +19,6 @@
         android:fullBackupContent="true"
         android:allowBackup="true"
         android:requestLegacyExternalStorage="true">
-        <activity android:name="com.catfixture.virgloverlay.ui.activity.virgl.Virgl"
-            android:exported="true"
-            android:theme="@style/Theme.VirGLOverlay.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAINia" />
-
-                <category android:name="android.intent.category.LAUNCHERia" />
-            </intent-filter>
-        </activity>
 
         <activity
             android:name=".ui.activity.test.MainActivity"

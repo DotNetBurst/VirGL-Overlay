@@ -19,7 +19,8 @@ public class AndroidWindow implements IWindow {
     private int LAYOUT_FLAG,
                 EVENTS_FLAG = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 PIXEL_FORMAT = PixelFormat.OPAQUE;
-    private View container;
+    private ViewGroup container;
+    private View view;
     private WindowManager winMan;
     private Context context;
     private float alpha;
@@ -94,7 +95,7 @@ public class AndroidWindow implements IWindow {
 
     @Override
     public IWindow CreateSurfaceViewContainer() {
-        container = new SurfaceView(context);
+        view = new SurfaceView(context);
         return this;
     }
     @Override
@@ -178,6 +179,16 @@ public class AndroidWindow implements IWindow {
     }
 
     @Override
+    public View GetView() {
+        return view;
+    }
+
+    @Override
+    public ViewGroup GetContainer() {
+        return container;
+    }
+
+    @Override
     public IWindow SetOverlay() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
@@ -201,10 +212,6 @@ public class AndroidWindow implements IWindow {
         return this;
     }
 
-    @Override
-    public <T> T GetContainer () {
-        return (T) container;
-    }
     @Override
     public AndroidWindow SetContainer(ViewGroup container) {
         this.container = container;
