@@ -66,4 +66,8 @@ public class InputConfig implements ITypedProvider<Event> {
             Save();
         }
     }
+
+    public void SetCurrentProfile(int i) {
+        currentProfile = i; Save();
+    }
 }

@@ -100,8 +100,7 @@
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
         android:paddingBottom="10dp"
-        app:warningText="Create or select control element!"
-        />
+        app:warningText="Create profile first!" />
     <com.catfixture.virgloverlay.ui.custom.WarningComponent
         android:id="@+id/noItemErr"
         android:layout_width="wrap_content"
@@ -110,15 +109,19 @@
         android:paddingEnd="5dp"
         android:paddingBottom="10dp"
         app:warningText="Create or select control element!"
-        />
+        >
+
+    </com.catfixture.virgloverlay.ui.custom.WarningComponent>
+
     <LinearLayout
         android:id="@+id/controlsView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="0"
+        android:orientation="vertical"
         android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:orientation="vertical">
+        android:paddingBottom="10dp">
+
         <TextView
             android:id="@+id/textView3"
             android:layout_width="match_parent"
@@ -131,22 +134,23 @@
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="35dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
             android:backgroundTint="@color/white"
             android:foreground="@color/lighterRecordBg"
             android:paddingStart="0dp"
             android:paddingTop="0dp"
             android:paddingBottom="0dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
             android:popupBackground="@color/darkGray" />
 
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/opacitySliderText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:paddingStart="10dp"
             android:paddingEnd="20dp"
             android:text="Opacity(100%)"
@@ -164,9 +168,10 @@
             android:progressBackgroundTint="@color/white" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/sizeSliderText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:paddingStart="10dp"
             android:paddingEnd="20dp"
             android:text="Size(100%)"
@@ -177,11 +182,19 @@
             style="@style/Widget.AppCompat.SeekBar.Discrete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:max="200"
+            android:max="300"
             android:paddingStart="10dp"
             android:paddingEnd="20dp"
             android:progress="100"
             android:progressBackgroundTint="@color/white" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/createControl"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="5dp"
+        android:layout_weight="0"
+        android:text="Create control element" />
 
 </LinearLayout>

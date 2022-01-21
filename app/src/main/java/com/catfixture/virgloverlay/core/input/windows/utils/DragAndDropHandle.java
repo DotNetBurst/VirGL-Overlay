@@ -27,14 +27,15 @@ public class DragAndDropHandle {
             if ( isDragging) {
                 MotionEvent motionEvent = (MotionEvent) o;
                 Int2 pc = GetPointerCoords(motionEvent);
-                element.SetPosition(elementStartPos.Add(pc.SubSelf(startPosition)));
+                Int2 pos = elementStartPos.Add(pc.Sub(startPosition));
+                element.SetPosition(pos.x, pos.y);
             }
         });
 
         element.onUp.addObserver((observable, motionEvent) -> {
             isDragging = false;
             if ( onPositionChanged != null)
-                onPositionChanged.notifyObservers();
+                onPositionChanged.notifyObservers(element.GetPosition());
         });
 
     }

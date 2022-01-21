@@ -1,28 +1,37 @@
 package com.catfixture.virgloverlay.core.input.windows.touchControls.elements;
 
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.catfixture.virgloverlay.R;
 import com.catfixture.virgloverlay.core.input.data.InputConfig;
+import com.catfixture.virgloverlay.core.input.data.InputTouchControlElement;
 import com.catfixture.virgloverlay.core.input.windows.IInputWindowElement;
 import com.catfixture.virgloverlay.core.utils.math.Int2;
 import com.catfixture.virgloverlay.core.utils.objProvider.IObjectProvider;
 import com.catfixture.virgloverlay.core.utils.objProvider.ITypedProvider;
 import com.catfixture.virgloverlay.core.utils.types.Event;
+import com.codezjx.andlinker.annotation.In;
 
 
 public class TouchableWindowElement extends LinearLayout implements IInputWindowElement {
     private RelativeLayout.LayoutParams lp;
-    private Int2 pos = Int2.Zero;
+    private Int2 pos = new Int2(0,0);
     public Event onDown = new Event();
     public Event onMove = new Event();
     public Event onUp = new Event();
     public Event onClick = new Event();
+    private Object customData;
+    private Int2 initialSize = new Int2(100,100);
 
     public TouchableWindowElement(Context context) {
         super(context);
@@ -58,6 +67,8 @@ public class TouchableWindowElement extends LinearLayout implements IInputWindow
             }
             return false;
         });
+
+        SetSize(WRAP_CONTENT, WRAP_CONTENT);
     }
 
     public TouchableWindowElement(Context context, AttributeSet attrs) {
@@ -75,28 +86,52 @@ public class TouchableWindowElement extends LinearLayout implements IInputWindow
     }
 
     @Override
-    public IInputWindowElement SetSize(Int2 size) {
-        lp.width = size.x;
-        lp.height =  size.y;
+    public IInputWindowElement SetScale(int i) {
+        float scale = i / 100.0f;
+        SetSize((int) (initialSize.x * scale), (int) (initialSize.y * scale));
+        return this;
+    }
+
+    @Override
+    public IInputWindowElement SetSize(int x, int y) {
+        lp.width = x;
+        lp.height = y;
         setLayoutParams(lp);
         return this;
     }
 
     @Override
-    public IInputWindowElement SetPosition(Int2 pos) {
-        this.pos = pos;
-        lp.leftMargin = pos.x;
-        lp.topMargin = pos.y;
+    public IInputWindowElement SetPosition(int x, int y) {
+        lp.leftMargin = x;
+        lp.topMargin = y;
         setLayoutParams(lp);
         return this;
     }
 
     @Override
     public Int2 GetPosition() {
-        return pos;
+        return new Int2(lp.leftMargin,lp.topMargin);
     }
 
     protected void Save() {
 
+    }
+
+    public void Select() {
+        //getBackground().setColorFilter(getContext().getColor(R.color.serviceRed), PorterDuff.Mode.MULTIPLY);
+    }
+    public void Deselect() {
+        //getBackground().setColorFilter(null);
+    }
+
+    @Override
+    public Object GetData() {
+        return customData;
+    }
+
+
+
+    public void SetCustomData(InputTouchControlElement touchControlElement) {
+        this.customData = touchControlElement;
     }
 }

@@ -16,7 +16,7 @@
         app:warningText="@string/settings_warning_text"/>
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/opacitySliderText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/white"

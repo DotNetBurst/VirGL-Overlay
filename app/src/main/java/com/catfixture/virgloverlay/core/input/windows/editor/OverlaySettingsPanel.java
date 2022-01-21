@@ -21,7 +21,8 @@ import com.catfixture.virgloverlay.core.utils.windows.IWindow;
 
 
 public class OverlaySettingsPanel extends TouchableWindowElement {
-    private final int minimizedWidth;
+    private final int collapsedWidth;
+    private final int expandedWidth = 660;
     private final ImageView keyboardToggle;
     private final ImageView touchControlsToggle;
     private int currentInputDevice;
@@ -38,7 +39,7 @@ public class OverlaySettingsPanel extends TouchableWindowElement {
                 .SetTranlucent()
                 .SetOverlay()
                 .SetPosition(0,0)
-                .SetSize(610, 100)
+                .SetSize(expandedWidth, 100)
                 .SetAlpha(1f)
                 .Attach();
 
@@ -83,7 +84,7 @@ public class OverlaySettingsPanel extends TouchableWindowElement {
         ((ViewGroup)window.GetContainer()).addView(this);
 
         panel.measure(UNSPECIFIED, UNSPECIFIED);
-        minimizedWidth = panel.getMeasuredWidth();
+        collapsedWidth = panel.getMeasuredWidth();
     }
 
     private void SetCurrentInputDevice(Context context, int currentInputDevice) {
@@ -101,12 +102,12 @@ public class OverlaySettingsPanel extends TouchableWindowElement {
     private void SetExpanded(boolean is) {
         panel.clearAnimation();
         if ( is) {
-            ResizeWidthAnimation anim = new ResizeWidthAnimation(panel, 610);
+            ResizeWidthAnimation anim = new ResizeWidthAnimation(panel, expandedWidth);
             anim.setDuration(100);
             SetAlpha(1);
             panel.startAnimation(anim);
         } else {
-            ResizeWidthAnimation anim = new ResizeWidthAnimation(panel, minimizedWidth);
+            ResizeWidthAnimation anim = new ResizeWidthAnimation(panel, collapsedWidth);
             anim.setDuration(100);
             postDelayed(() -> SetAlpha(0.5f), 100);
             panel.startAnimation(anim);

@@ -4,6 +4,9 @@ import static com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.C
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.provider.Settings;
 import android.util.Log;
 
 import com.catfixture.virgloverlay.core.debug.logging.GlobalExceptions;
@@ -34,6 +37,7 @@ public class App extends Application {
 
     public void Save() {
         config.Save();
+        inputController.Save();
     }
 
     public ServerController GetServerController() {

@@ -37,4 +37,8 @@ public class InputController {
     public InputConfig GetConfigData() {
         return config.GetData();
     }
+
+    public void Save() {
+        config.Save();
+    }
 }

@@ -1,9 +1,15 @@
 package com.catfixture.virgloverlay.core.input.data;
 
+import static com.catfixture.virgloverlay.core.App.app;
+
 import com.catfixture.virgloverlay.ui.common.genAdapter.IAdapterItem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class InputConfigProfile implements IAdapterItem {
-    private boolean isVisible = true;
+    private transient boolean isVisible = true;
+    public List<InputTouchControlElement> touchControlElements = new ArrayList<>();
 
     @Override
     public void ToggleVisibility(boolean isVisible) {
@@ -27,5 +33,10 @@ public class InputConfigProfile implements IAdapterItem {
 
     public String GetName() {
         return "Input profile";
+    }
+
+    public void AddControlElement() {
+        touchControlElements.add(new InputTouchControlElement());
+        app.Save();
     }
 }
