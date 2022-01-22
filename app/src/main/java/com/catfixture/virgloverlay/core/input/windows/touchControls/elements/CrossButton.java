@@ -7,8 +7,11 @@ import com.catfixture.virgloverlay.R;
 
 public class CrossButton extends TouchableWindowElement {
 
-    public CrossButton(Context context) {
-        super(context);
+    public CrossButton(Context context, int id) {
+        super(context, id);
+
+        initialSize.Set(300,300);
+
         setBackgroundResource(R.drawable.fx_tc_cross_btn);
     }
 }

@@ -4,26 +4,20 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.ColorFilter;
-import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.catfixture.virgloverlay.R;
-import com.catfixture.virgloverlay.core.input.data.InputConfig;
 import com.catfixture.virgloverlay.core.input.data.InputTouchControlElement;
 import com.catfixture.virgloverlay.core.input.windows.IInputWindowElement;
 import com.catfixture.virgloverlay.core.utils.math.Int2;
-import com.catfixture.virgloverlay.core.utils.objProvider.IObjectProvider;
-import com.catfixture.virgloverlay.core.utils.objProvider.ITypedProvider;
 import com.catfixture.virgloverlay.core.utils.types.Event;
-import com.codezjx.andlinker.annotation.In;
 
 
 public class TouchableWindowElement extends LinearLayout implements IInputWindowElement {
+    public int id;
     private RelativeLayout.LayoutParams lp;
     private Int2 pos = new Int2(0,0);
     public Event onDown = new Event();
@@ -31,10 +25,11 @@ public class TouchableWindowElement extends LinearLayout implements IInputWindow
     public Event onUp = new Event();
     public Event onClick = new Event();
     private Object customData;
-    private Int2 initialSize = new Int2(100,100);
+    protected Int2 initialSize = new Int2(100,100);
 
-    public TouchableWindowElement(Context context) {
+    public TouchableWindowElement(Context context, int id) {
         super(context);
+        this.id = id;
         Init();
     }
 
@@ -80,6 +75,11 @@ public class TouchableWindowElement extends LinearLayout implements IInputWindow
     }
 
     @Override
+    public int GetId() {
+        return id;
+    }
+
+    @Override
     public IInputWindowElement SetAlpha(float v) {
         setAlpha(v);
         return this;
@@ -117,18 +117,10 @@ public class TouchableWindowElement extends LinearLayout implements IInputWindow
 
     }
 
-    public void Select() {
-        //getBackground().setColorFilter(getContext().getColor(R.color.serviceRed), PorterDuff.Mode.MULTIPLY);
-    }
-    public void Deselect() {
-        //getBackground().setColorFilter(null);
-    }
-
     @Override
     public Object GetData() {
         return customData;
     }
-
 
 
     public void SetCustomData(InputTouchControlElement touchControlElement) {

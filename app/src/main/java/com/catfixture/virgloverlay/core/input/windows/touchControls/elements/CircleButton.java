@@ -4,13 +4,16 @@ import android.content.Context;
 import android.widget.TextView;
 
 import com.catfixture.virgloverlay.R;
+import com.catfixture.virgloverlay.core.input.data.InputConfig;
 
 
 public class CircleButton extends TouchableWindowElement {
     private final TextView label;
 
-    public CircleButton(Context context) {
-        super(context);
+    public CircleButton(Context context, int id) {
+        super(context, id);
+
+        initialSize.Set(150,150);
 
         label = new TextView(context);
         label.setTextColor(context.getResources().getColor(R.color.white));

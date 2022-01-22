@@ -13,11 +13,14 @@ import java.util.List;
 public class InputConfig implements ITypedProvider<Event> {
     public final transient Event onChanged = new Event();
 
+    public int internalId;
+
     public int currentProfile;
     public List<InputConfigProfile> profiles = new ArrayList<>();
 
     public int inputDevice;
     public Int2 touchEditorPosition = Int2.Zero;
+
     public void SetTouchEditorPosition(Int2 touchEditorPosition) {
         this.touchEditorPosition = touchEditorPosition; Save();}
 
@@ -69,5 +72,9 @@ public class InputConfig implements ITypedProvider<Event> {
 
     public void SetCurrentProfile(int i) {
         currentProfile = i; Save();
+    }
+
+    public int GetInternalId() {
+        return internalId++;
     }
 }

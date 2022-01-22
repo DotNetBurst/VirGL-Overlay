@@ -31,7 +31,7 @@ public class OverlaySettingsPanel extends TouchableWindowElement {
     private IWindow window;
 
     public OverlaySettingsPanel(Context context, InputConfig inputConfig) {
-        super(context);
+        super(context, -3968131);
 
         window = new AndroidWindow(context);
         window.CreateRelativeLayoutContainer()

@@ -20,6 +20,8 @@ import com.catfixture.virgloverlay.R;
 import com.catfixture.virgloverlay.core.input.IInputProvider;
 import com.catfixture.virgloverlay.core.input.MainInputProvider;
 import com.catfixture.virgloverlay.core.input.devices.IInputDevice;
+import com.catfixture.virgloverlay.core.utils.android.AndroidUtils;
+import com.catfixture.virgloverlay.core.utils.process.ProcUtils;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -32,6 +34,10 @@ public class MainActivity extends AppCompatActivity {
         if ( !allInputMethods.contains(BuildConfig.IME_ID)) {
             startActivity( new Intent(ACTION_INPUT_METHOD_SETTINGS));
         }
+
+        AndroidUtils.ForceAppToImmersive(BuildConfig.APPLICATION_ID, (e) -> {
+
+        });
     }
 
     @Override

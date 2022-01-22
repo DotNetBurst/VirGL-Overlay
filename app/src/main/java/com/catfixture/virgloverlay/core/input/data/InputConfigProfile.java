@@ -35,8 +35,9 @@ public class InputConfigProfile implements IAdapterItem {
         return "Input profile";
     }
 
-    public void AddControlElement() {
-        touchControlElements.add(new InputTouchControlElement());
-        app.Save();
+    public void AddControlElement(int id) {
+        InputTouchControlElement el = new InputTouchControlElement();
+        touchControlElements.add(el);
+        el.SetId(id);
     }
 }

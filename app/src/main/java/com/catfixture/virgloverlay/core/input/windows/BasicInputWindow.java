@@ -41,4 +41,5 @@ public abstract class BasicInputWindow implements IInputWindow {
     public IWindow GetIWindow() {
         return window;
     }
+
 }

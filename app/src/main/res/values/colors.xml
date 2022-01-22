@@ -19,6 +19,7 @@
     <color name="serviceRed">#D10E00</color>
     <color name="serviceGreen">#A7D500</color>
     <color name="orange">#FF6600</color>
+    <color name="orangeTrans">#39FF6600</color>
     <color name="orangeSat">#FF893A</color>
     <color name="blueSat">#0F8DBF</color>
 </resources>

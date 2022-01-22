@@ -1,7 +1,5 @@
 package com.catfixture.virgloverlay.core.input.windows.touchControls;
 
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-
 import static com.catfixture.virgloverlay.core.App.app;
 import static com.catfixture.virgloverlay.core.input.windows.touchControls.types.TouchableWindowElementType.TYPE_CIRCLE_BUTTON;
 import static com.catfixture.virgloverlay.core.input.windows.touchControls.types.TouchableWindowElementType.TYPE_CROSS;
@@ -11,6 +9,7 @@ import static com.catfixture.virgloverlay.core.input.windows.touchControls.types
 import android.content.Context;
 
 import com.catfixture.virgloverlay.core.input.InputController;
+import com.catfixture.virgloverlay.core.input.codes.InputCodes;
 import com.catfixture.virgloverlay.core.input.data.InputConfig;
 import com.catfixture.virgloverlay.core.input.data.InputConfigProfile;
 import com.catfixture.virgloverlay.core.input.data.InputTouchControlElement;
@@ -21,15 +20,19 @@ import com.catfixture.virgloverlay.core.input.windows.touchControls.elements.Cir
 import com.catfixture.virgloverlay.core.input.windows.touchControls.elements.CrossButton;
 import com.catfixture.virgloverlay.core.input.windows.touchControls.elements.RoundButton;
 import com.catfixture.virgloverlay.core.input.windows.touchControls.elements.TouchableWindowElement;
-import com.catfixture.virgloverlay.core.input.windows.touchControls.types.TouchableWindowElementType;
 import com.catfixture.virgloverlay.core.input.windows.utils.DragAndDropHandle;
 import com.catfixture.virgloverlay.core.utils.math.Int2;
+import com.catfixture.virgloverlay.core.utils.types.delegates.Action;
 import com.catfixture.virgloverlay.core.utils.windows.AndroidWindow;
 import com.catfixture.virgloverlay.core.utils.windows.IWindow;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class TouchControlsWindow extends BasicInputWindow {
     private TouchControlsEditor touchControlsEditor;
+    private List<IInputWindowElement> windowElements;
 
     public TouchControlsWindow(Context context) {
         super(context);
@@ -37,6 +40,7 @@ public class TouchControlsWindow extends BasicInputWindow {
 
     @Override
     public IWindow Init() {
+        windowElements = new ArrayList<>();
         window = new AndroidWindow(context);
         window.CreateRelativeLayoutContainer()
                 .EnableEvents()
@@ -47,20 +51,38 @@ public class TouchControlsWindow extends BasicInputWindow {
                 .SetAlpha(1f)
                 .Attach();
 
+        window.GetContainer().setOnClickListener(view -> {
+            if (touchControlsEditor != null) {
+                touchControlsEditor.SetSelected(-1);
+            }
+        });
+
         InflateControls();
         OpenTouchControlsEditor();
         return window;
     }
 
+    public void TryGetSelectedItem(int selectedItemId, Action<IInputWindowElement> onFind) {
+        for (IInputWindowElement windowElement : windowElements) {
+            if ( windowElement.GetId() == selectedItemId) {
+                onFind.Invoke(windowElement);
+                return;
+            }
+        }
+    }
+
     public void OpenTouchControlsEditor() {
-        touchControlsEditor = new TouchControlsEditor(context, window);
+        touchControlsEditor = new TouchControlsEditor(context, this, app.GetInputController().GetConfigData());
         touchControlsEditor.onSetChanged.addObserver((observable, o) -> {
             InflateControls();
-            OpenTouchControlsEditor();
         });
     }
     private void InflateControls() {
-        window.GetContainer().removeAllViews();
+        for (IInputWindowElement windowElement : windowElements) {
+
+            window.GetContainer().removeView((TouchableWindowElement)windowElement);
+        }
+        windowElements.clear();
 
         InputController ic = app.GetInputController();
         InputConfig cfgData = ic.GetConfigData();
@@ -72,15 +94,17 @@ public class TouchControlsWindow extends BasicInputWindow {
 
                 switch (touchControlElement.type) {
                     case TYPE_ROUNDED_BUTTON: {
-                        newTouchElement = new RoundButton(context);
+                        newTouchElement = new RoundButton(context, touchControlElement.id);
+                        ((RoundButton)newTouchElement).SetText(InputCodes.GetCodeName(touchControlElement.code));
                         break;
                     }
                     case TYPE_CIRCLE_BUTTON: {
-                        newTouchElement = new CircleButton(context);
+                        newTouchElement = new CircleButton(context, touchControlElement.id);
+                        ((CircleButton)newTouchElement).SetText(InputCodes.GetCodeName(touchControlElement.code));
                         break;
                     }
                     case TYPE_CROSS: {
-                        newTouchElement = new CrossButton(context);
+                        newTouchElement = new CrossButton(context, touchControlElement.id);
                         break;
                     }
                     case TYPE_STICK: {
@@ -100,11 +124,13 @@ public class TouchControlsWindow extends BasicInputWindow {
                     dnd.onPositionChanged.addObserver((obs, o) -> {
                         touchControlElement.SetPosition((Int2) o);
                     });
-                    final IInputWindowElement iwe = newTouchElement;
+                    dnd.EnableSnap(25);
+                    final int iwe = newTouchElement.GetId();
                     newTouchElement.onDown.addObserver((observable, o) -> {
                         touchControlsEditor.SetSelected(iwe);
                     });
                     window.GetContainer().addView(newTouchElement);
+                    windowElements.add(newTouchElement);
                 }
             }
         }
