@@ -1,39 +1,40 @@
 package com.catfixture.virgloverlay.core.input.devices;
 
+import static com.catfixture.virgloverlay.core.App.app;
+
 import android.content.Context;
 
-import com.catfixture.virgloverlay.core.input.windows.IInputWindow;
+import com.catfixture.virgloverlay.core.overlay.IOverlayFragment;
 
 
 public abstract class BasicInputDevice implements IInputDevice {
     protected Context context;
-    private IInputWindow window;
+    private IOverlayFragment overlayFragment;
 
-    public BasicInputDevice(Context context, IInputWindow window) {
+    public BasicInputDevice(Context context, IOverlayFragment overlayFragment) {
         this.context = context;
-        this.window = window;
+        this.overlayFragment = overlayFragment;
     }
 
     @Override
     public void Initialize() {
-        Initialize(window);
-        window.Create();
+        Initialize(overlayFragment);
     }
 
     @Override
     public void Destroy() {
-        window.Destroy();
+        overlayFragment.Destroy();
     }
 
     @Override
     public void Show() {
-        window.Show();
+        app.GetOverlayManager().Show(overlayFragment);
     }
 
     @Override
     public void Hide() {
-        window.Hide();
+        app.GetOverlayManager().Hide(overlayFragment);
     }
 
-    protected abstract void Initialize(IInputWindow window);
+    protected abstract void Initialize(IOverlayFragment window);
 }

@@ -12,11 +12,13 @@ import android.widget.RelativeLayout;
 
 import com.catfixture.virgloverlay.core.input.data.InputTouchControlElement;
 import com.catfixture.virgloverlay.core.input.windows.IInputWindowElement;
+import com.catfixture.virgloverlay.core.input.windows.utils.IDraggable;
+import com.catfixture.virgloverlay.core.input.windows.utils.ITouchable;
 import com.catfixture.virgloverlay.core.utils.math.Int2;
 import com.catfixture.virgloverlay.core.utils.types.Event;
 
 
-public class TouchableWindowElement extends LinearLayout implements IInputWindowElement {
+public class TouchableWindowElement extends LinearLayout implements IInputWindowElement, ITouchable, IDraggable {
     public int id;
     private RelativeLayout.LayoutParams lp;
     private Int2 pos = new Int2(0,0);
@@ -114,7 +116,6 @@ public class TouchableWindowElement extends LinearLayout implements IInputWindow
     }
 
     protected void Save() {
-
     }
 
     @Override
@@ -125,5 +126,25 @@ public class TouchableWindowElement extends LinearLayout implements IInputWindow
 
     public void SetCustomData(InputTouchControlElement touchControlElement) {
         this.customData = touchControlElement;
+    }
+
+    @Override
+    public Event OnDown() {
+        return onDown;
+    }
+
+    @Override
+    public Event OnMove() {
+        return onMove;
+    }
+
+    @Override
+    public Event OnUp() {
+        return onUp;
+    }
+
+    @Override
+    public Event OnClick() {
+        return onClick;
     }
 }

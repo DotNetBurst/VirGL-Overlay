@@ -42,7 +42,7 @@ public abstract class CoreSettingsFragment extends Fragment {
 
     private void BindGenericSettingsList() {
         isInitialized = false;
-        if (view == null || !app.GetConfigData().HasCurrentProfile()) return;
+        if (view == null || !app.GetMainConfigData().HasCurrentProfile()) return;
 
         RecyclerView settingsView = view.findViewById(R.id.settingsView);
         settingsViewAdapter = GenericSettingsList.InitGenericSettingsList(getContext(), settingsView);
@@ -54,7 +54,7 @@ public abstract class CoreSettingsFragment extends Fragment {
     public void UpdateAll() {
         if (!isInitialized) BindGenericSettingsList();
         if (settingsViewAdapter != null) {
-            if (!app.GetConfigData().HasCurrentProfile()) {
+            if (!app.GetMainConfigData().HasCurrentProfile()) {
                 settingsViewAdapter.Flush();
                 isInitialized = false;
             } else settingsViewAdapter.notifyDataSetChanged();

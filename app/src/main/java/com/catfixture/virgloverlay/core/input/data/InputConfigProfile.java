@@ -39,11 +39,18 @@ public class InputConfigProfile implements IAdapterItem {
         InputTouchControlElement el = new InputTouchControlElement();
         touchControlElements.add(el);
         el.SetId(id);
+        Save();
     }
+
+    private void Save() {
+        app.SaveInputConfig();
+    }
+
     public void RemoveControlElement(int id) {
         for (InputTouchControlElement touchControlElement : touchControlElements) {
             if ( touchControlElement.id == id) {
                 touchControlElements.remove(touchControlElement);
+                Save();
                 return;
             }
         }

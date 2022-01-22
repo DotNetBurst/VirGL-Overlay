@@ -41,7 +41,7 @@ import com.catfixture.virgloverlay.core.ipc.IServerRemoteService;
 import com.catfixture.virgloverlay.core.ipc.IServerStopRemoteCallback;
 import com.catfixture.virgloverlay.core.ipc.ServiceParcelable;
 import com.catfixture.virgloverlay.core.utils.types.delegates.Functions;
-import com.catfixture.virgloverlay.data.ConfigData;
+import com.catfixture.virgloverlay.data.MainConfigData;
 import com.catfixture.virgloverlay.data.ConfigProfile;
 import com.catfixture.virgloverlay.ui.activity.virgl.Virgl;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const;
@@ -51,7 +51,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NativeServerInstance extends Service {
-    private static native void initialize(ConfigData settings);
+    private static native void initialize(MainConfigData settings);
     private static native int runServer();
     private static native void stopSocket(int fileDescriptor);
     private static native int acceptSocket(int fileDescriptor);
@@ -61,7 +61,7 @@ public class NativeServerInstance extends Service {
     private int mainSocketDescriptor;
     private final List<IService> services = new ArrayList<>();
     private int serverPID;
-    private ConfigData cfgData;
+    private MainConfigData cfgData;
     private AndLinkerBinder mLinkerBinder;
     private IServerRemoteCallback serverRemoteCallback;
     private IServerStopRemoteCallback serverStopRemoteCallback;
@@ -127,7 +127,7 @@ public class NativeServerInstance extends Service {
 
         mLinkerBinder = AndLinkerBinder.Factory.newBinder();
         mLinkerBinder.registerObject(mRemoteService);
-        cfgData = app.GetConfigData();
+        cfgData = app.GetMainConfigData();
         windowsManager = new OverlayWindowsManager();
 
         Intent notificationIntent = new Intent(this, Virgl.class);
@@ -193,7 +193,7 @@ public class NativeServerInstance extends Service {
         }).start();
     }
 
-    private void TryRunVigGLServer(ConfigData cfgData) {
+    private void TryRunVigGLServer(MainConfigData cfgData) {
         ConfigProfile cfgProfile = cfgData.GetCurrentProfile();
 
         SetServerState(SERVER_STATE_LOADING_NATIVE);

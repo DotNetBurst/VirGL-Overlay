@@ -10,7 +10,7 @@ import com.catfixture.virgloverlay.data.ConfigProfile;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InputConfig implements ITypedProvider<Event> {
+public class InputConfigData implements ITypedProvider<Event> {
     public final transient Event onChanged = new Event();
 
     public int internalId;
@@ -20,6 +20,7 @@ public class InputConfig implements ITypedProvider<Event> {
 
     public int inputDevice;
     public Int2 touchEditorPosition = Int2.Zero;
+    public float uiOpacity;
 
     public void SetTouchEditorPosition(Int2 touchEditorPosition) {
         this.touchEditorPosition = touchEditorPosition; Save();}
@@ -71,10 +72,16 @@ public class InputConfig implements ITypedProvider<Event> {
     }
 
     public void SetCurrentProfile(int i) {
-        currentProfile = i; Save();
+        currentProfile = i;
+        Save();
     }
 
     public int GetInternalId() {
         return internalId++;
+    }
+
+    public void SetUiOpacity(float v) {
+        this.uiOpacity = v;
+        Save();
     }
 }

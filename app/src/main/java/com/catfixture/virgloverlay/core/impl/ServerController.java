@@ -3,7 +3,6 @@ package com.catfixture.virgloverlay.core.impl;
 import static com.catfixture.virgloverlay.core.App.app;
 
 import android.content.Context;
-import android.os.Debug;
 import android.os.Process;
 
 import com.catfixture.virgloverlay.BuildConfig;
@@ -25,7 +24,7 @@ public class ServerController implements AndLinker.BindCallback {
 
     private IServerStopRemoteCallback serverStopRemoteCallback = () -> {
         try {
-            if (app.GetConfigData().automaticMode) {
+            if (app.GetMainConfigData().automaticMode) {
                 Dbg.Msg("RESTARTING FROM AUTOMODE!");
                 Stop(true);
                 started = false;

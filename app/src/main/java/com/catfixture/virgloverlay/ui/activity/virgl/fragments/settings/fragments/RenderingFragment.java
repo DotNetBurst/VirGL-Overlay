@@ -6,7 +6,7 @@ import com.catfixture.virgloverlay.R;
 import com.catfixture.virgloverlay.core.utils.types.delegates.Action;
 import com.catfixture.virgloverlay.core.utils.types.Event;
 import com.catfixture.virgloverlay.core.utils.objProvider.IObjectProvider;
-import com.catfixture.virgloverlay.data.ConfigData;
+import com.catfixture.virgloverlay.data.MainConfigData;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common.MultiGroupEntry;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common.SettingItem;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common.settingItem.MultiGroupSettingItem;
@@ -25,7 +25,7 @@ public class RenderingFragment extends CoreSettingsFragment {
     @Override
     protected void InitSettings(GenericMultiViewListAdapter<SettingItem> settingsViewAdapter) {
 
-        ConfigData cfgData = app.GetConfigData();
+        MainConfigData cfgData = app.GetMainConfigData();
 
         IObjectProvider settingsDtoProvider = cfgData::GetCurrentProfile;
 

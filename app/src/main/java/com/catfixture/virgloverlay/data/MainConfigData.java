@@ -9,7 +9,7 @@ import com.catfixture.virgloverlay.core.utils.types.Event;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConfigData implements ITypedProvider<Event> {
+public class MainConfigData implements ITypedProvider<Event> {
     public final transient Event onChanged = new Event();
     public final List<ConfigProfile> profiles = new ArrayList<>();
     public boolean automaticMode;

@@ -119,7 +119,7 @@ public class ConfigProfile {
     }
     private void Save() {
 
-        app.Save();
+        app.SaveMainConfig();
     }
 }
 

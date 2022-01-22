@@ -11,7 +11,7 @@ import com.catfixture.virgloverlay.R;
 import com.catfixture.virgloverlay.core.utils.android.AndroidUtils;
 import com.catfixture.virgloverlay.core.utils.objProvider.IObjectProvider;
 import com.catfixture.virgloverlay.core.utils.objProvider.SimpleObjectProvider;
-import com.catfixture.virgloverlay.data.ConfigData;
+import com.catfixture.virgloverlay.data.MainConfigData;
 import com.catfixture.virgloverlay.data.ConfigProfile;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common.SettingItem;
@@ -29,7 +29,7 @@ public class SystemFragment extends CoreSettingsFragment {
 
     @Override
     protected void InitSettings(GenericMultiViewListAdapter<SettingItem> settingsViewAdapter) {
-        ConfigData cfgData = app.GetConfigData();
+        MainConfigData cfgData = app.GetMainConfigData();
 
         IObjectProvider globalSettingsProfileProvider = new SimpleObjectProvider(() -> cfgData);
         IObjectProvider settingsDtoProvider = new SimpleObjectProvider(cfgData::GetCurrentProfile);
@@ -127,7 +127,7 @@ public class SystemFragment extends CoreSettingsFragment {
         }
     }
 
-    private void FallbackSE (ConfigData cfgData) {
+    private void FallbackSE (MainConfigData cfgData) {
         View view = getView();
         if ( view != null) {
             view.post(() -> {
@@ -140,7 +140,7 @@ public class SystemFragment extends CoreSettingsFragment {
         } else Log.e(APP_TAG, "View null error");
     }
 
-    private void TrySetSELinuxPermissive(ConfigData cfgData, boolean is, boolean showSuccessDialog) {
+    private void TrySetSELinuxPermissive(MainConfigData cfgData, boolean is, boolean showSuccessDialog) {
         if (!is && !showSuccessDialog) return;
 
         AndroidUtils.SetSELinuxPermissive(is, (Integer r) -> {

@@ -36,7 +36,7 @@ import com.catfixture.virgloverlay.core.impl.handles.ServiceHandle;
 import com.catfixture.virgloverlay.core.ipc.IServerRemoteCallback;
 import com.catfixture.virgloverlay.core.ipc.IServerRemoteService;
 import com.catfixture.virgloverlay.core.ipc.ServiceParcelable;
-import com.catfixture.virgloverlay.data.ConfigData;
+import com.catfixture.virgloverlay.data.MainConfigData;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.services.adapters.ServiceViewAdapterItem;
 import com.catfixture.virgloverlay.ui.common.genAdapter.GenericListAdapter;
 import com.catfixture.virgloverlay.ui.utils.Utils;
@@ -111,7 +111,7 @@ public class ServicesFragment extends Fragment {
         servicesView.setLayoutManager(new LinearLayoutManager(getContext()));
         servicesView.setAdapter(servicesViewAdapter);
 
-        ConfigData config = app.GetConfigData();
+        MainConfigData config = app.GetMainConfigData();
 
         View manualServicesControlsContainer = view.findViewById(R.id.manualServicesControlsContainer);
         SwitchCompat manServicesMode = view.findViewById(R.id.manualServicesMode);
@@ -215,7 +215,7 @@ public class ServicesFragment extends Fragment {
     public void UpdateMainView() {
         if ( view == null) return;
 
-        boolean profileControlsVisible = app.GetConfigData().HasCurrentProfile();
+        boolean profileControlsVisible = app.GetMainConfigData().HasCurrentProfile();
         view.findViewById(R.id.viewport).setVisibility(profileControlsVisible ? View.VISIBLE : View.GONE);
         view.findViewById(R.id.noProfilesLabel).setVisibility(profileControlsVisible ? View.GONE : View.VISIBLE);
     }

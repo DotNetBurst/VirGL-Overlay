@@ -4,7 +4,7 @@ import static com.catfixture.virgloverlay.core.App.app;
 
 import com.catfixture.virgloverlay.R;
 import com.catfixture.virgloverlay.core.utils.objProvider.IObjectProvider;
-import com.catfixture.virgloverlay.data.ConfigData;
+import com.catfixture.virgloverlay.data.MainConfigData;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common.SettingItem;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common.settingItem.SwitchSettingItem;
 import com.catfixture.virgloverlay.ui.common.genAdapter.GenericMultiViewListAdapter;
@@ -18,7 +18,7 @@ public class OverlayFragment extends CoreSettingsFragment {
     @Override
     protected void InitSettings(GenericMultiViewListAdapter<SettingItem> settingsViewAdapter) {
 
-        ConfigData cfgData = app.GetConfigData();
+        MainConfigData cfgData = app.GetMainConfigData();
 
         IObjectProvider settingsDtoProvider = cfgData::GetCurrentProfile;
 

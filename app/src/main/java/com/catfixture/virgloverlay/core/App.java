@@ -1,19 +1,19 @@
 package com.catfixture.virgloverlay.core;
 
+import static com.catfixture.virgloverlay.core.input.windows.editor.MainControlsOverlayFragment.ID_MAIN_CONTROLS_OVERLAY;
+import static com.catfixture.virgloverlay.core.input.windows.touchControls.TouchControlsOverlayFragment.ID_TOUCH_CONTROLS_OVERLAY;
 import static com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const.APP_TAG;
 
 import android.app.Application;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.provider.Settings;
 import android.util.Log;
 
 import com.catfixture.virgloverlay.core.debug.logging.GlobalExceptions;
-import com.catfixture.virgloverlay.core.input.InputController;
-import com.catfixture.virgloverlay.core.input.data.InputConfig;
+import com.catfixture.virgloverlay.core.input.data.InputConfigData;
+import com.catfixture.virgloverlay.core.input.windows.editor.MainControlsOverlayFragment;
+import com.catfixture.virgloverlay.core.input.windows.touchControls.TouchControlsOverlayFragment;
+import com.catfixture.virgloverlay.core.overlay.OverlayManager;
 import com.catfixture.virgloverlay.core.utils.types.delegates.Action;
-import com.catfixture.virgloverlay.data.ConfigData;
+import com.catfixture.virgloverlay.data.MainConfigData;
 import com.catfixture.virgloverlay.data.ConfigProfile;
 import com.catfixture.virgloverlay.data.GenericConfig;
 import com.catfixture.virgloverlay.core.impl.ServerController;
@@ -21,31 +21,30 @@ import com.catfixture.virgloverlay.core.impl.ServerController;
 public class App extends Application {
     public static App app;
 
-    private GenericConfig<ConfigData> config;
+    private GenericConfig<MainConfigData> mainConfig;
+    private GenericConfig<InputConfigData> inputConfig;
+
     private ServerController serverController;
-    private InputController inputController;
+    private OverlayManager overlayManager;
 
-    public ConfigData GetConfigData() {
-        return config.GetData();
+    public MainConfigData GetMainConfigData() {
+        return mainConfig.GetData();
+    }
+    public InputConfigData GetInputConfigData() {
+        return inputConfig.GetData();
     }
 
-    public void TryGetProfile(Action<ConfigProfile> onRetrieve) {
-        if ( GetConfigData().HasCurrentProfile()) {
-            onRetrieve.Invoke(GetConfigData().GetCurrentProfile());
-        }
+    public void SaveMainConfig() {
+        mainConfig.Save();
     }
-
-    public void Save() {
-        config.Save();
-        inputController.Save();
+    public void SaveInputConfig() {
+        inputConfig.Save();
     }
 
     public ServerController GetServerController() {
         return serverController;
     }
-    public InputController GetInputController() {
-        return inputController;
-    }
+    public OverlayManager GetOverlayManager() { return overlayManager;}
 
     @Override
     public void onCreate() {
@@ -53,13 +52,31 @@ public class App extends Application {
         app = this;
 
         GlobalExceptions.Init();
-        String configPath = getFilesDir().getPath() + "/settings.json";
-        Log.i(APP_TAG, "CONF_PATH " + configPath);
-        config = new GenericConfig<>(configPath, ConfigData.class);
+
+        String mainConfigPath = getFilesDir().getPath() + "/settings.json";
+        mainConfig = new GenericConfig<>(mainConfigPath, MainConfigData.class);
+        String inputConfigPath = getFilesDir()+"/input.json";
+        inputConfig = new GenericConfig<>( inputConfigPath, InputConfigData.class);
 
         serverController = new ServerController(this);
-        inputController = new InputController(this);
-        inputController.Create();
+        overlayManager = new OverlayManager(this);
+
+
+        TouchControlsOverlayFragment touchControlsFragment = new TouchControlsOverlayFragment();
+        overlayManager.Add(touchControlsFragment);
+        app.GetOverlayManager().Show(ID_TOUCH_CONTROLS_OVERLAY);
+
+        MainControlsOverlayFragment mainControlsOverlayFragment = new MainControlsOverlayFragment();
+        overlayManager.Add(mainControlsOverlayFragment);
+        app.GetOverlayManager().Show(ID_MAIN_CONTROLS_OVERLAY);
+
         Log.d(APP_TAG, "Application created");
+    }
+
+
+    public void TryGetProfile(Action<ConfigProfile> onRetrieve) {
+        if ( GetMainConfigData().HasCurrentProfile()) {
+            onRetrieve.Invoke(GetMainConfigData().GetCurrentProfile());
+        }
     }
 }

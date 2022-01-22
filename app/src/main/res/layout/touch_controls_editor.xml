@@ -201,10 +201,10 @@
                 style="@style/Widget.AppCompat.SeekBar.Discrete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:max="100"
+                android:max="80"
                 android:paddingStart="10dp"
                 android:paddingEnd="20dp"
-                android:progress="100"
+                android:progress="80"
                 android:progressBackgroundTint="@color/white" />
 
             <TextView
@@ -222,7 +222,7 @@
                 style="@style/Widget.AppCompat.SeekBar.Discrete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:max="300"
+                android:max="280"
                 android:paddingStart="10dp"
                 android:paddingEnd="20dp"
                 android:progress="100"
@@ -248,7 +248,7 @@
         android:visibility="gone">
 
         <TextView
-            android:id="@+id/sizeSliderText2"
+            android:id="@+id/uiOpacityText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -258,11 +258,11 @@
             android:textColor="@color/white" />
 
         <SeekBar
-            android:id="@+id/sizeSlider2"
+            android:id="@+id/uiOpacity"
             style="@style/Widget.AppCompat.SeekBar.Discrete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:max="100"
+            android:max="80"
             android:paddingStart="10dp"
             android:paddingEnd="20dp"
             android:progress="100"

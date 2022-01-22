@@ -5,14 +5,11 @@ import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
 
 import com.catfixture.virgloverlay.R;
-import com.catfixture.virgloverlay.core.input.data.InputConfig;
-import com.catfixture.virgloverlay.core.utils.types.delegates.Action;
 
 public class Utils {
     public static void InitToolbarText(Toolbar toolbar) {

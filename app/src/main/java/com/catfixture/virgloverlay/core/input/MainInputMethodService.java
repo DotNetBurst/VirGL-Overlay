@@ -24,7 +24,7 @@ public class MainInputMethodService extends InputMethodService {
     public void onWindowShown() {
         super.onWindowShown();
         inputDevice = mainInputProvider.ResolveDevice(getApplicationContext(),
-                app.GetInputController().GetConfigData());
+                app.GetInputConfigData());
         inputDevice.Show();
     }
 

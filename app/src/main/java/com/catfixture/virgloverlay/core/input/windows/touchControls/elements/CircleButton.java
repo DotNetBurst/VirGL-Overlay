@@ -4,7 +4,6 @@ import android.content.Context;
 import android.widget.TextView;
 
 import com.catfixture.virgloverlay.R;
-import com.catfixture.virgloverlay.core.input.data.InputConfig;
 
 
 public class CircleButton extends TouchableWindowElement {

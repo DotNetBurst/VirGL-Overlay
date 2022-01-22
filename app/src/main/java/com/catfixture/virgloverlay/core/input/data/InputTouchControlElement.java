@@ -22,12 +22,12 @@ public class InputTouchControlElement {
     public int type = TYPE_CIRCLE_BUTTON;
 
     private void Save() {
-        app.GetInputController().Save();
+        app.SaveInputConfig();
     }
 
     public void SetType(int i) { type = i; Save();}
 
-    public int code = 52;
-    public void SetButtonCode(int buttonCode) {this.code = buttonCode; Save();}
+    public int buttonCode = 52;
+    public void SetButtonCode(int buttonCode) {this.buttonCode = buttonCode; Save();}
 
 }

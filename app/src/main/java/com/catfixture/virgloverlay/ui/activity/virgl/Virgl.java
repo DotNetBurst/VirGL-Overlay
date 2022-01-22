@@ -81,8 +81,8 @@ public class Virgl extends AppCompatActivity implements IPermissionGrantable, IA
 
         TabLayout tabs = findViewById(R.id.mainTabs);
         MainTabsController mainTabsController = new MainTabsController(tabs, this);
-        mainTabsController.SetTab(app.GetConfigData().lastSelectedMainTab);
-        mainTabsController.OnTabsSelectionChanged((i) -> app.GetConfigData().SetLastSelectedMainTab(i.getPosition()));
+        mainTabsController.SetTab(app.GetMainConfigData().lastSelectedMainTab);
+        mainTabsController.OnTabsSelectionChanged((i) -> app.GetMainConfigData().SetLastSelectedMainTab(i.getPosition()));
     }
 
     @Override

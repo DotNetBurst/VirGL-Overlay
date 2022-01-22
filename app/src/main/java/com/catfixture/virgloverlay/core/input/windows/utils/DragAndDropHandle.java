@@ -10,7 +10,7 @@ import com.catfixture.virgloverlay.core.utils.types.Event;
 
 import java.util.Observable;
 
-public class DragAndDropHandle {
+public class DragAndDropHandle<T extends ITouchable & ITransformable & IDraggable> {
     public Event onPositionChanged = new Event();
     private Int2 elementStartPos;
     private Int2 startPosition;
@@ -19,15 +19,15 @@ public class DragAndDropHandle {
     private boolean snappingOn;
 
     @SuppressLint("ClickableViewAccessibility")
-    public DragAndDropHandle(TouchableWindowElement element) {
-        element.onDown.addObserver((observable, o) -> {
+    public DragAndDropHandle(T element) {
+        element.OnDown().addObserver((observable, o) -> {
             MotionEvent motionEvent = (MotionEvent) o;
             startPosition = GetPointerCoords(motionEvent);
             elementStartPos = element.GetPosition();
             isDragging = true;
         });
 
-        element.onMove.addObserver((observable, o) -> {
+        element.OnMove().addObserver((observable, o) -> {
             if ( isDragging) {
                 MotionEvent motionEvent = (MotionEvent) o;
                 Int2 pc = GetPointerCoords(motionEvent);
@@ -41,7 +41,7 @@ public class DragAndDropHandle {
             }
         });
 
-        element.onUp.addObserver((observable, motionEvent) -> {
+        element.OnUp().addObserver((observable, motionEvent) -> {
             isDragging = false;
             onPositionChanged.notifyObservers(element.GetPosition());
         });

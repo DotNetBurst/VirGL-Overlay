@@ -1,7 +1,6 @@
 package com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings;
 
 import static com.catfixture.virgloverlay.core.App.app;
-import static com.catfixture.virgloverlay.core.impl.states.NativeServerState.SERVER_STATE_IDLE;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -18,12 +17,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.catfixture.virgloverlay.core.debug.Dbg;
-import com.catfixture.virgloverlay.core.ipc.IServerRemoteService;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common.SettingItem;
 import com.catfixture.virgloverlay.ui.custom.WarningComponent;
 import com.google.android.material.tabs.TabLayout;
 import com.catfixture.virgloverlay.R;
-import com.catfixture.virgloverlay.data.ConfigData;
+import com.catfixture.virgloverlay.data.MainConfigData;
 import com.catfixture.virgloverlay.data.ConfigProfile;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.tabs.SettingsTabsController;
 import com.catfixture.virgloverlay.ui.common.genAdapter.GenericSpinnerAdapter;
@@ -47,7 +45,7 @@ public class SettingsFragment extends Fragment {
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                        Bundle savedInstanceState) {
         Context context = getContext();
-        ConfigData cfgData = app.GetConfigData();
+        MainConfigData cfgData = app.GetMainConfigData();
         view = inflater.inflate(R.layout.fragment_settings, container, false);
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -58,7 +56,7 @@ public class SettingsFragment extends Fragment {
 
         TabLayout tabs = view.findViewById(R.id.settingsTabs);
         settingsTabsController = new SettingsTabsController(view, tabs, activity);
-        settingsTabsController.SetTab(app.GetConfigData().lastSelectedSettingsTab);
+        settingsTabsController.SetTab(app.GetMainConfigData().lastSelectedSettingsTab);
         settingsTabsController.OnTabsSelectionChanged((i) -> {
             cfgData.SetLastSelectedSettingsTab(i.getPosition());
             UpdateAll();
@@ -99,9 +97,9 @@ public class SettingsFragment extends Fragment {
 
         editProfileName = view.findViewById(R.id.editProfileName);
         editProfileName.setOnClickListener(view1 -> {
-            ConfigProfile cfgProf = app.GetConfigData().GetCurrentProfile();
+            ConfigProfile cfgProf = app.GetMainConfigData().GetCurrentProfile();
             InputDialog.Show(getContext(), "Edit name", cfgProf.name, "Save", (newName) -> {
-                app.GetConfigData().GetCurrentProfile().SetName(newName);
+                app.GetMainConfigData().GetCurrentProfile().SetName(newName);
                 UpdateAll();
                 SettingItem.OnAppWideSettingsChanged.notifyObservers();
             }, "Cancel", null);
@@ -109,7 +107,7 @@ public class SettingsFragment extends Fragment {
 
         removeProfile = view.findViewById(R.id.removeProfile);
         removeProfile.setOnClickListener(view1 -> {
-            int currProfile = app.GetConfigData().currentProfile;
+            int currProfile = app.GetMainConfigData().currentProfile;
             ConfirmDialog.Show(context, "Remove " + cfgData.FindProfileByID(currProfile).name +" configuration profile",
                     "Do you really want to remove this profile?", "Remove", () -> {
                         cfgData.RemoveProfile(currProfile);
@@ -123,7 +121,7 @@ public class SettingsFragment extends Fragment {
         return view;
     }
 
-    private void ReselectProfileAndUpdate(Spinner spinner, ConfigData cfgData) {
+    private void ReselectProfileAndUpdate(Spinner spinner, MainConfigData cfgData) {
         configProfilesAdapter.notifyDataSetChanged();
         spinner.post(() -> {
             int last = cfgData.profiles.size()-1;
@@ -147,7 +145,7 @@ public class SettingsFragment extends Fragment {
     }
 
     private void UpdateProfileControls() {
-        boolean profileControlsVisible = app.GetConfigData().HasCurrentProfile();
+        boolean profileControlsVisible = app.GetMainConfigData().HasCurrentProfile();
 
         int vis = profileControlsVisible ? View.VISIBLE : View.GONE;
         editProfileName.setVisibility(vis);
