@@ -19,6 +19,7 @@ import com.catfixture.virgloverlay.core.input.windows.editor.TouchControlsEditor
 import com.catfixture.virgloverlay.core.input.windows.touchControls.elements.CircleButton;
 import com.catfixture.virgloverlay.core.input.windows.touchControls.elements.CrossButton;
 import com.catfixture.virgloverlay.core.input.windows.touchControls.elements.RoundButton;
+import com.catfixture.virgloverlay.core.input.windows.touchControls.elements.StickElement;
 import com.catfixture.virgloverlay.core.input.windows.touchControls.elements.TouchableWindowElement;
 import com.catfixture.virgloverlay.core.input.windows.utils.DragAndDropHandle;
 import com.catfixture.virgloverlay.core.utils.math.Int2;
@@ -62,7 +63,7 @@ public class TouchControlsWindow extends BasicInputWindow {
         return window;
     }
 
-    public void TryGetSelectedItem(int selectedItemId, Action<IInputWindowElement> onFind) {
+    public void TryGetWindowElementById(int selectedItemId, Action<IInputWindowElement> onFind) {
         for (IInputWindowElement windowElement : windowElements) {
             if ( windowElement.GetId() == selectedItemId) {
                 onFind.Invoke(windowElement);
@@ -108,6 +109,7 @@ public class TouchControlsWindow extends BasicInputWindow {
                         break;
                     }
                     case TYPE_STICK: {
+                        newTouchElement = new StickElement(context, touchControlElement.id);
                         break;
                     }
                     default: {

@@ -40,4 +40,12 @@ public class InputConfigProfile implements IAdapterItem {
         touchControlElements.add(el);
         el.SetId(id);
     }
+    public void RemoveControlElement(int id) {
+        for (InputTouchControlElement touchControlElement : touchControlElements) {
+            if ( touchControlElement.id == id) {
+                touchControlElements.remove(touchControlElement);
+                return;
+            }
+        }
+    }
 }

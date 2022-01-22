@@ -85,6 +85,7 @@ public class OverlaySettingsPanel extends TouchableWindowElement {
 
         panel.measure(UNSPECIFIED, UNSPECIFIED);
         collapsedWidth = panel.getMeasuredWidth();
+        SetExpanded(false);
     }
 
     private void SetCurrentInputDevice(Context context, int currentInputDevice) {
@@ -102,6 +103,7 @@ public class OverlaySettingsPanel extends TouchableWindowElement {
     private void SetExpanded(boolean is) {
         panel.clearAnimation();
         if ( is) {
+            window.SetSize(expandedWidth, 100);
             ResizeWidthAnimation anim = new ResizeWidthAnimation(panel, expandedWidth);
             anim.setDuration(100);
             SetAlpha(1);
@@ -109,7 +111,10 @@ public class OverlaySettingsPanel extends TouchableWindowElement {
         } else {
             ResizeWidthAnimation anim = new ResizeWidthAnimation(panel, collapsedWidth);
             anim.setDuration(100);
-            postDelayed(() -> SetAlpha(0.5f), 100);
+            postDelayed(() -> {
+                SetAlpha(0.5f);
+                window.SetSize(collapsedWidth, 100);
+            }, 100);
             panel.startAnimation(anim);
         }
     }

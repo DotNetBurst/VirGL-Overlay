@@ -1,43 +1,31 @@
 package com.catfixture.virgloverlay.core.input.windows.editor;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static com.catfixture.virgloverlay.core.App.app;
+
+import static com.catfixture.virgloverlay.core.input.windows.touchControls.types.TouchableWindowElementType.TYPE_CIRCLE_BUTTON;
+import static com.catfixture.virgloverlay.core.input.windows.touchControls.types.TouchableWindowElementType.TYPE_ROUNDED_BUTTON;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 
-import androidx.appcompat.widget.LinearLayoutCompat;
-
 import com.catfixture.virgloverlay.R;
-import com.catfixture.virgloverlay.core.debug.Dbg;
-import com.catfixture.virgloverlay.core.input.InputController;
 import com.catfixture.virgloverlay.core.input.data.InputConfig;
 import com.catfixture.virgloverlay.core.input.data.InputConfigProfile;
 import com.catfixture.virgloverlay.core.input.data.InputTouchControlElement;
-import com.catfixture.virgloverlay.core.input.windows.IInputWindowElement;
 import com.catfixture.virgloverlay.core.input.windows.touchControls.TouchControlsWindow;
 import com.catfixture.virgloverlay.core.input.windows.touchControls.elements.TouchableWindowElement;
-import com.catfixture.virgloverlay.core.input.windows.touchControls.types.TouchableWindowElementType;
 import com.catfixture.virgloverlay.core.input.windows.utils.DragAndDropHandle;
-import com.catfixture.virgloverlay.core.utils.math.Int2;
 import com.catfixture.virgloverlay.core.utils.types.Event;
-import com.catfixture.virgloverlay.core.utils.windows.IWindow;
 
 public class TouchControlsEditor extends TouchableWindowElement {
     private final View noItemErr;
@@ -54,9 +42,14 @@ public class TouchControlsEditor extends TouchableWindowElement {
     private final Spinner type;
     private final Spinner buttonCode;
     private final TouchControlsWindow tcWindow;
+    private final View removeControl;
+    private final Button toggleSettings;
+    private final View controlsContainer;
+    private final View settingsContainer;
     public Event onSetChanged = new Event();
     private ViewGroup editorContent;
     private int selectedItemId = -1;
+    private boolean settingsViewToggled;
 
     public TouchControlsEditor(Context context, TouchControlsWindow tcWindow, InputConfig cfg) {
         super(context, -812043);
@@ -122,7 +115,7 @@ public class TouchControlsEditor extends TouchableWindowElement {
         type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int is, long l) {
-                tcWindow.TryGetSelectedItem(selectedItemId, (selectedItem) -> {
+                tcWindow.TryGetWindowElementById(selectedItemId, (selectedItem) -> {
                     InputTouchControlElement data = (InputTouchControlElement) selectedItem.GetData();
                     if (is != data.type) {
                         data.SetType(is);
@@ -140,15 +133,19 @@ public class TouchControlsEditor extends TouchableWindowElement {
         setClipChildren(false);
         setClipToPadding(false);
 
+        toggleSettings = editorContent.findViewById(R.id.editorSettings);
         noItemErr = editorContent.findViewById(R.id.noItemErr);
         noProfilesErr = editorContent.findViewById(R.id.noProfilesErr);
         controlsView = editorContent.findViewById(R.id.controlsView);
         createControl = editorContent.findViewById(R.id.createControl);
+        removeControl = editorContent.findViewById(R.id.removeControl);
         alpha = editorContent.findViewById(R.id.opacitySlider);
         alphaText = editorContent.findViewById(R.id.opacitySliderText);
         size = editorContent.findViewById(R.id.sizeSlider);
         sizeText = editorContent.findViewById(R.id.sizeSliderText);
         buttonCode = editorContent.findViewById(R.id.buttonCode);
+        controlsContainer = editorContent.findViewById(R.id.controlsContainer);
+        settingsContainer = editorContent.findViewById(R.id.settingsContainer);
 
         ArrayAdapter<String> buttonCodesAdapter = new ArrayAdapter<String>(context, R.layout.touch_controls_list_item);
         buttonCodesAdapter.add("A");
@@ -158,7 +155,7 @@ public class TouchControlsEditor extends TouchableWindowElement {
         alpha.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                tcWindow.TryGetSelectedItem(selectedItemId, (selectedItem) -> {
+                tcWindow.TryGetWindowElementById(selectedItemId, (selectedItem) -> {
                     float alpha = i / 100.0f;
                     selectedItem.SetAlpha(alpha);
                     InputTouchControlElement data = (InputTouchControlElement) selectedItem.GetData();
@@ -172,7 +169,7 @@ public class TouchControlsEditor extends TouchableWindowElement {
         size.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                tcWindow.TryGetSelectedItem(selectedItemId, (selectedItem) -> {
+                tcWindow.TryGetWindowElementById(selectedItemId, (selectedItem) -> {
                     selectedItem.SetScale(i);
                     InputTouchControlElement data = (InputTouchControlElement) selectedItem.GetData();
                     data.SetScale(i);
@@ -192,6 +189,21 @@ public class TouchControlsEditor extends TouchableWindowElement {
                 onSetChanged.notifyObservers();
                 SetSelected(newObjId);
             }
+        });
+        removeControl.setOnClickListener(view -> {
+            if ( cfg.HasCurrentProfile()) {
+                InputConfigProfile cfgProfile = cfg.GetCurrentProfile();
+                cfgProfile.RemoveControlElement(selectedItemId);
+                onSetChanged.notifyObservers();
+                ResetSelection();
+            }
+        });
+
+        toggleSettings.setOnClickListener(view -> {
+            if ( !settingsViewToggled) {
+                ResetSelection();
+            }
+            ToggleSettingsView();
         });
 
         selectedItemId = -1;
@@ -213,7 +225,14 @@ public class TouchControlsEditor extends TouchableWindowElement {
         InflateProfiles();
     }
 
-
+    public void ToggleSettingsView() {
+        settingsViewToggled = !settingsViewToggled;
+        controlsContainer.setVisibility(settingsViewToggled ? GONE : VISIBLE);
+        settingsContainer.setVisibility(settingsViewToggled ? VISIBLE : GONE);
+        if ( settingsViewToggled) toggleSettings.getBackground().setColorFilter(getContext().getColor(R.color.lightGray), PorterDuff.Mode.MULTIPLY);
+        else toggleSettings.getBackground().setColorFilter(null);
+        toggleSettings.setTextColor(getContext().getColor(settingsViewToggled ? R.color.white : R.color.black));
+    }
 
     private void InflateProfiles() {
         profilesAdapter.clear();
@@ -234,6 +253,10 @@ public class TouchControlsEditor extends TouchableWindowElement {
     }
 
     private void ResetSelection() {
+        tcWindow.TryGetWindowElementById( this.selectedItemId, (selectedItem) -> {
+            if (selectedItem != null)
+                ((LinearLayout) selectedItem).getBackground().setColorFilter(null);
+        });
         selectedItemId = -1;
     }
 
@@ -242,20 +265,24 @@ public class TouchControlsEditor extends TouchableWindowElement {
     }
 
     public void SetSelected(int selectedItemId) {
-        tcWindow.TryGetSelectedItem( this.selectedItemId, (selectedItem) -> {
-            if (selectedItem != null)
-                ((LinearLayout) selectedItem).getBackground().setColorFilter(null);
-        });
+        ResetSelection();
         this.selectedItemId = selectedItemId;
         InitEditorView();
 
-        tcWindow.TryGetSelectedItem(selectedItemId, (selectedItem) -> {
+        tcWindow.TryGetWindowElementById(selectedItemId, (selectedItem) -> {
             ((LinearLayout)selectedItem).getBackground().setColorFilter(getContext().getColor(R.color.orange), PorterDuff.Mode.MULTIPLY);
 
             InputTouchControlElement data = (InputTouchControlElement) selectedItem.GetData();
             alpha.setProgress((int) (data.alpha * 100));
             size.setProgress(data.scale);
             type.setSelection(data.type);
+
+            buttonCode.setVisibility(data.type == TYPE_ROUNDED_BUTTON || data.type == TYPE_CIRCLE_BUTTON ? VISIBLE : GONE);
         });
+
+        if (settingsViewToggled)
+            ToggleSettingsView();
+
+
     }
 }

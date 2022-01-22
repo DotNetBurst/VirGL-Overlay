@@ -6,6 +6,7 @@
                 android:color="#FFFFFF"
                 android:width="2dp"
                 />
+            <solid android:color="@color/darkestRecordBg"/>
             <corners android:radius="50dp" />
         </shape>
     </item>
