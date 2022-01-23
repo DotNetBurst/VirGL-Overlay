@@ -11,27 +11,10 @@ import com.catfixture.virgloverlay.core.utils.math.Int2;
 
 
 public class StickElement extends TouchableWindowElement {
-    private StickMapperElement mapperElement;
 
     public StickElement(Context context, int id) {
         super(context, id);
         initialSize.Set(300,300);
         setBackgroundResource(R.drawable.fx_tc_circle_btn);
-    }
-
-    public TouchableWindowElement CreateHandle(Context context) {
-        InputTouchControlElement data = (InputTouchControlElement) GetData();
-        mapperElement = new StickMapperElement(context, id);
-        mapperElement.SetPosition(data.handlePosition.x,data.handlePosition.y);
-        mapperElement.SetSize(initialSize.x, initialSize.y);
-        mapperElement.initialSize.Set(initialSize.x, initialSize.y);
-        mapperElement.SetScale(data.handleScale);
-
-        DragAndDropHandle<StickMapperElement> dnd = new DragAndDropHandle<>(mapperElement);
-        dnd.onPositionChanged.addObserver((observable, o) -> {
-            InputTouchControlElement data1 = (InputTouchControlElement) GetData();
-            data1.SetHandlePosition((Int2)o);
-        });
-        return mapperElement;
     }
 }

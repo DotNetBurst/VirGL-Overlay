@@ -1,9 +1,11 @@
 package com.catfixture.virgloverlay.core.impl.android;
 
 import static com.catfixture.virgloverlay.core.App.app;
+import static com.catfixture.virgloverlay.core.input.overlay.MainControlsOverlayFragment.ID_MAIN_CONTROLS_OVERLAY;
 import static com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const.APP_TAG;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.os.Handler;
 import android.util.Log;
 import android.util.Size;
@@ -13,11 +15,18 @@ import android.view.WindowManager;
 
 import androidx.appcompat.view.menu.MenuWrapperICS;
 
+import com.catfixture.virgloverlay.core.input.devices.IInputDevice;
+import com.catfixture.virgloverlay.core.input.devices.TouchDevice;
+import com.catfixture.virgloverlay.core.input.overlay.MainControlsOverlayFragment;
+import com.catfixture.virgloverlay.core.overlay.OverlayManager;
 import com.catfixture.virgloverlay.core.utils.android.AndroidUtils;
 import com.catfixture.virgloverlay.core.debug.Dbg;
 import com.catfixture.virgloverlay.core.ipc.IServerRemoteService;
 import com.catfixture.virgloverlay.core.utils.windows.AndroidWindow;
 import com.catfixture.virgloverlay.core.utils.windows.IWindow;
+import com.catfixture.virgloverlay.core.vgobridge.VGOBridge;
+import com.catfixture.virgloverlay.core.vgobridge.VGOBridgeBuffer;
+import com.catfixture.virgloverlay.core.vgobridge.VGOBridgeProtocol;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +36,12 @@ public class OverlayWindowsManager {
     private Context ctx;
     private IServerRemoteService serverRemoteService;
     private List<IWindow> windows = new ArrayList<>();
+    private IInputDevice inputDevice;
 
-    @SuppressWarnings("unused")
-    public void Init(Context ctx, IServerRemoteService serverRemoteService) {
+    public void Init(Context ctx, IServerRemoteService serverRemoteService, IInputDevice inputDevice) {
         this.ctx = ctx;
         this.serverRemoteService = serverRemoteService;
+        this.inputDevice = inputDevice;
         handler = new Handler();
 
         app.TryGetProfile(cfgProfile -> {
@@ -46,10 +56,10 @@ public class OverlayWindowsManager {
             Log.d(APP_TAG, "Device height = " + cfgProfile.deviceHeight);
             Log.d(APP_TAG, "Android navbar = " + cfgProfile.navBarHeight);
         });
+
     }
 
     IWindow window;
-    @SuppressWarnings("unused")
     private SurfaceView CreateWindow(final int x, final int y, final int width, final int height) {
         Thread mutex = Thread.currentThread();
         handler.post(() -> {
@@ -71,13 +81,11 @@ public class OverlayWindowsManager {
                 Dbg.Error(e);
             }
         }
-        Log.d(APP_TAG,"SURF " + window.GetContainer());
-        return (SurfaceView) window.GetView();
+        return (SurfaceView) window.GetContainer().getChildAt(0);
 
     }
 
-
-    @SuppressWarnings("unused")
+    private boolean initialized = false;
     private void UpdateWindow(final SurfaceView surface, final int x, final int y, final int width, final int height, final int visible) {
         handler.post(() -> {
             try {
@@ -91,22 +99,30 @@ public class OverlayWindowsManager {
                 Dbg.Error(e);
             }
 
+            if (!initialized) {
+                OverlayManager overlayManager = app.GetOverlayManager();
+                MainControlsOverlayFragment mainControlsOverlayFragment = new MainControlsOverlayFragment();
+                overlayManager.Add(mainControlsOverlayFragment);
+                overlayManager.Show(ID_MAIN_CONTROLS_OVERLAY);
+                inputDevice.Show();
+                initialized = true;
+            }
+
             //app.TryGetProfile(cfgProfile -> {
-            //    if (cfgProfile.showControlsOnTopOfOverlay)
-            //        OverlayPanels.CreateControlPanel(cfgProfile, nw, surface.getContext(), serverRemoteService);
+            //    if (cfgProfile.showControlsOnTopOfOverlay) {
+            //        app.GetOverlayManager().InitializeWindow();
+            //    }
             //});
         });
     }
 
-    @SuppressWarnings("unused")
     public void DestroyWindow(final SurfaceView surface) {
         handler.post(() -> {
             window.Detach();
             Dbg.Msg("Window destroyed!");
         });
     }
-    public Surface GetSurface(SurfaceView surf)
-    {
+    public Surface GetSurface(SurfaceView surf) {
         return surf.getHolder().getSurface();
     }
 }

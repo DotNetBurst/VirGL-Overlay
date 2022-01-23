@@ -3,20 +3,20 @@ package com.catfixture.virgloverlay.core.input.overlay;
 import static android.view.View.MeasureSpec.UNSPECIFIED;
 
 import static com.catfixture.virgloverlay.core.App.app;
-import static com.catfixture.virgloverlay.core.input.Devices.DEVICE_NONE;
-import static com.catfixture.virgloverlay.core.input.Devices.TOUCH_CONTROLS_DEVICE;
-import static com.catfixture.virgloverlay.core.input.overlay.TouchControlsEditorOverlayFragment.ID_TOUCH_CONTROLS_EDITOR_OVERLAY;
+import static com.catfixture.virgloverlay.core.input.devices.Devices.DEVICE_NONE;
+import static com.catfixture.virgloverlay.core.input.devices.Devices.TOUCH_DEVICE;
+import static com.catfixture.virgloverlay.core.input.overlay.TouchDeviceEditorOverlayFragment.ID_TOUCH_CONTROLS_EDITOR_OVERLAY;
+import static com.catfixture.virgloverlay.core.input.overlay.TouchDeviceOverlayFragment.ID_TOUCH_CONTROLS_OVERLAY;
 
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.catfixture.virgloverlay.R;
-import com.catfixture.virgloverlay.core.input.Devices;
+import com.catfixture.virgloverlay.core.input.devices.Devices;
 import com.catfixture.virgloverlay.core.input.animations.ResizeWidthAnimation;
+import com.catfixture.virgloverlay.core.input.devices.TouchDevice;
 import com.catfixture.virgloverlay.core.overlay.IOverlayFragment;
 import com.catfixture.virgloverlay.core.utils.android.LayoutUtils;
 
@@ -28,7 +28,7 @@ public class MainControlsOverlayFragment implements IOverlayFragment {
     private int expandedWidth = 660;
     private ImageView keyboardToggle;
     private ImageView touchControlsToggle;
-    private int currentInputDevice = TOUCH_CONTROLS_DEVICE;
+    private int currentInputDevice = TOUCH_DEVICE;
     private ViewGroup root;
     private boolean isExpanded;
 
@@ -56,18 +56,18 @@ public class MainControlsOverlayFragment implements IOverlayFragment {
         ImageView close = root.findViewById(R.id.close);
 
         keyboardToggle.setOnClickListener(view -> {
-            SetCurrentInputDevice(context, Devices.SCREEN_KEYBOARD_DEVICE);
+            SetCurrentInputDevice(context, Devices.KEYBOARD_DEVICE);
             app.GetInputConfigData().SetInputDevice(currentInputDevice);
             SetExpanded(false);
         });
         touchControlsToggle.setOnClickListener(view -> {
-            SetCurrentInputDevice(context, TOUCH_CONTROLS_DEVICE);
+            SetCurrentInputDevice(context, TOUCH_DEVICE);
             app.GetInputConfigData().SetInputDevice(currentInputDevice);
             SetExpanded(false);
-            app.GetOverlayManager().Show(ID_TOUCH_CONTROLS_EDITOR_OVERLAY);
+            app.GetOverlayManager().Show(ID_TOUCH_CONTROLS_OVERLAY);
         });
         touchControlsToggle.setOnLongClickListener(view -> {
-            SetCurrentInputDevice(context, TOUCH_CONTROLS_DEVICE);
+            SetCurrentInputDevice(context, TOUCH_DEVICE);
             app.GetInputConfigData().SetInputDevice(currentInputDevice);
             SetExpanded(false);
             app.GetOverlayManager().Show(ID_TOUCH_CONTROLS_EDITOR_OVERLAY);
@@ -82,7 +82,6 @@ public class MainControlsOverlayFragment implements IOverlayFragment {
         root.measure(UNSPECIFIED, UNSPECIFIED);
         collapsedWidth = root.getMeasuredWidth();
         SetExpanded(false);
-
     }
 
     @Override
@@ -103,8 +102,8 @@ public class MainControlsOverlayFragment implements IOverlayFragment {
     private void UpdateButtonsColors(Context context, int currentInputDevice) {
         int selectedColor = context.getColor(R.color.yellow);
         int normalColor = context.getColor(R.color.white);
-        keyboardToggle.setColorFilter(currentInputDevice == Devices.SCREEN_KEYBOARD_DEVICE ? selectedColor : normalColor);
-        touchControlsToggle.setColorFilter(currentInputDevice == TOUCH_CONTROLS_DEVICE ? selectedColor : normalColor);
+        keyboardToggle.setColorFilter(currentInputDevice == Devices.KEYBOARD_DEVICE ? selectedColor : normalColor);
+        touchControlsToggle.setColorFilter(currentInputDevice == TOUCH_DEVICE ? selectedColor : normalColor);
     }
 
     private void SetExpanded(boolean is) {

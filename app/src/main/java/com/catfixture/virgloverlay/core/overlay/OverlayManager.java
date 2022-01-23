@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.ViewGroup;
 
 import com.catfixture.virgloverlay.core.debug.Dbg;
-import com.catfixture.virgloverlay.core.input.overlay.TouchControlsEditorOverlayFragment;
 import com.catfixture.virgloverlay.core.input.overlay.utils.EventUtils;
 import com.catfixture.virgloverlay.core.input.overlay.utils.ITouchable;
 import com.catfixture.virgloverlay.core.utils.types.Event;
@@ -14,7 +13,7 @@ import com.catfixture.virgloverlay.core.utils.windows.IWindow;
 import java.util.HashMap;
 
 public class OverlayManager implements ITouchable {
-    private final IWindow window;
+    private IWindow window;
     private final Context context;
     private HashMap<Integer, IOverlayFragment> fragmentHashMap = new HashMap<>();
     public Event onDown = new Event();
@@ -24,6 +23,11 @@ public class OverlayManager implements ITouchable {
 
     public OverlayManager(Context context) {
         this.context = context;
+    }
+
+    public void InitializeWindow() {
+        if ( window != null) return;
+
         window = new AndroidWindow(context);
         window.CreateRelativeLayoutContainer()
                 .EnableEvents()
@@ -71,6 +75,7 @@ public class OverlayManager implements ITouchable {
         ViewGroup container = fragment.GetContainer();
         if ( container == null) fragment.Create(context);
 
+        if ( window == null) InitializeWindow();
         window.GetContainer().addView(fragment.GetContainer());
     }
     public void Hide(IOverlayFragment frag) { Hide(frag.GetID());}
@@ -104,5 +109,10 @@ public class OverlayManager implements ITouchable {
             return window.GetContainer().indexOfChild(overlayFragment.GetContainer()) != -1;
         }
         return false;
+    }
+
+    public void Destroy() {
+        window.Detach();
+        window = null;
     }
 }

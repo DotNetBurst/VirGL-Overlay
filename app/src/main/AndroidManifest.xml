@@ -20,12 +20,12 @@
         android:allowBackup="true"
         android:requestLegacyExternalStorage="true">
 
-        <activity
-            android:name=".ui.activity.test.MainActivity"
-            android:screenOrientation="landscape"
-            android:exported="true">
+        <activity android:name="com.catfixture.virgloverlay.ui.activity.virgl.Virgl"
+            android:exported="true"
+            android:theme="@style/Theme.VirGLOverlay.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -38,20 +38,6 @@
             <intent-filter>
                 <action android:name="com.catfixture.virgloverlay.REMOTE_SERVICE_ACTION" />
             </intent-filter>
-        </service>
-
-        <service
-            android:name=".core.input.MainInputMethodService"
-            android:exported="true"
-            android:label="VIRGL_OVERLAY"
-            android:permission="android.permission.BIND_INPUT_METHOD" >
-            <intent-filter>
-                <action android:name="android.view.InputMethod" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.view.im"
-                android:resource="@xml/method" />
         </service>
 
         <provider

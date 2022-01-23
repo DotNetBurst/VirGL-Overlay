@@ -81,6 +81,13 @@ public class TouchableWindowElement extends LinearLayout implements IInputWindow
         setLayoutParams(lp);
         return this;
     }
+    @Override
+    public IInputWindowElement SetInitialSize(int x, int y) {
+        initialSize.Set(x,y);
+        return this;
+    }
+
+
 
     @Override
     public void SetPosition(int x, int y) {

@@ -4,7 +4,7 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.catfixture.virgloverlay.core.App.app;
-import static com.catfixture.virgloverlay.core.input.overlay.TouchControlsOverlayFragment.ID_TOUCH_CONTROLS_OVERLAY;
+import static com.catfixture.virgloverlay.core.input.overlay.TouchDeviceOverlayFragment.ID_TOUCH_CONTROLS_OVERLAY;
 import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_CIRCLE_BUTTON;
 import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_RECT_BUTTON;
 import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_ROUNDED_BUTTON;
@@ -24,7 +24,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.catfixture.virgloverlay.R;
-import com.catfixture.virgloverlay.core.input.codes.InputCode;
 import com.catfixture.virgloverlay.core.input.codes.InputCodes;
 import com.catfixture.virgloverlay.core.input.data.InputConfigData;
 import com.catfixture.virgloverlay.core.input.data.InputConfigProfile;
@@ -41,7 +40,7 @@ import com.catfixture.virgloverlay.core.utils.math.Int2;
 import com.catfixture.virgloverlay.core.utils.types.Event;
 import com.catfixture.virgloverlay.ui.utils.Utils;
 
-public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITouchable, IDraggable, ITransformable {
+public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouchable, IDraggable, ITransformable {
     public final static int ID_TOUCH_CONTROLS_EDITOR_OVERLAY = 10002;
 
     public Event onSetChanged = new Event();
@@ -77,7 +76,7 @@ public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITo
     private int selectedItemId = -1;
     private Context context;
     private InputConfigData cfg;
-    private TouchControlsOverlayFragment tcWindow;
+    private TouchDeviceOverlayFragment tcWindow;
     private Int2 position = new Int2(0,0);;
 
     @Override
@@ -115,7 +114,7 @@ public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITo
         handleSizeText = root.findViewById(R.id.handleSizeText);
         handleSize = root.findViewById(R.id.handleSize);
 
-        tcWindow = (TouchControlsOverlayFragment) app.GetOverlayManager().Get(ID_TOUCH_CONTROLS_OVERLAY);
+        tcWindow = (TouchDeviceOverlayFragment) app.GetOverlayManager().Get(ID_TOUCH_CONTROLS_OVERLAY);
         cfg = app.GetInputConfigData();
 
 
@@ -291,7 +290,7 @@ public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITo
         });
         //CONTROLS
 
-        DragAndDropHandle<TouchControlsEditorOverlayFragment> dnd = new DragAndDropHandle<>(this);
+        DragAndDropHandle<TouchDeviceEditorOverlayFragment> dnd = new DragAndDropHandle<>(this);
         dnd.onPositionChanged.addObserver((observable, o) -> {
             cfg.SetTouchEditorPosition(GetPosition());
         });

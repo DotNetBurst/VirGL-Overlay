@@ -22,7 +22,6 @@ public class ProcUtils {
                 Process p = Runtime.getRuntime().exec(command);
                 p.waitFor();
                 int res = p.exitValue();
-                Log.d(APP_TAG, "RESULT WAS = " + res);
                 if ( resultCode != null) {
                     resultCode.Invoke(res);
                 }

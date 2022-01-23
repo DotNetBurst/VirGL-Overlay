@@ -369,7 +369,7 @@ static bool vtest_egl_init(struct vtest_renderer *d, bool surfaceless, bool gles
     d->egl_fake_surf = eglCreateWindowSurface(d->egl_display, d->egl_conf, d->x11_fake_win, window_attribute_list);
 #elif defined ANDROID_JNI
 struct vtest_renderer *r = d;
-       jobject surf = (*r->jni.env)->CallStaticObjectMethod(r->jni.env, r->jni.object, r->jni.get_surface, (*r->jni.env)->CallStaticObjectMethod(r->jni.env, r->jni.object, r->jni.create, 0, 0, 0, 0));
+       jobject surf = (*r->jni.env)->CallObjectMethod(r->jni.env, r->jni.object, r->jni.get_surface, (*r->jni.env)->CallObjectMethod(r->jni.env, r->jni.object, r->jni.create, 0, 0, 0, 0));
 
        if(surf == 0) {exit(0);}
        ANativeWindow *window = ANativeWindow_fromSurface(r->jni.env, surf);
@@ -747,7 +747,7 @@ static void vtest_dt_destroy(struct vtest_renderer *r, struct dt_record *dt)
 {
 #ifdef ANDROID_JNI
    if( dt->java_surf )
-      (*r->jni.env)->CallStaticVoidMethod(r->jni.env, r->jni.object, r->jni.destroy, dt->java_surf);
+      (*r->jni.env)->CallVoidMethod(r->jni.env, r->jni.object, r->jni.destroy, dt->java_surf);
    dt->java_surf = 0;
 #elif defined X11
     if( dt->x11_win)
@@ -823,7 +823,7 @@ static void vtest_dt_flush(struct vtest_renderer *r, struct dt_record *dt, int h
 static void vtest_dt_set_rect(struct vtest_renderer *r, struct dt_record *dt, int visible, int x, int y, int w, int h)
 {
 #ifdef ANDROID_JNI
-   (*r->jni.env)->CallStaticVoidMethod(r->jni.env, r->jni.object, r->jni.set_rect, dt->java_surf, x, y, w, h, visible);
+   (*r->jni.env)->CallVoidMethod(r->jni.env, r->jni.object, r->jni.set_rect, dt->java_surf, x, y, w, h, visible);
 #elif defined X11
    if( r->flags & FL_OVERLAY )
    {
@@ -876,9 +876,9 @@ static void vtest_dt_create(struct vtest_renderer *r, struct dt_record *dt, int 
     if(!dt->egl_surf)
     {
         printf("CREATING WINDOW") ;
-       dt->java_surf = (*r->jni.env)->CallStaticObjectMethod(r->jni.env, r->jni.object, r->jni.create, x, y, w, h);
+       dt->java_surf = (*r->jni.env)->CallObjectMethod(r->jni.env, r->jni.object, r->jni.create, x, y, w, h);
         printf("Done WINDOW") ;
-       jobject surf = (*r->jni.env)->CallStaticObjectMethod(r->jni.env, r->jni.object, r->jni.get_surface, dt->java_surf);
+       jobject surf = (*r->jni.env)->CallObjectMethod(r->jni.env, r->jni.object, r->jni.get_surface, dt->java_surf);
         printf("Done SURF") ;
        ANativeWindow *window = ANativeWindow_fromSurface(r->jni.env, surf);
        int format;

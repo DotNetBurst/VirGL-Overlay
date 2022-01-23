@@ -7,7 +7,13 @@ public interface IInputDevice {
     void Destroy();
     void Show();
     void Hide();
-    void Setup(InputConnection ic);
 
-    void SendKeyEvent(KeyEvent keyEvent);
+    void SendMouseClick(int button);
+    void SendMouseDown(int button);
+    void SendMouseUp(int button);
+    void SendKeyPressed(int keyCode);
+    void SendKeyDown(int keyCode);
+    void SendKeyUp(int keyCode);
+
+    void SendMouseShift(float vericalCos, float horizontalCos);
 }

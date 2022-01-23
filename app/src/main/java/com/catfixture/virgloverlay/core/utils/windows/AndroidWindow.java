@@ -14,13 +14,14 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.catfixture.virgloverlay.core.utils.android.LayoutUtils;
+
 public class AndroidWindow implements IWindow {
     private int x,y,w,h;
     private int LAYOUT_FLAG,
                 EVENTS_FLAG = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 PIXEL_FORMAT = PixelFormat.OPAQUE;
     private ViewGroup container;
-    private View view;
     private WindowManager winMan;
     private Context context;
     private float alpha;
@@ -95,7 +96,11 @@ public class AndroidWindow implements IWindow {
 
     @Override
     public IWindow CreateSurfaceViewContainer() {
-        view = new SurfaceView(context);
+        CreateLinearLayoutContainer();
+        SurfaceView surf = new SurfaceView(context);
+        LayoutUtils.SetMatchMatch(surf);
+        container.addView(surf);
+
         return this;
     }
     @Override
@@ -178,10 +183,6 @@ public class AndroidWindow implements IWindow {
         return this;
     }
 
-    @Override
-    public View GetView() {
-        return view;
-    }
 
     @Override
     public ViewGroup GetContainer() {

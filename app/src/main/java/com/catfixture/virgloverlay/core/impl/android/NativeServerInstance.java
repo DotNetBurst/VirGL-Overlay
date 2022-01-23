@@ -31,6 +31,8 @@ import android.widget.Toast;
 import androidx.core.app.NotificationCompat;
 
 import com.catfixture.virgloverlay.R;
+import com.catfixture.virgloverlay.core.input.devices.IInputDevice;
+import com.catfixture.virgloverlay.core.input.devices.TouchDevice;
 import com.catfixture.virgloverlay.core.utils.android.AndroidUtils;
 import com.catfixture.virgloverlay.core.impl.handles.IService;
 import com.catfixture.virgloverlay.core.debug.Dbg;
@@ -66,6 +68,7 @@ public class NativeServerInstance extends Service {
     private IServerRemoteCallback serverRemoteCallback;
     private IServerStopRemoteCallback serverStopRemoteCallback;
     private OverlayWindowsManager windowsManager;
+    private IInputDevice inputDevice;
 
     //****REMOTE SERVICE IMPL******//
     @SuppressWarnings("unused")
@@ -128,7 +131,11 @@ public class NativeServerInstance extends Service {
         mLinkerBinder = AndLinkerBinder.Factory.newBinder();
         mLinkerBinder.registerObject(mRemoteService);
         cfgData = app.GetMainConfigData();
+
+        inputDevice = new TouchDevice(getApplicationContext());
+
         windowsManager = new OverlayWindowsManager();
+        windowsManager.Init(getApplicationContext(), mRemoteService, inputDevice);
 
         Intent notificationIntent = new Intent(this, Virgl.class);
         notificationIntent.putExtra("stopServer", "true");

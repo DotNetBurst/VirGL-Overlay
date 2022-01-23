@@ -10,6 +10,7 @@ public interface IInputWindowElement {
     IInputWindowElement SetAlpha(float v);
     IInputWindowElement SetScale(int i);
     IInputWindowElement SetSize(int x, int y);
+    IInputWindowElement SetInitialSize(int x, int y);
 
     Int2 GetPosition();
     Object GetData();

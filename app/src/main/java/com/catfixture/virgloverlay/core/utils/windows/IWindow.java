@@ -12,8 +12,6 @@ public interface IWindow {
     IWindow Attach();
     IWindow Detach();
 
-
-    View GetView ();
     ViewGroup GetContainer ();
     IWindow SetContainer(ViewGroup container);
 

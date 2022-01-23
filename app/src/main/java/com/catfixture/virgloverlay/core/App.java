@@ -7,8 +7,13 @@ import android.util.Log;
 
 import com.catfixture.virgloverlay.core.debug.logging.GlobalExceptions;
 import com.catfixture.virgloverlay.core.input.data.InputConfigData;
+import com.catfixture.virgloverlay.core.input.devices.IInputDevice;
+import com.catfixture.virgloverlay.core.input.devices.TouchDevice;
 import com.catfixture.virgloverlay.core.overlay.OverlayManager;
 import com.catfixture.virgloverlay.core.utils.types.delegates.Action;
+import com.catfixture.virgloverlay.core.vgobridge.VGOBridge;
+import com.catfixture.virgloverlay.core.vgobridge.VGOBridgeBuffer;
+import com.catfixture.virgloverlay.core.vgobridge.VGOBridgeProtocol;
 import com.catfixture.virgloverlay.data.MainConfigData;
 import com.catfixture.virgloverlay.data.ConfigProfile;
 import com.catfixture.virgloverlay.data.GenericConfig;
@@ -66,4 +71,5 @@ public class App extends Application {
             onRetrieve.Invoke(GetMainConfigData().GetCurrentProfile());
         }
     }
+
 }
