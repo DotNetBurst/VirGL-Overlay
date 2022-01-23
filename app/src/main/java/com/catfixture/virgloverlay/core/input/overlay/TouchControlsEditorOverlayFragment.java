@@ -386,4 +386,9 @@ public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITo
             LayoutUtils.SetRelativeLayoutPos(root, x,y);
         }
     }
+
+    @Override
+    public Int2 GetSize() {
+        return new Int2(0,0); //TODO NOT NEEDED NOW
+    }
 }

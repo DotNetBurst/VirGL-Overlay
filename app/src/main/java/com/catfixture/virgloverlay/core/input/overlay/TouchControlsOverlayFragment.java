@@ -10,10 +10,12 @@ import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types
 
 import android.content.Context;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.catfixture.virgloverlay.R;
+import com.catfixture.virgloverlay.core.debug.Dbg;
 import com.catfixture.virgloverlay.core.input.codes.InputCodes;
 import com.catfixture.virgloverlay.core.input.data.InputConfigData;
 import com.catfixture.virgloverlay.core.input.data.InputConfigProfile;
@@ -81,8 +83,7 @@ public class TouchControlsOverlayFragment implements IOverlayFragment {
 
                     newTouchElement = new TextButton(context, touchControlElement.id, layout);
                     ((TextButton)newTouchElement).SetText(InputCodes.GetCodeName(touchControlElement.buttonCode));
-                    if (isEditorOverlayShown) {
-
+                    if (!isEditorOverlayShown) {
                         newTouchElement.onDown.addObserver((observable, o) -> {
                             KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_DOWN, touchControlElement.buttonCode);
                             inputDevice.SendKeyEvent(keyEvent);
@@ -113,6 +114,39 @@ public class TouchControlsOverlayFragment implements IOverlayFragment {
                         final int iwe = newTouchElement.GetId();
                         newTouchElement.onDown.addObserver((observable, o) -> {
                             touchControlsEditor.SetSelected(iwe);
+                        });
+                    }
+
+                    final Int2 elSize = newTouchElement.GetSize();
+                    if (!isEditorOverlayShown) {
+                        newTouchElement.onDown.addObserver((observable, o) -> {
+                            MotionEvent motionEvent = (MotionEvent) o;
+                            final Int2 clickPos = new Int2((int) motionEvent.getX() - elSize.x / 2,
+                                    (int) motionEvent.getY() - elSize.y / 2);
+
+
+                            final Int2 verticalAxis = new Int2(1, 0);
+                            final Int2 horizontalAxis = new Int2(0, 1);
+
+                            float vericalCos = verticalAxis.Dot(clickPos);
+                            float horizontalCos = horizontalAxis.Dot(clickPos);
+
+                            boolean analogVert = Math.abs(vericalCos) > 0;
+                            boolean analogHoriz = Math.abs(horizontalCos) > 0;
+
+                            if ( analogVert) {
+                                Dbg.Msg("ANALOG VERT = " + vericalCos);
+                                KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_DOWN,
+                                        vericalCos < -0.5 && vericalCos > 0.5 ? KeyEvent.KEYCODE_DPAD_UP : KeyEvent.KEYCODE_DPAD_DOWN);
+                                inputDevice.SendKeyEvent(keyEvent);
+                            }
+
+                            if ( analogHoriz) {
+                                Dbg.Msg("ANALOG HORIZ = " + horizontalCos);
+                                KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_DOWN,
+                                        horizontalCos < -0.5 && horizontalCos > 0.5 ? KeyEvent.KEYCODE_DPAD_LEFT : KeyEvent.KEYCODE_DPAD_RIGHT);
+                                inputDevice.SendKeyEvent(keyEvent);
+                            }
                         });
                     }
                     root.addView(newTouchElement);

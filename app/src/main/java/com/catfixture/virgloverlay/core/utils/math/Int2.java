@@ -53,4 +53,12 @@ public class Int2 {
     public int Distance (float _x, float _y) {
         return Distance((int)_x,(int)_y);
     }
+
+    public float Dot(Int2 vec) {
+        float length = Distance(this.Sub(vec));
+        if ( length <= 0) return 0;
+
+        float dot = x * vec.x + y * vec.y;
+        return dot / length;
+    }
 }

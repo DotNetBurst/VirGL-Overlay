@@ -8,6 +8,7 @@ import android.content.Context;
 import android.view.KeyEvent;
 import android.view.inputmethod.InputConnection;
 
+import com.catfixture.virgloverlay.core.debug.Dbg;
 import com.catfixture.virgloverlay.core.input.devices.BasicInputDevice;
 import com.catfixture.virgloverlay.core.input.overlay.TouchControlsEditorOverlayFragment;
 import com.catfixture.virgloverlay.core.input.overlay.TouchControlsOverlayFragment;
@@ -58,6 +59,10 @@ public class TouchControlsDevice extends BasicInputDevice {
 
     @Override
     public void SendKeyEvent(KeyEvent keyEvent) {
-        inputConnection.sendKeyEvent(keyEvent);
+        try {
+            inputConnection.sendKeyEvent(keyEvent);
+        } catch (Exception x) {
+            Dbg.Error(x);
+        }
     }
 }

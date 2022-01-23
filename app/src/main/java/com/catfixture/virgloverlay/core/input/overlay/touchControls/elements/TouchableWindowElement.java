@@ -92,6 +92,10 @@ public class TouchableWindowElement extends LinearLayout implements IInputWindow
     public Int2 GetPosition() {
         return new Int2(lp.leftMargin,lp.topMargin);
     }
+    @Override
+    public Int2 GetSize() {
+        return new Int2(lp.width,lp.height);
+    }
 
     protected void Save() {
     }
