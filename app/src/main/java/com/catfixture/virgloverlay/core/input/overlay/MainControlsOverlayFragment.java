@@ -70,6 +70,7 @@ public class MainControlsOverlayFragment implements IOverlayFragment {
             SetCurrentInputDevice(context, TOUCH_CONTROLS_DEVICE);
             app.GetInputConfigData().SetInputDevice(currentInputDevice);
             SetExpanded(false);
+            app.GetOverlayManager().Show(ID_TOUCH_CONTROLS_EDITOR_OVERLAY);
             return true;
         });
         int lastInputDevice = app.GetInputConfigData().inputDevice;

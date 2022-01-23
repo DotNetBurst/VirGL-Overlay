@@ -187,13 +187,34 @@
                 android:popupBackground="@color/darkGray" />
 
             <TextView
+                android:id="@+id/handleSizeText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="20dp"
+                android:text="Handle size : 0%"
+                android:textColor="@color/white" />
+
+            <SeekBar
+                android:id="@+id/handleSize"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="280"
+                android:paddingStart="10dp"
+                android:paddingEnd="20dp"
+                android:progress="80"
+                android:progressBackgroundTint="@color/white" />
+
+            <TextView
                 android:id="@+id/opacitySliderText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:paddingStart="10dp"
                 android:paddingEnd="20dp"
-                android:text="Opacity(100%)"
+                android:text="Opacity : 0%"
                 android:textColor="@color/white" />
 
             <SeekBar
@@ -214,7 +235,7 @@
                 android:layout_marginTop="5dp"
                 android:paddingStart="10dp"
                 android:paddingEnd="20dp"
-                android:text="Size(100%)"
+                android:text="Size : 0%"
                 android:textColor="@color/white" />
 
             <SeekBar

@@ -11,6 +11,7 @@ import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types
 import android.content.Context;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
@@ -21,7 +22,6 @@ import com.catfixture.virgloverlay.core.input.data.InputConfigData;
 import com.catfixture.virgloverlay.core.input.data.InputConfigProfile;
 import com.catfixture.virgloverlay.core.input.data.InputTouchControlElement;
 import com.catfixture.virgloverlay.core.input.devices.IInputDevice;
-import com.catfixture.virgloverlay.core.input.overlay.touchControls.elements.RoundedButton;
 import com.catfixture.virgloverlay.core.input.overlay.touchControls.elements.StickElement;
 import com.catfixture.virgloverlay.core.input.overlay.touchControls.elements.TextButton;
 import com.catfixture.virgloverlay.core.input.overlay.touchControls.elements.TouchableWindowElement;
@@ -42,6 +42,7 @@ public class TouchControlsOverlayFragment implements IOverlayFragment {
     private IInputDevice inputDevice;
     private ViewGroup root;
     private Context context;
+    private TouchableWindowElement handle;
 
     public TouchControlsOverlayFragment(IInputDevice inputDevice) {
         this.inputDevice = inputDevice;
@@ -68,6 +69,7 @@ public class TouchControlsOverlayFragment implements IOverlayFragment {
 
             TouchControlsEditorOverlayFragment touchControlsEditor =
                     (TouchControlsEditorOverlayFragment) app.GetOverlayManager().Get(ID_TOUCH_CONTROLS_EDITOR_OVERLAY);
+
 
             boolean isEditorOverlayShown = app.GetOverlayManager().IsShown(touchControlsEditor);
 
@@ -111,43 +113,62 @@ public class TouchControlsOverlayFragment implements IOverlayFragment {
                         });
                         dnd.EnableSnap(25);
 
-                        final int iwe = newTouchElement.GetId();
+                        final TouchableWindowElement ntl = newTouchElement;
                         newTouchElement.onDown.addObserver((observable, o) -> {
-                            touchControlsEditor.SetSelected(iwe);
+                            if ( handle != null) root.removeView(handle);
+                            touchControlsEditor.SetSelected(ntl.GetId());
+
+                            if ( touchControlElement.type == TYPE_STICK) {
+                                handle = ((StickElement)ntl).CreateHandle(context);
+                                ntl.SetHandle(handle);
+                                root.addView(handle);
+                            }
                         });
                     }
 
                     final Int2 elSize = newTouchElement.GetSize();
                     if (!isEditorOverlayShown) {
-                        newTouchElement.onDown.addObserver((observable, o) -> {
-                            MotionEvent motionEvent = (MotionEvent) o;
-                            final Int2 clickPos = new Int2((int) motionEvent.getX() - elSize.x / 2,
-                                    (int) motionEvent.getY() - elSize.y / 2);
+                        if (touchControlElement.type == TYPE_CROSS) {
+                            newTouchElement.onDown.addObserver((observable, o) -> {
+                                MotionEvent motionEvent = (MotionEvent) o;
+                                final Int2 clickPos = new Int2((int) motionEvent.getX() - elSize.x / 2,
+                                        (int) motionEvent.getY() - elSize.y / 2);
 
 
-                            final Int2 verticalAxis = new Int2(1, 0);
-                            final Int2 horizontalAxis = new Int2(0, 1);
+                                final Int2 verticalAxis = new Int2(1, 0);
+                                final Int2 horizontalAxis = new Int2(0, 1);
 
-                            float vericalCos = verticalAxis.Dot(clickPos);
-                            float horizontalCos = horizontalAxis.Dot(clickPos);
+                                float vericalCos = verticalAxis.Dot(clickPos);
+                                float horizontalCos = horizontalAxis.Dot(clickPos);
 
-                            boolean analogVert = Math.abs(vericalCos) > 0;
-                            boolean analogHoriz = Math.abs(horizontalCos) > 0;
+                                boolean analogVert = Math.abs(vericalCos) > 0;
+                                boolean analogHoriz = Math.abs(horizontalCos) > 0;
 
-                            if ( analogVert) {
-                                Dbg.Msg("ANALOG VERT = " + vericalCos);
-                                KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_DOWN,
-                                        vericalCos < -0.5 && vericalCos > 0.5 ? KeyEvent.KEYCODE_DPAD_UP : KeyEvent.KEYCODE_DPAD_DOWN);
-                                inputDevice.SendKeyEvent(keyEvent);
-                            }
+                                if ( analogVert) {
+                                    Dbg.Msg("ANALOG VERT = " + vericalCos);
+                                    KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_DOWN,
+                                            vericalCos < -0.5 && vericalCos > 0.5 ? KeyEvent.KEYCODE_DPAD_UP : KeyEvent.KEYCODE_DPAD_DOWN);
+                                    inputDevice.SendKeyEvent(keyEvent);
+                                }
 
-                            if ( analogHoriz) {
-                                Dbg.Msg("ANALOG HORIZ = " + horizontalCos);
-                                KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_DOWN,
-                                        horizontalCos < -0.5 && horizontalCos > 0.5 ? KeyEvent.KEYCODE_DPAD_LEFT : KeyEvent.KEYCODE_DPAD_RIGHT);
-                                inputDevice.SendKeyEvent(keyEvent);
-                            }
-                        });
+                                if ( analogHoriz) {
+                                    Dbg.Msg("ANALOG HORIZ = " + horizontalCos);
+                                    KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_DOWN,
+                                            horizontalCos < -0.5 && horizontalCos > 0.5 ? KeyEvent.KEYCODE_DPAD_LEFT : KeyEvent.KEYCODE_DPAD_RIGHT);
+                                    inputDevice.SendKeyEvent(keyEvent);
+                                }
+                            });
+                        } else if (touchControlElement.type == TYPE_STICK) {
+                            newTouchElement.onDown.addObserver((observable, o) -> {
+                                MotionEvent motionEvent = (MotionEvent) o;
+                                final Int2 clickPos = new Int2((int) motionEvent.getX() - elSize.x / 2,
+                                        (int) motionEvent.getY() - elSize.y / 2);
+
+                                final Int2 verticalAxis = new Int2(1, 0);
+                                final Int2 horizontalAxis = new Int2(0, 1);
+
+                            });
+                        }
                     }
                     root.addView(newTouchElement);
                     windowElements.add(newTouchElement);
@@ -180,5 +201,9 @@ public class TouchControlsOverlayFragment implements IOverlayFragment {
 
     public void OnEditorClosed() {
         InflateControls();
+    }
+
+    public void DestroyMisc() {
+        if (handle != null) root.removeView(handle);
     }
 }

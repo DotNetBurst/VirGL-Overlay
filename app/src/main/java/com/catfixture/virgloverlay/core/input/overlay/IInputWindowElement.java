@@ -1,6 +1,7 @@
 package com.catfixture.virgloverlay.core.input.overlay;
 
 
+import com.catfixture.virgloverlay.core.input.overlay.touchControls.elements.TouchableWindowElement;
 import com.catfixture.virgloverlay.core.utils.math.Int2;
 
 public interface IInputWindowElement {
@@ -12,4 +13,7 @@ public interface IInputWindowElement {
 
     Int2 GetPosition();
     Object GetData();
+
+    TouchableWindowElement GetHandle();
+    void SetHandle(TouchableWindowElement handle);
 }

@@ -28,17 +28,20 @@ public class TouchControlsDevice extends BasicInputDevice {
     @Override
     public IOverlayFragment Initialize() {
         OverlayManager overlayManager = app.GetOverlayManager();
+
         touchControlsFragment = new TouchControlsOverlayFragment(this);
         overlayManager.Add(touchControlsFragment);
+        overlayManager.onClick.addObserver((observable, o) -> touchControlsFragment.DestroyMisc());
 
         touchControlsEditorFragment = new TouchControlsEditorOverlayFragment();
         overlayManager.Add(touchControlsEditorFragment);
-
+        overlayManager.onClick.addObserver((observable, o) -> touchControlsEditorFragment.SetSelected(-1));
         touchControlsEditorFragment.onSetChanged.addObserver((observable, o) -> touchControlsFragment.InflateControls());
         touchControlsEditorFragment.onClosed.addObserver((observable, o) -> touchControlsFragment.OnEditorClosed());
-        overlayManager.onClick.addObserver((observable, o) -> touchControlsEditorFragment.SetSelected(-1));
 
-        overlayManager.Show(ID_TOUCH_CONTROLS_EDITOR_OVERLAY);
+
+        //TEST
+        app.GetOverlayManager().Show(ID_TOUCH_CONTROLS_EDITOR_OVERLAY);
 
         return touchControlsFragment;
     }

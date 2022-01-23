@@ -29,6 +29,7 @@ public class TouchableWindowElement extends LinearLayout implements IInputWindow
     public Event onClick = new Event();
     private Object customData;
     protected Int2 initialSize = new Int2(100,100);
+    private TouchableWindowElement handle;
 
     public TouchableWindowElement(Context context, int id) {
         super(context);
@@ -105,6 +106,16 @@ public class TouchableWindowElement extends LinearLayout implements IInputWindow
         return customData;
     }
 
+    @Override
+    public TouchableWindowElement GetHandle() {
+        return handle;
+    }
+
+    @Override
+    public void SetHandle(TouchableWindowElement handle) {
+        this.handle = handle;
+    }
+
 
     public void SetCustomData(InputTouchControlElement touchControlElement) {
         this.customData = touchControlElement;
@@ -129,4 +140,5 @@ public class TouchableWindowElement extends LinearLayout implements IInputWindow
     public Event OnClick() {
         return onClick;
     }
+
 }

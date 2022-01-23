@@ -8,6 +8,7 @@ import static com.catfixture.virgloverlay.core.input.overlay.TouchControlsOverla
 import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_CIRCLE_BUTTON;
 import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_RECT_BUTTON;
 import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_ROUNDED_BUTTON;
+import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_STICK;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -28,6 +29,7 @@ import com.catfixture.virgloverlay.core.input.codes.InputCodes;
 import com.catfixture.virgloverlay.core.input.data.InputConfigData;
 import com.catfixture.virgloverlay.core.input.data.InputConfigProfile;
 import com.catfixture.virgloverlay.core.input.data.InputTouchControlElement;
+import com.catfixture.virgloverlay.core.input.overlay.touchControls.elements.TouchableWindowElement;
 import com.catfixture.virgloverlay.core.input.overlay.utils.DragAndDropHandle;
 import com.catfixture.virgloverlay.core.input.overlay.utils.EventUtils;
 import com.catfixture.virgloverlay.core.input.overlay.utils.IDraggable;
@@ -67,6 +69,8 @@ public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITo
     private View settingsContainer;
     private SeekBar uiOpacity;
     private Spinner type;
+    private TextView handleSizeText;
+    private SeekBar handleSize;
 
     private ArrayAdapter<String> profilesAdapter;
     private boolean settingsViewToggled;
@@ -74,7 +78,7 @@ public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITo
     private Context context;
     private InputConfigData cfg;
     private TouchControlsOverlayFragment tcWindow;
-    private Int2 position = new Int2(0,0);
+    private Int2 position = new Int2(0,0);;
 
     @Override
     public int GetID() {
@@ -108,6 +112,8 @@ public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITo
         uiOpacity = root.findViewById(R.id.uiOpacity);
         uiOpacityText = root.findViewById(R.id.uiOpacityText);
         type = root.findViewById(R.id.controlType);
+        handleSizeText = root.findViewById(R.id.handleSizeText);
+        handleSize = root.findViewById(R.id.handleSize);
 
         tcWindow = (TouchControlsOverlayFragment) app.GetOverlayManager().Get(ID_TOUCH_CONTROLS_OVERLAY);
         cfg = app.GetInputConfigData();
@@ -244,6 +250,24 @@ public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITo
             @Override public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+
+        handleSize.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                tcWindow.TryGetWindowElementById(selectedItemId, (selectedItem) -> {
+                    int scale = i + 20;
+                    TouchableWindowElement handle = selectedItem.GetHandle();
+                    if (handle == null) return;
+                    handle.SetScale(scale);
+                    InputTouchControlElement data = (InputTouchControlElement) selectedItem.GetData();
+                    data.SetHandleScale(scale);
+                    handleSizeText.setText("Handle size : " + (scale) + "%");
+                });
+            }
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
         //SETTINGS
 
         //CONTROLS
@@ -346,8 +370,14 @@ public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITo
             buttonCode.setSelection(InputCodes.GetCodeIndex(data.buttonCode));
             alphaText.setText("Opacity : " + (int)(data.alpha * 100) + "%");
             sizeText.setText("Size : " + (data.scale) + "%");
+            handleSize.setProgress(data.handleScale-20);
+            handleSizeText.setText("Handle size : " + (data.handleScale) + "%");
 
             buttonCode.setVisibility(data.type == TYPE_ROUNDED_BUTTON || data.type == TYPE_CIRCLE_BUTTON || data.type == TYPE_RECT_BUTTON ? VISIBLE : GONE);
+
+            int handleVis = data.type == TYPE_STICK ? VISIBLE : GONE;
+            handleSizeText.setVisibility(handleVis);
+            handleSize.setVisibility(handleVis);
         });
 
         if (settingsViewToggled)
