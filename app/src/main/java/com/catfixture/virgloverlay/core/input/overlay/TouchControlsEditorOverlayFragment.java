@@ -1,12 +1,15 @@
-package com.catfixture.virgloverlay.core.input.windows.touchControls;
+package com.catfixture.virgloverlay.core.input.overlay;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.catfixture.virgloverlay.core.App.app;
-import static com.catfixture.virgloverlay.core.input.windows.touchControls.TouchControlsOverlayFragment.ID_TOUCH_CONTROLS_OVERLAY;
-import static com.catfixture.virgloverlay.core.input.windows.touchControls.types.TouchableWindowElementType.TYPE_CIRCLE_BUTTON;
-import static com.catfixture.virgloverlay.core.input.windows.touchControls.types.TouchableWindowElementType.TYPE_ROUNDED_BUTTON;
+import static com.catfixture.virgloverlay.core.input.overlay.TouchControlsOverlayFragment.ID_TOUCH_CONTROLS_OVERLAY;
+import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_CIRCLE_BUTTON;
+import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_RECT_BUTTON;
+import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_ROUNDED_BUTTON;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.view.View;
@@ -25,15 +28,20 @@ import com.catfixture.virgloverlay.core.input.codes.InputCodes;
 import com.catfixture.virgloverlay.core.input.data.InputConfigData;
 import com.catfixture.virgloverlay.core.input.data.InputConfigProfile;
 import com.catfixture.virgloverlay.core.input.data.InputTouchControlElement;
-import com.catfixture.virgloverlay.core.input.windows.utils.DragAndDropHandle;
-import com.catfixture.virgloverlay.core.input.windows.utils.IDraggable;
-import com.catfixture.virgloverlay.core.input.windows.utils.ITouchable;
-import com.catfixture.virgloverlay.core.input.windows.utils.ITransformable;
+import com.catfixture.virgloverlay.core.input.overlay.utils.DragAndDropHandle;
+import com.catfixture.virgloverlay.core.input.overlay.utils.EventUtils;
+import com.catfixture.virgloverlay.core.input.overlay.utils.IDraggable;
+import com.catfixture.virgloverlay.core.input.overlay.utils.ITouchable;
+import com.catfixture.virgloverlay.core.input.overlay.utils.ITransformable;
 import com.catfixture.virgloverlay.core.overlay.IOverlayFragment;
+import com.catfixture.virgloverlay.core.utils.android.LayoutUtils;
 import com.catfixture.virgloverlay.core.utils.math.Int2;
 import com.catfixture.virgloverlay.core.utils.types.Event;
+import com.catfixture.virgloverlay.ui.utils.Utils;
 
 public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITouchable, IDraggable, ITransformable {
+    public final static int ID_TOUCH_CONTROLS_EDITOR_OVERLAY = 10002;
+
     public Event onSetChanged = new Event();
     public Event onClosed = new Event();
     public Event onDown = new Event();
@@ -66,18 +74,19 @@ public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITo
     private Context context;
     private InputConfigData cfg;
     private TouchControlsOverlayFragment tcWindow;
-    private Int2 position;
+    private Int2 position = new Int2(0,0);
 
     @Override
     public int GetID() {
-        return 0;
+        return ID_TOUCH_CONTROLS_EDITOR_OVERLAY;
     }
 
     @Override
     public ViewGroup GetContainer() {
-        return null;
+        return root;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void Create(Context context) {
         this.context = context;
@@ -98,9 +107,15 @@ public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITo
         settingsContainer = root.findViewById(R.id.settingsContainer);
         uiOpacity = root.findViewById(R.id.uiOpacity);
         uiOpacityText = root.findViewById(R.id.uiOpacityText);
+        type = root.findViewById(R.id.controlType);
 
         tcWindow = (TouchControlsOverlayFragment) app.GetOverlayManager().Get(ID_TOUCH_CONTROLS_OVERLAY);
         cfg = app.GetInputConfigData();
+
+
+        //EVENTS
+        EventUtils.InitializeITouchableEvents(root, this);
+        //EVENTS
 
         //PROFILES
         Button addProfile = root.findViewById(R.id.addProfile);
@@ -120,22 +135,14 @@ public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITo
             onSetChanged.notifyObservers();
         });
 
-        profilesAdapter = new ArrayAdapter<>(context, R.layout.touch_controls_list_item);
         Spinner profilesSpinner = root.findViewById(R.id.inputProfiles);
-        profilesSpinner.setAdapter(profilesAdapter);
-
-        profilesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                cfg.SetCurrentProfile(i);
-                ResetSelection();
-                InitEditorView();
-                UpdateAll();
-                onSetChanged.notifyObservers();
-            }
-            @Override public void onNothingSelected(AdapterView<?> adapterView) {}
+        profilesAdapter = Utils.InitSpinner(context, profilesSpinner, cfg.currentProfile, i -> {
+            cfg.SetCurrentProfile(i);
+            ResetSelection();
+            InitEditorView();
+            UpdateAll();
+            onSetChanged.notifyObservers();
         });
-        profilesSpinner.setSelection(cfg.currentProfile);
 
         InflateProfiles();
         //PROFILES
@@ -144,8 +151,8 @@ public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITo
         Button close = root.findViewById(R.id.close);
         close.setOnClickListener(view -> {
             ResetSelection();
-            onClosed.notifyObservers();
             app.GetOverlayManager().Hide(this);
+            onClosed.notifyObservers();
         });
 
         toggleSettings.setOnClickListener(view -> {
@@ -157,31 +164,26 @@ public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITo
         //EDITOR
 
         //SETTINGS
-        ArrayAdapter<String> typesAdapter = new ArrayAdapter<>(context, R.layout.touch_controls_list_item);
-        typesAdapter.add("Circle button");
-        typesAdapter.add("Rounded button");
-        typesAdapter.add("Cross");
-        typesAdapter.add("Stick");
-
-        type = root.findViewById(R.id.controlType);
-        type.setAdapter(typesAdapter);
-
-        type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int is, long l) {
-                tcWindow.TryGetWindowElementById(selectedItemId, (selectedItem) -> {
-                    InputTouchControlElement data = (InputTouchControlElement) selectedItem.GetData();
-                    if (is != data.type) {
-                        data.SetType(is);
-                        UpdateAll();
-                        onSetChanged.notifyObservers();
-                    }
-                });
-            }
-            @Override public void onNothingSelected(AdapterView<?> adapterView) {}
+        ArrayAdapter<String> typesAdapter = Utils.InitSpinner(context, type, 0, i -> {
+            tcWindow.TryGetWindowElementById(selectedItemId, (selectedItem) -> {
+                InputTouchControlElement data = (InputTouchControlElement) selectedItem.GetData();
+                if (i != data.type) {
+                    data.SetType(i);
+                    UpdateAll();
+                    onSetChanged.notifyObservers();
+                }
+            });
         });
 
-        ArrayAdapter<InputCode> buttonCodesAdapter = new ArrayAdapter<>(context, R.layout.touch_controls_list_item);
+        typesAdapter.add("Circle button");
+        typesAdapter.add("Rounded button");
+        typesAdapter.add("Rect button");
+        typesAdapter.add("Cross");
+        typesAdapter.add("Stick");
+        typesAdapter.notifyDataSetChanged();
+
+
+        ArrayAdapter<Object> buttonCodesAdapter = new ArrayAdapter<>(context, R.layout.touch_controls_list_item);
         buttonCodesAdapter.addAll(InputCodes.codes);
         buttonCode.setAdapter(buttonCodesAdapter);
 
@@ -193,8 +195,6 @@ public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITo
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {
-
-
                 onSetChanged.notifyObservers();
             }
         });
@@ -228,6 +228,7 @@ public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITo
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) { }
         });
+
         size.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -243,7 +244,6 @@ public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITo
             @Override public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
-
         //SETTINGS
 
         //CONTROLS
@@ -271,19 +271,21 @@ public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITo
         dnd.onPositionChanged.addObserver((observable, o) -> {
             cfg.SetTouchEditorPosition(GetPosition());
         });
-        SetPosition(cfg.touchEditorPosition.x, cfg.touchEditorPosition.y);
-
 
         root.setClipChildren(false);
         root.setClipToPadding(false);
         selectedItemId = -1;
         InitEditorView();
+
+        LayoutUtils.SetSizeRelative(root, 800, WRAP_CONTENT);
+        SetPosition(cfg.touchEditorPosition.x, cfg.touchEditorPosition.y);
     }
 
     @Override
     public void Destroy() {
 
     }
+
 
     private void UpdateAll() {
         InitEditorView();
@@ -300,7 +302,7 @@ public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITo
 
         int currUIOpacity = (int)(cfg.uiOpacity * 100 - 20);
         uiOpacity.setProgress(currUIOpacity);
-        uiOpacityText.setText("UI Opacity : " + currUIOpacity + "%");
+        uiOpacityText.setText("UI Opacity : " + (currUIOpacity + 20) + "%");
     }
 
     private void InflateProfiles() {
@@ -341,11 +343,11 @@ public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITo
             alpha.setProgress((int) (data.alpha * 100)-20);
             size.setProgress(data.scale-20);
             type.setSelection(data.type);
-            buttonCode.setSelection(data.buttonCode);
+            buttonCode.setSelection(InputCodes.GetCodeIndex(data.buttonCode));
             alphaText.setText("Opacity : " + (int)(data.alpha * 100) + "%");
             sizeText.setText("Size : " + (data.scale) + "%");
 
-            buttonCode.setVisibility(data.type == TYPE_ROUNDED_BUTTON || data.type == TYPE_CIRCLE_BUTTON ? VISIBLE : GONE);
+            buttonCode.setVisibility(data.type == TYPE_ROUNDED_BUTTON || data.type == TYPE_CIRCLE_BUTTON || data.type == TYPE_RECT_BUTTON ? VISIBLE : GONE);
         });
 
         if (settingsViewToggled)
@@ -379,6 +381,9 @@ public class TouchControlsEditorOverlayFragment implements IOverlayFragment, ITo
 
     @Override
     public void SetPosition(int x, int y) {
-        position.Set(x,y);
+        position = new Int2(x,y);
+        if ( root != null) {
+            LayoutUtils.SetRelativeLayoutPos(root, x,y);
+        }
     }
 }

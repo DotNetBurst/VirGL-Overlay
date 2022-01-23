@@ -21,7 +21,7 @@ public class InputCodes {
         for (Field field : fields) {
             String name = field.getName();
             if ( name.contains("KEYCODE_")) {
-                name = name.replace("KEYCODE_", "");
+                name = name.replace("KEYCODE_", "").replace("BUTTON_", "B_");
                 try {
                     temp.add(new InputCode(name, field.getInt(null)));
                 } catch (IllegalAccessException e) {
@@ -37,5 +37,14 @@ public class InputCodes {
             if (inputCode.code == code) return inputCode.name;
         }
         return null;
+    }
+    public static int GetCodeIndex(int code) {
+        int i = 0;
+        for (InputCode inputCode : codes) {
+            if (inputCode.code == code)
+                return i;
+            i++;
+        }
+        return -1;
     }
 }

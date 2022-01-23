@@ -1,9 +1,13 @@
 package com.catfixture.virgloverlay.core.input.devices;
 
-public interface IInputDevice {
-    void Initialize();
-    void Destroy();
+import android.view.KeyEvent;
+import android.view.inputmethod.InputConnection;
 
+public interface IInputDevice {
+    void Destroy();
     void Show();
     void Hide();
+    void Setup(InputConnection ic);
+
+    void SendKeyEvent(KeyEvent keyEvent);
 }

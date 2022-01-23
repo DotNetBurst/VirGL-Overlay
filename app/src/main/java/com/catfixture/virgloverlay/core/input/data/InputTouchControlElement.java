@@ -1,7 +1,7 @@
 package com.catfixture.virgloverlay.core.input.data;
 
 import static com.catfixture.virgloverlay.core.App.app;
-import static com.catfixture.virgloverlay.core.input.windows.touchControls.types.TouchableWindowElementType.TYPE_CIRCLE_BUTTON;
+import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_CIRCLE_BUTTON;
 
 import com.catfixture.virgloverlay.core.utils.math.Int2;
 
@@ -27,7 +27,7 @@ public class InputTouchControlElement {
 
     public void SetType(int i) { type = i; Save();}
 
-    public int buttonCode = 52;
+    public int buttonCode;
     public void SetButtonCode(int buttonCode) {this.buttonCode = buttonCode; Save();}
 
 }

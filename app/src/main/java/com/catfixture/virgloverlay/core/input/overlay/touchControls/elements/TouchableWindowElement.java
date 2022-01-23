@@ -1,4 +1,4 @@
-package com.catfixture.virgloverlay.core.input.windows.touchControls.elements;
+package com.catfixture.virgloverlay.core.input.overlay.touchControls.elements;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
@@ -6,19 +6,20 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.catfixture.virgloverlay.core.input.data.InputTouchControlElement;
-import com.catfixture.virgloverlay.core.input.windows.IInputWindowElement;
-import com.catfixture.virgloverlay.core.input.windows.utils.IDraggable;
-import com.catfixture.virgloverlay.core.input.windows.utils.ITouchable;
+import com.catfixture.virgloverlay.core.input.overlay.IInputWindowElement;
+import com.catfixture.virgloverlay.core.input.overlay.utils.EventUtils;
+import com.catfixture.virgloverlay.core.input.overlay.utils.IDraggable;
+import com.catfixture.virgloverlay.core.input.overlay.utils.ITouchable;
+import com.catfixture.virgloverlay.core.input.overlay.utils.ITransformable;
 import com.catfixture.virgloverlay.core.utils.math.Int2;
 import com.catfixture.virgloverlay.core.utils.types.Event;
 
 
-public class TouchableWindowElement extends LinearLayout implements IInputWindowElement, ITouchable, IDraggable {
+public class TouchableWindowElement extends LinearLayout implements IInputWindowElement, ITouchable, IDraggable, ITransformable {
     public int id;
     private RelativeLayout.LayoutParams lp;
     private Int2 pos = new Int2(0,0);
@@ -42,29 +43,7 @@ public class TouchableWindowElement extends LinearLayout implements IInputWindow
         lp.topMargin = 0;
         setGravity(Gravity.CENTER);
 
-        Int2 clickPos = Int2.Zero;
-        setOnTouchListener((view, motionEvent) -> {
-            switch (motionEvent.getAction()) {
-                case MotionEvent.ACTION_DOWN: {
-                    onDown.notifyObservers(motionEvent);
-                    clickPos.Set(motionEvent.getRawX(), motionEvent.getRawY());
-                    return true;
-                }
-                case MotionEvent.ACTION_MOVE: {
-                    onMove.notifyObservers(motionEvent);
-                    return true;
-                }
-                case MotionEvent.ACTION_UP: {
-                    onUp.notifyObservers(motionEvent);
-                    if ( clickPos.Distance(motionEvent.getRawX(), motionEvent.getRawY()) < 5) {
-                        onClick.notifyObservers(motionEvent);
-                    }
-                    return true;
-                }
-            }
-            return false;
-        });
-
+        EventUtils.InitializeITouchableEvents(this, this);
         SetSize(WRAP_CONTENT, WRAP_CONTENT);
     }
 
@@ -103,11 +82,10 @@ public class TouchableWindowElement extends LinearLayout implements IInputWindow
     }
 
     @Override
-    public IInputWindowElement SetPosition(int x, int y) {
+    public void SetPosition(int x, int y) {
         lp.leftMargin = x;
         lp.topMargin = y;
         setLayoutParams(lp);
-        return this;
     }
 
     @Override

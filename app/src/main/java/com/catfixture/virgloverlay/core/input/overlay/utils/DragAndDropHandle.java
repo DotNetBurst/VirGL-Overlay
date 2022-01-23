@@ -1,14 +1,11 @@
-package com.catfixture.virgloverlay.core.input.windows.utils;
+package com.catfixture.virgloverlay.core.input.overlay.utils;
 
 
 import android.annotation.SuppressLint;
 import android.view.MotionEvent;
 
-import com.catfixture.virgloverlay.core.input.windows.touchControls.elements.TouchableWindowElement;
 import com.catfixture.virgloverlay.core.utils.math.Int2;
 import com.catfixture.virgloverlay.core.utils.types.Event;
-
-import java.util.Observable;
 
 public class DragAndDropHandle<T extends ITouchable & ITransformable & IDraggable> {
     public Event onPositionChanged = new Event();

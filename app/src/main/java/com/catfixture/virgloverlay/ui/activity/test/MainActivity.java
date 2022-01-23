@@ -2,10 +2,11 @@ package com.catfixture.virgloverlay.ui.activity.test;
 
 import static android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS;
 
+import static com.catfixture.virgloverlay.core.App.app;
+import static com.catfixture.virgloverlay.core.input.overlay.MainControlsOverlayFragment.ID_MAIN_CONTROLS_OVERLAY;
+
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -20,8 +21,9 @@ import com.catfixture.virgloverlay.R;
 import com.catfixture.virgloverlay.core.input.IInputProvider;
 import com.catfixture.virgloverlay.core.input.MainInputProvider;
 import com.catfixture.virgloverlay.core.input.devices.IInputDevice;
+import com.catfixture.virgloverlay.core.input.overlay.MainControlsOverlayFragment;
+import com.catfixture.virgloverlay.core.overlay.OverlayManager;
 import com.catfixture.virgloverlay.core.utils.android.AndroidUtils;
-import com.catfixture.virgloverlay.core.utils.process.ProcUtils;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -38,6 +40,15 @@ public class MainActivity extends AppCompatActivity {
         AndroidUtils.ForceAppToImmersive(BuildConfig.APPLICATION_ID, (e) -> {
 
         });
+
+        OverlayManager overlayManager = app.GetOverlayManager();
+        MainControlsOverlayFragment mainControlsOverlayFragment = new MainControlsOverlayFragment();
+        overlayManager.Add(mainControlsOverlayFragment);
+        overlayManager.Show(ID_MAIN_CONTROLS_OVERLAY);
+
+        IInputProvider inputProvider = new MainInputProvider();
+        IInputDevice device = inputProvider.ResolveDevice(this, app.GetInputConfigData());
+        device.Show();
     }
 
     @Override

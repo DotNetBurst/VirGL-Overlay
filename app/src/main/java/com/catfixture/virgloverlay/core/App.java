@@ -1,7 +1,5 @@
 package com.catfixture.virgloverlay.core;
 
-import static com.catfixture.virgloverlay.core.input.windows.editor.MainControlsOverlayFragment.ID_MAIN_CONTROLS_OVERLAY;
-import static com.catfixture.virgloverlay.core.input.windows.touchControls.TouchControlsOverlayFragment.ID_TOUCH_CONTROLS_OVERLAY;
 import static com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const.APP_TAG;
 
 import android.app.Application;
@@ -9,8 +7,6 @@ import android.util.Log;
 
 import com.catfixture.virgloverlay.core.debug.logging.GlobalExceptions;
 import com.catfixture.virgloverlay.core.input.data.InputConfigData;
-import com.catfixture.virgloverlay.core.input.windows.editor.MainControlsOverlayFragment;
-import com.catfixture.virgloverlay.core.input.windows.touchControls.TouchControlsOverlayFragment;
 import com.catfixture.virgloverlay.core.overlay.OverlayManager;
 import com.catfixture.virgloverlay.core.utils.types.delegates.Action;
 import com.catfixture.virgloverlay.data.MainConfigData;
@@ -60,15 +56,6 @@ public class App extends Application {
 
         serverController = new ServerController(this);
         overlayManager = new OverlayManager(this);
-
-
-        TouchControlsOverlayFragment touchControlsFragment = new TouchControlsOverlayFragment();
-        overlayManager.Add(touchControlsFragment);
-        app.GetOverlayManager().Show(ID_TOUCH_CONTROLS_OVERLAY);
-
-        MainControlsOverlayFragment mainControlsOverlayFragment = new MainControlsOverlayFragment();
-        overlayManager.Add(mainControlsOverlayFragment);
-        app.GetOverlayManager().Show(ID_MAIN_CONTROLS_OVERLAY);
 
         Log.d(APP_TAG, "Application created");
     }

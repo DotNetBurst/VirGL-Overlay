@@ -1,6 +1,7 @@
 package com.catfixture.virgloverlay.core.input.data;
 
 import static com.catfixture.virgloverlay.core.App.app;
+import static com.catfixture.virgloverlay.core.input.Devices.TOUCH_CONTROLS_DEVICE;
 
 import com.catfixture.virgloverlay.core.utils.math.Int2;
 import com.catfixture.virgloverlay.core.utils.objProvider.ITypedProvider;
@@ -15,12 +16,12 @@ public class InputConfigData implements ITypedProvider<Event> {
 
     public int internalId;
 
-    public int currentProfile;
+    public int currentProfile = -1;
     public List<InputConfigProfile> profiles = new ArrayList<>();
 
-    public int inputDevice;
+    public int inputDevice = TOUCH_CONTROLS_DEVICE;
     public Int2 touchEditorPosition = Int2.Zero;
-    public float uiOpacity;
+    public float uiOpacity = 1f;
 
     public void SetTouchEditorPosition(Int2 touchEditorPosition) {
         this.touchEditorPosition = touchEditorPosition; Save();}

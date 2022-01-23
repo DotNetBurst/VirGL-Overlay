@@ -1,7 +1,6 @@
-package com.catfixture.virgloverlay.core.input.windows.touchControls.elements;
+package com.catfixture.virgloverlay.core.input.overlay.touchControls.elements;
 
 import android.content.Context;
-import android.widget.TextView;
 
 import com.catfixture.virgloverlay.R;
 

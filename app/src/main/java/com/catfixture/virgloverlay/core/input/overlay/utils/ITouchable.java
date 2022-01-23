@@ -1,4 +1,4 @@
-package com.catfixture.virgloverlay.core.input.windows.utils;
+package com.catfixture.virgloverlay.core.input.overlay.utils;
 
 import com.catfixture.virgloverlay.core.utils.types.Event;
 

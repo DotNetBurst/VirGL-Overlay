@@ -11,19 +11,9 @@ public abstract class BasicInputDevice implements IInputDevice {
     protected Context context;
     private IOverlayFragment overlayFragment;
 
-    public BasicInputDevice(Context context, IOverlayFragment overlayFragment) {
+    public BasicInputDevice(Context context) {
         this.context = context;
-        this.overlayFragment = overlayFragment;
-    }
-
-    @Override
-    public void Initialize() {
-        Initialize(overlayFragment);
-    }
-
-    @Override
-    public void Destroy() {
-        overlayFragment.Destroy();
+        overlayFragment = Initialize();
     }
 
     @Override
@@ -36,5 +26,5 @@ public abstract class BasicInputDevice implements IInputDevice {
         app.GetOverlayManager().Hide(overlayFragment);
     }
 
-    protected abstract void Initialize(IOverlayFragment window);
+    public abstract IOverlayFragment Initialize();
 }

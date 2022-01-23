@@ -6,6 +6,7 @@ import android.inputmethodservice.InputMethodService;
 import android.util.Log;
 import android.view.View;
 
+import com.catfixture.virgloverlay.core.debug.Dbg;
 import com.catfixture.virgloverlay.core.input.devices.IInputDevice;
 
 
@@ -23,8 +24,9 @@ public class MainInputMethodService extends InputMethodService {
     @Override
     public void onWindowShown() {
         super.onWindowShown();
-        inputDevice = mainInputProvider.ResolveDevice(getApplicationContext(),
-                app.GetInputConfigData());
+        inputDevice = mainInputProvider.ResolveDevice(getApplicationContext(), app.GetInputConfigData());
+        inputDevice.Setup(getCurrentInputConnection());
+        Dbg.Msg(getCurrentInputConnection() + "");
         inputDevice.Show();
     }
 
