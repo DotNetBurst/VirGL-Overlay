@@ -20,6 +20,12 @@ public class Int2 {
     public Int2 Add(Int2 f) {
         return new Int2(x + f.x, y + f.y);
     }
+    public Int2 Div(Int2 f) {
+        return new Int2(x / f.x, y / f.y);
+    }
+    public Int2 Div(float z) {
+        return new Int2((int)(x / z), (int) (y / z));
+    }
     public Int2 AddSelf(Int2 f) {
         x += f.x;
         y += f.y;
@@ -55,10 +61,11 @@ public class Int2 {
     }
 
     public float Dot(Int2 vec) {
-        float length = Distance(this.Sub(vec));
+        Int2 v = this.Sub(vec);
+        float length = Distance(v);
         if ( length <= 0) return 0;
+        v = v.Div(length);
 
-        float dot = x * vec.x + y * vec.y;
-        return dot / length;
+        return x * v.x + y * v.y;
     }
 }

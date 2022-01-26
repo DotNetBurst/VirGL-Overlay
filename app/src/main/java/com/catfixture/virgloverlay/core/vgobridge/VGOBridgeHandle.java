@@ -23,18 +23,6 @@ public class VGOBridgeHandle {
         return socket.isConnected();
     }
 
-    public void SendBuffer(VGOBridgeBuffer buff) {
-        new Thread(() -> {
-            try {
-                out.write(buff.Get(), 0, buff.Size());
-                out.flush();
-                Dbg.Msg("DEV_SENT OK " + buff.Size());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-
     public void Stop() {
         try {
             out.close();
@@ -42,5 +30,10 @@ public class VGOBridgeHandle {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void SendData(byte[] data) throws IOException {
+        out.write(data, 0, data.length);
+        out.flush();
     }
 }

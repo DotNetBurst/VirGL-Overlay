@@ -3,44 +3,40 @@ package com.catfixture.virgloverlay.core.input.devices;
 import static com.catfixture.virgloverlay.core.App.app;
 
 import android.content.Context;
-import android.view.KeyEvent;
-import android.view.inputmethod.InputConnection;
+import android.renderscript.Float2;
 
 import com.catfixture.virgloverlay.core.debug.Dbg;
 import com.catfixture.virgloverlay.core.input.overlay.TouchDeviceEditorOverlayFragment;
 import com.catfixture.virgloverlay.core.input.overlay.TouchDeviceOverlayFragment;
-import com.catfixture.virgloverlay.core.overlay.IOverlayFragment;
 import com.catfixture.virgloverlay.core.overlay.OverlayManager;
-import com.catfixture.virgloverlay.core.utils.math.Int2;
-import com.catfixture.virgloverlay.core.vgobridge.VGOBridge;
-import com.catfixture.virgloverlay.core.vgobridge.VGOBridgeBuffer;
 import com.catfixture.virgloverlay.core.vgobridge.VGOBridgeHandle;
+import com.catfixture.virgloverlay.core.vgobridge.VGOBridgeMarshall;
 import com.catfixture.virgloverlay.core.vgobridge.VGOBridgeProtocol;
 
 
 public class TouchDevice implements IInputDevice {
-    private final VGOBridge vgoBridge;
+    private VGOBridgeMarshall vgoBridgeMarshall;
     private VGOBridgeHandle handle;
     private Context context;
     private TouchDeviceOverlayFragment touchDeviceOverlayFragment;
     private TouchDeviceEditorOverlayFragment touchDeviceEditorOverlayFragment;
-    private VGOBridgeBuffer vgoBridgeBuffer = new VGOBridgeBuffer();
-    private Int2 mouseGlobalPos = new Int2(0,0);
+    private Float2 mouseGlobalPos = new Float2(0,0);
 
     public TouchDevice(Context context) {
         this.context = context;
 
-        vgoBridge = new VGOBridge(8888);
-        vgoBridge.OnConnected((handle) -> {
+        if ( vgoBridgeMarshall != null) {
+            vgoBridgeMarshall.Stop();
+            vgoBridgeMarshall = null;
+        }
+
+        vgoBridgeMarshall = new VGOBridgeMarshall(8888, 25);
+        vgoBridgeMarshall.events.onSlaveConnected.addObserver((obs, handle) -> {
             Dbg.Msg("CREATING INPUT BRIDGE CONNECTION!");
-            VGOBridgeBuffer vgoBridgeBuffer = new VGOBridgeBuffer();
-            vgoBridgeBuffer.Reset()
-                    .WriteByte(VGOBridgeProtocol.PROTOCOL_ENABLE);
-            handle.SendBuffer(vgoBridgeBuffer);
-            this.handle = handle;
             Dbg.Msg("INPUT BRIDGE CONNECTED!");
+            //Show();
         });
-        vgoBridge.Start();
+        vgoBridgeMarshall.Run();
     }
 
     @Override
@@ -51,7 +47,7 @@ public class TouchDevice implements IInputDevice {
         overlayManager.Remove(touchDeviceOverlayFragment);
         overlayManager.Remove(touchDeviceEditorOverlayFragment);
         overlayManager.Destroy();
-        vgoBridge.Stop();
+        vgoBridgeMarshall.Stop();
     }
 
     @Override
@@ -68,6 +64,7 @@ public class TouchDevice implements IInputDevice {
         touchDeviceEditorOverlayFragment.onClosed.addObserver((observable, o) -> touchDeviceOverlayFragment.OnEditorClosed());
 
         overlayManager.Show(touchDeviceOverlayFragment);
+        overlayManager.Show(touchDeviceEditorOverlayFragment); //TODO LINK1
     }
 
     @Override
@@ -77,65 +74,60 @@ public class TouchDevice implements IInputDevice {
 
     @Override
     public void SendMouseClick(int button) {
-        vgoBridgeBuffer.Reset()
+        vgoBridgeMarshall.PrepareEvent()
                 .WriteByte(VGOBridgeProtocol.ACTION_MOUSE_CLICK)
                 .WriteInt(button);
-        handle.SendBuffer(vgoBridgeBuffer);
     }
 
     @Override
     public void SendMouseDown(int button) {
-        vgoBridgeBuffer.Reset()
+        vgoBridgeMarshall.PrepareEvent()
                 .WriteByte(VGOBridgeProtocol.ACTION_MOUSE_DOWN)
                 .WriteInt(button);
-        handle.SendBuffer(vgoBridgeBuffer);
     }
 
     @Override
     public void SendMouseUp(int button) {
-        vgoBridgeBuffer.Reset()
+        vgoBridgeMarshall.PrepareEvent()
                 .WriteByte(VGOBridgeProtocol.ACTION_MOUSE_UP)
                 .WriteInt(button);
-        handle.SendBuffer(vgoBridgeBuffer);
     }
 
     @Override
     public void SendKeyPressed(int keyCode) {
         Dbg.Msg("DEV_KEY = " + keyCode);
-        vgoBridgeBuffer.Reset()
+        vgoBridgeMarshall.PrepareEvent()
                 .WriteByte(VGOBridgeProtocol.ACTION_KEY_PRESSED)
                 .WriteInt(keyCode);
-        handle.SendBuffer(vgoBridgeBuffer);
     }
 
     @Override
     public void SendKeyDown(int keyCode) {
-        vgoBridgeBuffer.Reset()
+        vgoBridgeMarshall.PrepareEvent()
                 .WriteByte(VGOBridgeProtocol.ACTION_KEY_DOWN)
                 .WriteInt(keyCode);
-        handle.SendBuffer(vgoBridgeBuffer);
     }
 
     @Override
     public void SendKeyUp(int keyCode) {
-        vgoBridgeBuffer.Reset()
+        vgoBridgeMarshall.PrepareEvent()
                 .WriteByte(VGOBridgeProtocol.ACTION_KEY_UP)
                 .WriteInt(keyCode);
-        handle.SendBuffer(vgoBridgeBuffer);
     }
 
     @Override
     public void SendMouseShift(float vericalCos, float horizontalCos) {
-        float sens = 6.5f;
+        float sens = 0.25f;
 
         this.mouseGlobalPos.x += vericalCos * sens;
         this.mouseGlobalPos.y += horizontalCos * sens;
 
-        vgoBridgeBuffer.Reset()
+        Dbg.Msg("GMX = " + this.mouseGlobalPos.x);
+
+        vgoBridgeMarshall.PrepareEvent()
                 .WriteByte(VGOBridgeProtocol.ACTION_SET_MOUSE_POS)
-                .WriteInt(this.mouseGlobalPos.x)
-                .WriteInt(this.mouseGlobalPos.y);
-        handle.SendBuffer(vgoBridgeBuffer);
+                .WriteInt((int) this.mouseGlobalPos.x)
+                .WriteInt((int) this.mouseGlobalPos.y);
 
     }
 }

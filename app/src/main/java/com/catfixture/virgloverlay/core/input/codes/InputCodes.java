@@ -12,25 +12,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InputCodes {
-    public static InputCode[] codes;
+    public static InputCode[] codes = new InputCode[] {
+            new InputCode("UP", 0xC8),
+            new InputCode("DOWN", 0xD0),
+            new InputCode("LEFT", 0xCB),
+            new InputCode("RIGHT", 0xCD),
 
-    static {
-        List<InputCode> temp = new ArrayList<InputCode>();
+            new InputCode("ENTER", 0x1C),
+            new InputCode("ESC", 0x01),
+            new InputCode("BACK", 0x0E),
 
-        Field[] fields = KeyEvent.class.getFields();
-        for (Field field : fields) {
-            String name = field.getName();
-            if ( name.contains("KEYCODE_")) {
-                name = name.replace("KEYCODE_", "").replace("BUTTON_", "B_");
-                try {
-                    temp.add(new InputCode(name, field.getInt(null)));
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        codes = temp.toArray(new InputCode[0]);
-    }
+            new InputCode("TAB", 0x0F),
+            new InputCode("SPACE", 0x39),
+
+
+            new InputCode("W", 0x11),
+            new InputCode("S", 0x1F),
+            new InputCode("A", 0x1E),
+            new InputCode("D", 0x20),
+    };
 
     public static String GetCodeName(int code) {
         for (InputCode inputCode : codes) {

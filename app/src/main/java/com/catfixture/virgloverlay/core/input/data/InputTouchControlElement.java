@@ -26,13 +26,6 @@ public class InputTouchControlElement {
     public int buttonCode = KeyEvent.KEYCODE_A;
     public void SetButtonCode(int buttonCode) {this.buttonCode = buttonCode; Save();}
 
-    public int handleScale = 100;
-    public void SetHandleScale(int handleScale) { this.handleScale = handleScale; Save();}
-
-    public Int2 handlePosition = new Int2(500,500);
-    public void SetHandlePosition(Int2 handlePosition) { this.handlePosition = handlePosition; Save();}
-
-
     private void Save() {
         app.SaveInputConfig();
     }

@@ -249,24 +249,6 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
             @Override public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
-
-        handleSize.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                tcWindow.TryGetWindowElementById(selectedItemId, (selectedItem) -> {
-                    int scale = i + 20;
-                    TouchableWindowElement handle = selectedItem.GetHandle();
-                    if (handle == null) return;
-                    handle.SetScale(scale);
-                    InputTouchControlElement data = (InputTouchControlElement) selectedItem.GetData();
-                    data.SetHandleScale(scale);
-                    handleSizeText.setText("Handle size : " + (scale) + "%");
-                });
-            }
-            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-            @Override public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
         //SETTINGS
 
         //CONTROLS
@@ -369,8 +351,6 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
             buttonCode.setSelection(InputCodes.GetCodeIndex(data.buttonCode));
             alphaText.setText("Opacity : " + (int)(data.alpha * 100) + "%");
             sizeText.setText("Size : " + (data.scale) + "%");
-            handleSize.setProgress(data.handleScale-20);
-            handleSizeText.setText("Handle size : " + (data.handleScale) + "%");
 
             buttonCode.setVisibility(data.type == TYPE_ROUNDED_BUTTON || data.type == TYPE_CIRCLE_BUTTON || data.type == TYPE_RECT_BUTTON ? VISIBLE : GONE);
 

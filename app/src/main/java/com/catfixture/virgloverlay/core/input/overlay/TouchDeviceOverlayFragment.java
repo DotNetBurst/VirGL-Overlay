@@ -86,10 +86,6 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
                     newTouchElement = new TextButton(context, touchControlElement.id, layout);
                     ((TextButton)newTouchElement).SetText(InputCodes.GetCodeName(touchControlElement.buttonCode));
                     if (!isEditorOverlayShown) {
-                        newTouchElement.onDown.addObserver((observable, o) -> {
-                            KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_DOWN, touchControlElement.buttonCode);
-                            inputDevice.SendKeyPressed(keyEvent.getKeyCode());
-                        });
                         newTouchElement.onUp.addObserver((observable, o) -> {
                             KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_UP, touchControlElement.buttonCode);
                             inputDevice.SendKeyPressed(keyEvent.getKeyCode());
@@ -161,18 +157,19 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
                                 }
                             });
                         } else if (touchControlElement.type == TYPE_STICK) {
+                            final Int2 startClickPos = new Int2(0,0);
+                            newTouchElement.onDown.addObserver((observable, o) -> {
+                                MotionEvent motionEvent = (MotionEvent) o;
+                                startClickPos.Set((int) (motionEvent.getX() - elSize.x / 2.0),
+                                        (int) (motionEvent.getY() - elSize.y / 2.0));
+                            });
                             newTouchElement.onMove.addObserver((observable, o) -> {
                                 MotionEvent motionEvent = (MotionEvent) o;
-                                final Int2 clickPos = new Int2((int) motionEvent.getX() - elSize.x / 2,
-                                        (int) motionEvent.getY() - elSize.y / 2);
+                                final Int2 clickPos = new Int2((int) (motionEvent.getX() - elSize.x / 2.0),
+                                        (int) (motionEvent.getY() - elSize.y / 2.0));
 
-                                final Int2 verticalAxis = new Int2(1, 0);
-                                final Int2 horizontalAxis = new Int2(0, 1);
-
-                                float vericalCos = verticalAxis.Dot(clickPos);
-                                float horizontalCos = horizontalAxis.Dot(clickPos);
-
-                                inputDevice.SendMouseShift(vericalCos, horizontalCos);
+                                final Int2 diff = clickPos.Sub(startClickPos);
+                                inputDevice.SendMouseShift(diff.x, diff.y);
                             });
                         }
                     }

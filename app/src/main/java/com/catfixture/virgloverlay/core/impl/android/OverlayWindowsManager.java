@@ -5,7 +5,6 @@ import static com.catfixture.virgloverlay.core.input.overlay.MainControlsOverlay
 import static com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const.APP_TAG;
 
 import android.content.Context;
-import android.graphics.Point;
 import android.os.Handler;
 import android.util.Log;
 import android.util.Size;
@@ -13,10 +12,7 @@ import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 
-import androidx.appcompat.view.menu.MenuWrapperICS;
-
 import com.catfixture.virgloverlay.core.input.devices.IInputDevice;
-import com.catfixture.virgloverlay.core.input.devices.TouchDevice;
 import com.catfixture.virgloverlay.core.input.overlay.MainControlsOverlayFragment;
 import com.catfixture.virgloverlay.core.overlay.OverlayManager;
 import com.catfixture.virgloverlay.core.utils.android.AndroidUtils;
@@ -24,9 +20,6 @@ import com.catfixture.virgloverlay.core.debug.Dbg;
 import com.catfixture.virgloverlay.core.ipc.IServerRemoteService;
 import com.catfixture.virgloverlay.core.utils.windows.AndroidWindow;
 import com.catfixture.virgloverlay.core.utils.windows.IWindow;
-import com.catfixture.virgloverlay.core.vgobridge.VGOBridge;
-import com.catfixture.virgloverlay.core.vgobridge.VGOBridgeBuffer;
-import com.catfixture.virgloverlay.core.vgobridge.VGOBridgeProtocol;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +97,7 @@ public class OverlayWindowsManager {
                 MainControlsOverlayFragment mainControlsOverlayFragment = new MainControlsOverlayFragment();
                 overlayManager.Add(mainControlsOverlayFragment);
                 overlayManager.Show(ID_MAIN_CONTROLS_OVERLAY);
-                inputDevice.Show();
+                //inputDevice.Show();
                 initialized = true;
             }
 
