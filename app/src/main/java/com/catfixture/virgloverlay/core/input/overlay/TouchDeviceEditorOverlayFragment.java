@@ -10,7 +10,6 @@ import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types
 import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_ROUNDED_BUTTON;
 import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_STICK;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.view.View;
@@ -24,11 +23,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.catfixture.virgloverlay.R;
-import com.catfixture.virgloverlay.core.input.codes.InputCodes;
+import com.catfixture.virgloverlay.core.input.codes.KeyCode;
+import com.catfixture.virgloverlay.core.input.codes.KeyCodes;
 import com.catfixture.virgloverlay.core.input.data.InputConfigData;
 import com.catfixture.virgloverlay.core.input.data.InputConfigProfile;
 import com.catfixture.virgloverlay.core.input.data.InputTouchControlElement;
-import com.catfixture.virgloverlay.core.input.overlay.touchControls.elements.TouchableWindowElement;
 import com.catfixture.virgloverlay.core.input.overlay.utils.DragAndDropHandle;
 import com.catfixture.virgloverlay.core.input.overlay.utils.EventUtils;
 import com.catfixture.virgloverlay.core.input.overlay.utils.IDraggable;
@@ -42,6 +41,7 @@ import com.catfixture.virgloverlay.ui.utils.Utils;
 
 public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouchable, IDraggable, ITransformable {
     public final static int ID_TOUCH_CONTROLS_EDITOR_OVERLAY = 10002;
+    private final ArrayAdapter<KeyCode> buttonCodesAdapter;
 
     public Event onSetChanged = new Event();
     public Event onClosed = new Event();
@@ -89,9 +89,7 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
         return root;
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public void Create(Context context) {
+    public TouchDeviceEditorOverlayFragment(Context context) {
         this.context = context;
         root = (ViewGroup) View.inflate(context, R.layout.touch_controls_editor, null);
 
@@ -114,7 +112,7 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
         handleSizeText = root.findViewById(R.id.handleSizeText);
         handleSize = root.findViewById(R.id.handleSize);
 
-        tcWindow = (TouchDeviceOverlayFragment) app.GetOverlayManager().Get(ID_TOUCH_CONTROLS_OVERLAY);
+        tcWindow = (TouchDeviceOverlayFragment) app.GetOverlayManager().GetFragment(ID_TOUCH_CONTROLS_OVERLAY);
         cfg = app.GetInputConfigData();
 
 
@@ -188,8 +186,8 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
         typesAdapter.notifyDataSetChanged();
 
 
-        ArrayAdapter<Object> buttonCodesAdapter = new ArrayAdapter<>(context, R.layout.touch_controls_list_item);
-        buttonCodesAdapter.addAll(InputCodes.codes);
+        buttonCodesAdapter = new ArrayAdapter<>(context, R.layout.touch_controls_list_item);
+        buttonCodesAdapter.addAll(KeyCodes.codes);
         buttonCode.setAdapter(buttonCodesAdapter);
 
         uiOpacity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -210,7 +208,7 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
                 tcWindow.TryGetWindowElementById(selectedItemId, (selectedItem) -> {
                     InputTouchControlElement data = (InputTouchControlElement) selectedItem.GetData();
                     if (is != data.buttonCode) {
-                        data.SetButtonCode(InputCodes.codes[is].code);
+                        data.SetButtonCode(buttonCodesAdapter.getItem(is).code);
                         UpdateAll();
                         onSetChanged.notifyObservers();
                     }
@@ -286,12 +284,6 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
         SetPosition(cfg.touchEditorPosition.x, cfg.touchEditorPosition.y);
     }
 
-    @Override
-    public void Destroy() {
-
-    }
-
-
     private void UpdateAll() {
         InitEditorView();
         InflateProfiles();
@@ -348,7 +340,7 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
             alpha.setProgress((int) (data.alpha * 100)-20);
             size.setProgress(data.scale-20);
             type.setSelection(data.type);
-            buttonCode.setSelection(InputCodes.GetCodeIndex(data.buttonCode));
+            buttonCode.setSelection(KeyCodes.GetCodeIndex(data.buttonCode));
             alphaText.setText("Opacity : " + (int)(data.alpha * 100) + "%");
             sizeText.setText("Size : " + (data.scale) + "%");
 

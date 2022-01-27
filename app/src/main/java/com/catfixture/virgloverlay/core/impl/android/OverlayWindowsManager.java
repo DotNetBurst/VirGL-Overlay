@@ -91,21 +91,6 @@ public class OverlayWindowsManager {
             } catch(Exception e) {
                 Dbg.Error(e);
             }
-
-            if (!initialized) {
-                OverlayManager overlayManager = app.GetOverlayManager();
-                MainControlsOverlayFragment mainControlsOverlayFragment = new MainControlsOverlayFragment();
-                overlayManager.Add(mainControlsOverlayFragment);
-                overlayManager.Show(ID_MAIN_CONTROLS_OVERLAY);
-                //inputDevice.Show();
-                initialized = true;
-            }
-
-            //app.TryGetProfile(cfgProfile -> {
-            //    if (cfgProfile.showControlsOnTopOfOverlay) {
-            //        app.GetOverlayManager().InitializeWindow();
-            //    }
-            //});
         });
     }
 

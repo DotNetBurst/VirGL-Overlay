@@ -32,8 +32,15 @@ public class VGOBridgeHandle {
         }
     }
 
-    public void SendData(byte[] data) throws IOException {
-        out.write(data, 0, data.length);
-        out.flush();
+    public void SendData(VGOBridgeBinaryBuffer buffer) throws IOException {
+        int toWrite = buffer.Available();
+        if (toWrite > 0) {
+            byte[] header = VGOBridgeBinaryBuffer.IntToByteArray(buffer.Available());
+            out.write(header, 0, header.length);
+            out.flush();
+
+            out.write(buffer.GetData(), 0, toWrite);
+            out.flush();
+        }
     }
 }

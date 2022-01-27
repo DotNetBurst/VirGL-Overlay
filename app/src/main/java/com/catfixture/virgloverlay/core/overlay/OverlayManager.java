@@ -1,6 +1,7 @@
 package com.catfixture.virgloverlay.core.overlay;
 
 import android.content.Context;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.catfixture.virgloverlay.core.debug.Dbg;
@@ -44,8 +45,14 @@ public class OverlayManager implements ITouchable {
     }
 
     public void Add(IOverlayFragment fragment) {
-        AddLazy(fragment);
-        fragment.Create(context);
+        if ( window == null) InitializeWindow();
+        window.GetContainer().addView(fragment.GetContainer());
+
+        if ( fragmentHashMap.containsKey(fragment.GetID())) {
+            throw new RuntimeException("Error duplicated ID! Check code");
+        } else {
+            fragmentHashMap.put(fragment.GetID(), fragment);
+        }
     }
 
     public void Remove(IOverlayFragment fg) {
@@ -55,15 +62,7 @@ public class OverlayManager implements ITouchable {
         } else Dbg.Error("No such key!");
     }
 
-    public void AddLazy(IOverlayFragment fragment) {
-        if ( fragmentHashMap.containsKey(fragment.GetID())) {
-            throw new RuntimeException("Error duplicated ID! Check code");
-        } else {
-            fragmentHashMap.put(fragment.GetID(), fragment);
-        }
-    }
-
-    public IOverlayFragment Get(int id) {
+    public IOverlayFragment GetFragment(int id) {
         if ( fragmentHashMap.containsKey(id)) {
             return fragmentHashMap.get(id);
         } else return null;
@@ -71,17 +70,13 @@ public class OverlayManager implements ITouchable {
 
     public void Show(IOverlayFragment frag) { Show(frag.GetID());}
     public void Show(int id) {
-        IOverlayFragment fragment = Get(id);
-        ViewGroup container = fragment.GetContainer();
-        if ( container == null) fragment.Create(context);
-
-        if ( window == null) InitializeWindow();
-        window.GetContainer().addView(fragment.GetContainer());
+        IOverlayFragment fragment = GetFragment(id);
+        fragment.GetContainer().setVisibility(View.VISIBLE);
     }
     public void Hide(IOverlayFragment frag) { Hide(frag.GetID());}
     public void Hide(int id) {
-        IOverlayFragment fragment = Get(id);
-        window.GetContainer().removeView(fragment.GetContainer());
+        IOverlayFragment fragment = GetFragment(id);
+        fragment.GetContainer().setVisibility(View.GONE);
     }
 
     @Override
@@ -105,8 +100,8 @@ public class OverlayManager implements ITouchable {
     }
 
     public boolean IsShown(IOverlayFragment overlayFragment) {
-        if ( overlayFragment != null && overlayFragment.GetContainer() != null) {
-            return window.GetContainer().indexOfChild(overlayFragment.GetContainer()) != -1;
+        if ( overlayFragment != null) {
+            return overlayFragment.GetContainer().getVisibility() == View.VISIBLE;
         }
         return false;
     }

@@ -1,17 +1,24 @@
 package com.catfixture.virgloverlay.core.vgobridge;
 
 public class VGOBridgeIntEvent implements IVGOBridgeEvent {
-    private int type;
+    private byte type;
     private int[] args;
 
-    public VGOBridgeIntEvent(int type, int arg) {
+    public VGOBridgeIntEvent(byte type, int arg) {
         this.type = type;
         this.args = new int[]{arg};
     }
+    public VGOBridgeIntEvent(byte type, int ... args) {
+        this.type = type;
+        this.args = args;
+    }
 
     @Override
-    public byte[] Compile() {
-        return new byte[0];
+    public void Compile(VGOBridgeBinaryBuffer buffer) {
+        buffer.WriteByte(type);
+        for (int arg : args) {
+            buffer.WriteInt(arg);
+        }
     }
 
     @Override

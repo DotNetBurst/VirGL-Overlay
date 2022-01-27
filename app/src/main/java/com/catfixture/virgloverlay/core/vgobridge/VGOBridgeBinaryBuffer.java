@@ -82,4 +82,8 @@ public class VGOBridgeBinaryBuffer implements IBinaryBufferProvider {
     public boolean IsReady() {
         return ptr > 0;
     }
+
+    public int Available() {
+        return ptr;
+    }
 }

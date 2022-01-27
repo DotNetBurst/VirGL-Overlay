@@ -7,7 +7,4 @@ import android.view.ViewGroup;
 public interface IOverlayFragment {
     int GetID();
     ViewGroup GetContainer();
-
-    void Create(Context context);
-    void Destroy();
 }

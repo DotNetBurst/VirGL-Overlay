@@ -72,7 +72,8 @@ public class VGOBridgeMarshall {
 
             currentFrame.Compile();
             if ( currentFrame.IsReady()) {
-                vgoBridgeHandle.SendData(currentFrame.GetData());
+                vgoBridgeHandle.SendData(currentFrame.GetBuffer());
+                currentFrame.Flush();
             }
 
             lastFrameTime = (System.currentTimeMillis() - frameStartTime);
@@ -100,10 +101,10 @@ public class VGOBridgeMarshall {
     }
 
     public void SetEvent(byte type, int ... args) {
-
+        currentFrame.SetEvent(new VGOBridgeIntEvent(type, args));
     }
 
     public void AddEvent(byte type, int arg) {
-        currentFrame.EnqueueEvent(new VGOBridgeIntEvent(type, arg));
+        currentFrame.EnqueueEvent(new VGOBridgeByteEvent(type, (byte)arg));
     }
 }

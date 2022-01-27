@@ -16,7 +16,7 @@ import android.widget.RelativeLayout;
 
 import com.catfixture.virgloverlay.R;
 import com.catfixture.virgloverlay.core.debug.Dbg;
-import com.catfixture.virgloverlay.core.input.codes.InputCodes;
+import com.catfixture.virgloverlay.core.input.codes.KeyCodes;
 import com.catfixture.virgloverlay.core.input.data.InputConfigData;
 import com.catfixture.virgloverlay.core.input.data.InputConfigProfile;
 import com.catfixture.virgloverlay.core.input.data.InputTouchControlElement;
@@ -30,8 +30,6 @@ import com.catfixture.virgloverlay.core.overlay.IOverlayFragment;
 import com.catfixture.virgloverlay.core.utils.math.Int2;
 import com.catfixture.virgloverlay.core.utils.types.delegates.Action;
 
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,10 +42,13 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
     private ViewGroup root;
     private Context context;
 
-    public TouchDeviceOverlayFragment(IInputDevice inputDevice) {
+    public TouchDeviceOverlayFragment(Context context, IInputDevice inputDevice) {
+        this.context = context;
         this.inputDevice = inputDevice;
+        windowElements = new ArrayList<>();
+        root = new RelativeLayout(context);
+        InflateControls();
     }
-
 
     public void TryGetWindowElementById(int selectedItemId, Action<IInputWindowElement> onFind) {
         for (IInputWindowElement windowElement : windowElements) {
@@ -68,7 +69,7 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
             InputConfigProfile cfgProfile = cfgData.GetCurrentProfile();
 
             TouchDeviceEditorOverlayFragment touchControlsEditor =
-                    (TouchDeviceEditorOverlayFragment) app.GetOverlayManager().Get(ID_TOUCH_CONTROLS_EDITOR_OVERLAY);
+                    (TouchDeviceEditorOverlayFragment) app.GetOverlayManager().GetFragment(ID_TOUCH_CONTROLS_EDITOR_OVERLAY);
 
 
             boolean isEditorOverlayShown = app.GetOverlayManager().IsShown(touchControlsEditor);
@@ -84,7 +85,7 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
                                     R.drawable.fx_tc_rect_rnd_btn;
 
                     newTouchElement = new TextButton(context, touchControlElement.id, layout);
-                    ((TextButton)newTouchElement).SetText(InputCodes.GetCodeName(touchControlElement.buttonCode));
+                    ((TextButton)newTouchElement).SetText(KeyCodes.GetCodeName(touchControlElement.buttonCode));
                     if (!isEditorOverlayShown) {
                         newTouchElement.onUp.addObserver((observable, o) -> {
                             KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_UP, touchControlElement.buttonCode);
@@ -171,6 +172,9 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
                                 final Int2 diff = clickPos.Sub(startClickPos);
                                 inputDevice.SendMouseShift(diff.x, diff.y);
                             });
+                            newTouchElement.onUp.addObserver((observable, o) -> {
+                                inputDevice.SendMouseShift(0,0);
+                            });
                         }
                     }
                     root.addView(newTouchElement);
@@ -179,9 +183,6 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
             }
         }
 
-    }
-
-    public void Destroy() {
     }
 
     @Override
@@ -194,13 +195,6 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
         return ID_TOUCH_CONTROLS_OVERLAY;
     }
 
-    @Override
-    public void Create(Context context) {
-        this.context = context;
-        windowElements = new ArrayList<>();
-        root = new RelativeLayout(context);
-        InflateControls();
-    }
 
     public void OnEditorClosed() {
         InflateControls();

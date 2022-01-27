@@ -37,8 +37,7 @@ public class MainControlsOverlayFragment implements IOverlayFragment {
         return ID_MAIN_CONTROLS_OVERLAY;
     }
 
-    @Override
-    public void Create(Context context) {
+    public MainControlsOverlayFragment(Context context) {
         root = (ViewGroup) View.inflate(context, R.layout.overlay_settings_panel, null);
         LayoutUtils.SetWrapWrap(root);
 
@@ -83,12 +82,7 @@ public class MainControlsOverlayFragment implements IOverlayFragment {
         collapsedWidth = root.getMeasuredWidth();
         SetExpanded(false);
     }
-
-    @Override
-    public void Destroy() {
-
-    }
-
+  
     @Override
     public ViewGroup GetContainer() {
         return root;

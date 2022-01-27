@@ -33,6 +33,7 @@ import androidx.core.app.NotificationCompat;
 import com.catfixture.virgloverlay.R;
 import com.catfixture.virgloverlay.core.input.devices.IInputDevice;
 import com.catfixture.virgloverlay.core.input.devices.TouchDevice;
+import com.catfixture.virgloverlay.core.overlay.OverlayInitializer;
 import com.catfixture.virgloverlay.core.utils.android.AndroidUtils;
 import com.catfixture.virgloverlay.core.impl.handles.IService;
 import com.catfixture.virgloverlay.core.debug.Dbg;
@@ -160,6 +161,8 @@ public class NativeServerInstance extends Service {
         Notification notification = notificationBuilder.build();
         startForeground(Const.SERVER_THREAD_CODE, notification);
         ShowToast("Server started");
+
+        OverlayInitializer.Init(this, inputDevice);
     }
 
     @Override

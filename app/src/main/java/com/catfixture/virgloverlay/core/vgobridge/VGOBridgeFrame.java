@@ -34,11 +34,16 @@ public class VGOBridgeFrame {
         buffer.Reset();
         if (events.size() > 0) {
             for (IVGOBridgeEvent event : events)
-                buffer.WriteByteBlock(event.Compile());
+                event.Compile(buffer);
         }
     }
 
-    public byte[] GetData() {
-        return buffer.GetData();
+    public void Flush() {
+        events.clear();
+        buffer.Reset();
+    }
+
+    public VGOBridgeBinaryBuffer GetBuffer() {
+        return buffer;
     }
 }

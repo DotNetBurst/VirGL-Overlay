@@ -5,8 +5,6 @@ import android.view.inputmethod.InputConnection;
 
 public interface IInputDevice {
     void Destroy();
-    void Show();
-    void Hide();
 
     void SendMouseClick(int button);
     void SendMouseDown(int button);
