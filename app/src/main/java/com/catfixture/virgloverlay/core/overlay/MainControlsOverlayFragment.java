@@ -1,4 +1,4 @@
-package com.catfixture.virgloverlay.core.input.overlay;
+package com.catfixture.virgloverlay.core.overlay;
 
 import static android.view.View.MeasureSpec.UNSPECIFIED;
 

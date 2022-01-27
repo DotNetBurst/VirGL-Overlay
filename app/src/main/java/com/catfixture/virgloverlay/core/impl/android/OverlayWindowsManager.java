@@ -1,7 +1,7 @@
 package com.catfixture.virgloverlay.core.impl.android;
 
 import static com.catfixture.virgloverlay.core.App.app;
-import static com.catfixture.virgloverlay.core.input.overlay.MainControlsOverlayFragment.ID_MAIN_CONTROLS_OVERLAY;
+import static com.catfixture.virgloverlay.core.overlay.MainControlsOverlayFragment.ID_MAIN_CONTROLS_OVERLAY;
 import static com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const.APP_TAG;
 
 import android.content.Context;
@@ -13,7 +13,7 @@ import android.view.SurfaceView;
 import android.view.WindowManager;
 
 import com.catfixture.virgloverlay.core.input.devices.IInputDevice;
-import com.catfixture.virgloverlay.core.input.overlay.MainControlsOverlayFragment;
+import com.catfixture.virgloverlay.core.overlay.MainControlsOverlayFragment;
 import com.catfixture.virgloverlay.core.overlay.OverlayManager;
 import com.catfixture.virgloverlay.core.utils.android.AndroidUtils;
 import com.catfixture.virgloverlay.core.debug.Dbg;

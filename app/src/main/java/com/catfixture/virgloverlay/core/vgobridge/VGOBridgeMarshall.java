@@ -65,14 +65,19 @@ public class VGOBridgeMarshall {
 
     private void HandleLoop(VGOBridgeHandle vgoBridgeHandle) throws IOException {
         int targetDelay = 1000 / targetFPS;
-        long lastFrameTime;
+        long lastFrameTime = 0;
 
         while(!marshallThread.isInterrupted()) {
             long frameStartTime = System.currentTimeMillis();
-            vgoBridgeHandle.SendData(currentFrame.block.GetData());
+
+            currentFrame.Compile();
+            if ( currentFrame.IsReady()) {
+                vgoBridgeHandle.SendData(currentFrame.GetData());
+            }
+
             lastFrameTime = (System.currentTimeMillis() - frameStartTime);
 
-            long currentDelay = targetDelay - lastFrameTime ;
+            long currentDelay = targetDelay - lastFrameTime;
             if ( currentDelay <= 0) { currentDelay = 0;}
 
             ThreadUtils.Sleep(currentDelay);
@@ -94,7 +99,11 @@ public class VGOBridgeMarshall {
         }
     }
 
-    public VGOBridgeBinaryBuffer PrepareEvent() {
-        return currentFrame.block;
+    public void SetEvent(byte type, int ... args) {
+
+    }
+
+    public void AddEvent(byte type, int arg) {
+        currentFrame.EnqueueEvent(new VGOBridgeIntEvent(type, arg));
     }
 }

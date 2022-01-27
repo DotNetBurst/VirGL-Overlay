@@ -34,7 +34,7 @@ public class TouchDevice implements IInputDevice {
         vgoBridgeMarshall.events.onSlaveConnected.addObserver((obs, handle) -> {
             Dbg.Msg("CREATING INPUT BRIDGE CONNECTION!");
             Dbg.Msg("INPUT BRIDGE CONNECTED!");
-            //Show();
+            Show();
         });
         vgoBridgeMarshall.Run();
     }
@@ -74,60 +74,46 @@ public class TouchDevice implements IInputDevice {
 
     @Override
     public void SendMouseClick(int button) {
-        vgoBridgeMarshall.PrepareEvent()
-                .WriteByte(VGOBridgeProtocol.ACTION_MOUSE_CLICK)
-                .WriteInt(button);
+        vgoBridgeMarshall.AddEvent(VGOBridgeProtocol.ACTION_MOUSE_CLICK, button);
     }
 
     @Override
     public void SendMouseDown(int button) {
-        vgoBridgeMarshall.PrepareEvent()
-                .WriteByte(VGOBridgeProtocol.ACTION_MOUSE_DOWN)
-                .WriteInt(button);
+        vgoBridgeMarshall.AddEvent(VGOBridgeProtocol.ACTION_MOUSE_DOWN, button);
     }
 
     @Override
     public void SendMouseUp(int button) {
-        vgoBridgeMarshall.PrepareEvent()
-                .WriteByte(VGOBridgeProtocol.ACTION_MOUSE_UP)
-                .WriteInt(button);
+        vgoBridgeMarshall.AddEvent(VGOBridgeProtocol.ACTION_MOUSE_UP, button);
     }
 
     @Override
     public void SendKeyPressed(int keyCode) {
         Dbg.Msg("DEV_KEY = " + keyCode);
-        vgoBridgeMarshall.PrepareEvent()
-                .WriteByte(VGOBridgeProtocol.ACTION_KEY_PRESSED)
-                .WriteInt(keyCode);
+        vgoBridgeMarshall.AddEvent(VGOBridgeProtocol.ACTION_KEY_PRESSED, keyCode);
     }
 
     @Override
     public void SendKeyDown(int keyCode) {
-        vgoBridgeMarshall.PrepareEvent()
-                .WriteByte(VGOBridgeProtocol.ACTION_KEY_DOWN)
-                .WriteInt(keyCode);
+        vgoBridgeMarshall.AddEvent(VGOBridgeProtocol.ACTION_KEY_DOWN, keyCode);
     }
 
     @Override
     public void SendKeyUp(int keyCode) {
-        vgoBridgeMarshall.PrepareEvent()
-                .WriteByte(VGOBridgeProtocol.ACTION_KEY_UP)
-                .WriteInt(keyCode);
+        vgoBridgeMarshall.AddEvent(VGOBridgeProtocol.ACTION_KEY_UP, keyCode);
     }
 
     @Override
     public void SendMouseShift(float vericalCos, float horizontalCos) {
-        float sens = 0.25f;
+        float sens = 0.02f;
 
         this.mouseGlobalPos.x += vericalCos * sens;
         this.mouseGlobalPos.y += horizontalCos * sens;
 
         Dbg.Msg("GMX = " + this.mouseGlobalPos.x);
 
-        vgoBridgeMarshall.PrepareEvent()
-                .WriteByte(VGOBridgeProtocol.ACTION_SET_MOUSE_POS)
-                .WriteInt((int) this.mouseGlobalPos.x)
-                .WriteInt((int) this.mouseGlobalPos.y);
+        vgoBridgeMarshall.SetEvent(VGOBridgeProtocol.ACTION_SET_MOUSE_POS,
+                (int) this.mouseGlobalPos.x, (int) this.mouseGlobalPos.y);
 
     }
 }

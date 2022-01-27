@@ -6,10 +6,10 @@ public class VGOBridgeBinaryBuffer implements IBinaryBufferProvider {
 
     private static final byte[] _IntToByteArray_CACHE = new byte[4];
     public static final byte[] IntToByteArray(int value) {
-        _IntToByteArray_CACHE[0] = (byte)(value >>> 24);
-        _IntToByteArray_CACHE[1] = (byte)(value >>> 16);
-        _IntToByteArray_CACHE[2] = (byte)(value >>> 8);
-        _IntToByteArray_CACHE[3] = (byte)(value);
+        _IntToByteArray_CACHE[3] = (byte)(value >>> 24);
+        _IntToByteArray_CACHE[2] = (byte)(value >>> 16);
+        _IntToByteArray_CACHE[1] = (byte)(value >>> 8);
+        _IntToByteArray_CACHE[0] = (byte)(value);
         return _IntToByteArray_CACHE;
     }
 
@@ -53,7 +53,7 @@ public class VGOBridgeBinaryBuffer implements IBinaryBufferProvider {
         return this;
     }
     public VGOBridgeBinaryBuffer WriteInt(int dec) {
-        if ( CheckBounds(1)) {
+        if ( CheckBounds(4)) {
             byte[] ba = IntToByteArray(dec);
             System.arraycopy(ba, 0, data, ptr, ba.length);
             ptr += ba.length;
@@ -79,13 +79,7 @@ public class VGOBridgeBinaryBuffer implements IBinaryBufferProvider {
         return data;
     }
 
-    @Override
-    public int Size() {
-        return ptr;
-    }
-
-    @Override
-    public int Capacity() {
-        return data.length;
+    public boolean IsReady() {
+        return ptr > 0;
     }
 }
