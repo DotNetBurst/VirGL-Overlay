@@ -111,6 +111,7 @@ public class GenericSettingsList {
                             statusIndicator.setImageResource(statusDrawable);
 
                         statusMessage.setText(setBtn.GetStatusMessage());
+                        actionButton.setText(setBtn.GetActionButtonMessage());
 
                         actionButton.setOnClickListener((e) -> {
                             setBtn.ExecuteAction();

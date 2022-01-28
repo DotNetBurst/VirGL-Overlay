@@ -14,6 +14,7 @@ import static com.catfixture.virgloverlay.core.impl.states.NativeServiceState.SE
 import static com.catfixture.virgloverlay.core.impl.states.NativeServiceState.SERVICE_STATE_INITIALIZING;
 import static com.catfixture.virgloverlay.core.impl.states.NativeServiceState.SERVICE_STATE_LISTENING;
 import static com.catfixture.virgloverlay.core.impl.states.NativeServiceState.SERVICE_STATE_RUNNING;
+import static com.catfixture.virgloverlay.core.utils.process.ThreadUtils.LockThreadUntilUITask;
 import static com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const.APP_TAG;
 
 import android.app.Notification;
@@ -61,7 +62,7 @@ public class NativeServerInstance extends Service {
     private static native int runServer();
     private static native void stopSocket(int fileDescriptor);
     private static native int acceptSocket(int fileDescriptor);
-    private static native void runSocketLoop(OverlayWindowsManager windowsManager, int fileDescriptor);
+    private static native void runSocketLoop(NativeSurfaceManager windowsManager, int fileDescriptor);
 
     private int state;
     private int mainSocketDescriptor;
@@ -71,7 +72,7 @@ public class NativeServerInstance extends Service {
     private AndLinkerBinder mLinkerBinder;
     private IServerRemoteCallback serverRemoteCallback;
     private IServerStopRemoteCallback serverStopRemoteCallback;
-    private OverlayWindowsManager windowsManager;
+    private NativeSurfaceManager windowsManager;
     private IInputDevice inputDevice;
 
     //****REMOTE SERVICE IMPL******//
@@ -131,16 +132,17 @@ public class NativeServerInstance extends Service {
     public void onCreate() {
         super.onCreate();
         GlobalExceptions.Init();
+        Context context = getApplicationContext();
 
         mLinkerBinder = AndLinkerBinder.Factory.newBinder();
         mLinkerBinder.registerObject(mRemoteService);
         cfgData = app.GetMainConfigData();
 
         handler = new Handler();
-        inputDevice = new TouchDevice(getApplicationContext());
+        inputDevice = new TouchDevice(context);
 
-        windowsManager = new OverlayWindowsManager();
-        windowsManager.Init(getApplicationContext(), mRemoteService, inputDevice);
+        windowsManager = new NativeSurfaceManager();
+        windowsManager.Init(context);
 
         Intent notificationIntent = new Intent(this, Virgl.class);
         notificationIntent.putExtra("stopServer", "true");
@@ -284,10 +286,10 @@ public class NativeServerInstance extends Service {
         Log.d(APP_TAG, "Native-lib running");
         SetServiceState(service, SERVICE_STATE_RUNNING);
 
-        //TODO!
-        handler.postDelayed(() -> {
+        LockThreadUntilUITask(handler, (mutex) -> {
             OverlayInitializer.Init(getApplicationContext(), inputDevice);
-        }, 30000);
+            synchronized (mutex) { mutex.notifyAll();}
+        });
 
         runSocketLoop(windowsManager, fileDescriptor);
         Log.d(APP_TAG, "Loop ended");

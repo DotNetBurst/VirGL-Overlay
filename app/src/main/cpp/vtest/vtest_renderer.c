@@ -368,15 +368,21 @@ static bool vtest_egl_init(struct vtest_renderer *d, bool surfaceless, bool gles
     d->x11_fake_win = XCreateSimpleWindow(d->x11_dpy, RootWindow(d->x11_dpy, 0), 0, 0, 100, 100, 0, BlackPixel(d->x11_dpy, 0),BlackPixel(d->x11_dpy, 0));
     d->egl_fake_surf = eglCreateWindowSurface(d->egl_display, d->egl_conf, d->x11_fake_win, window_attribute_list);
 #elif defined ANDROID_JNI
-struct vtest_renderer *r = d;
+        struct vtest_renderer *r = d;
+        printf("Creating EGL _ Surface");
        jobject surf = (*r->jni.env)->CallObjectMethod(r->jni.env, r->jni.object, r->jni.get_surface, (*r->jni.env)->CallObjectMethod(r->jni.env, r->jni.object, r->jni.create, 0, 0, 0, 0));
 
+        printf("Surface is : %p", surf);
        if(surf == 0) {exit(0);}
        ANativeWindow *window = ANativeWindow_fromSurface(r->jni.env, surf);
+
+        printf("W is : %p", window);
+
        int format;
        eglGetConfigAttrib(d->egl_display, d->egl_conf, EGL_NATIVE_VISUAL_ID, &format);
        ANativeWindow_setBuffersGeometry(window, 0, 0, format);
        d->egl_fake_surf = eglCreateWindowSurface(d->egl_display, d->egl_conf, window, 0);
+        printf("W is : %p", d->egl_fake_surf);
 //    d->egl_fake_surf = EGL_NO_SURFACE;
 #endif
    eglMakeCurrent(d->egl_display, d->egl_fake_surf, d->egl_fake_surf, d->egl_ctx);
@@ -875,18 +881,19 @@ static void vtest_dt_create(struct vtest_renderer *r, struct dt_record *dt, int 
 #elif defined ANDROID_JNI
     if(!dt->egl_surf)
     {
-        printf("CREATING WINDOW") ;
-       dt->java_surf = (*r->jni.env)->CallObjectMethod(r->jni.env, r->jni.object, r->jni.create, x, y, w, h);
-        printf("Done WINDOW") ;
-       jobject surf = (*r->jni.env)->CallObjectMethod(r->jni.env, r->jni.object, r->jni.get_surface, dt->java_surf);
-        printf("Done SURF") ;
-       ANativeWindow *window = ANativeWindow_fromSurface(r->jni.env, surf);
-       int format;
-       eglGetConfigAttrib(r->egl_display, r->egl_conf, EGL_NATIVE_VISUAL_ID, &format);
-       ANativeWindow_setBuffersGeometry(window, 0, 0, format);
-       dt->egl_surf = eglCreateWindowSurface(r->egl_display, r->egl_conf, window, 0);
-        printf("GL SURF DONE") ;
-       //r->egl_drawable_surf = r->egl_fake_surf;
+        printf("Creating EGL Surface");
+
+        dt->java_surf = (*r->jni.env)->CallObjectMethod(r->jni.env, r->jni.object, r->jni.create, x, y, w, h);
+        jobject surf = (*r->jni.env)->CallObjectMethod(r->jni.env, r->jni.object, r->jni.get_surface, dt->java_surf);
+        printf("Surface %p", surf);
+
+        ANativeWindow *window = ANativeWindow_fromSurface(r->jni.env, surf);
+        int format;
+        eglGetConfigAttrib(r->egl_display, r->egl_conf, EGL_NATIVE_VISUAL_ID, &format);
+        ANativeWindow_setBuffersGeometry(window, 0, 0, format);
+        dt->egl_surf = eglCreateWindowSurface(r->egl_display, r->egl_conf, window, 0);
+        printf("GL SURF DONE %p", dt->egl_surf) ;
+        //r->egl_drawable_surf = r->egl_fake_surf;
     }
 #else
 // useless

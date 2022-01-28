@@ -38,6 +38,7 @@ import com.catfixture.virgloverlay.ui.common.interactions.ConfirmDialog;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 @SuppressWarnings("ConstantConditions")
@@ -254,5 +255,38 @@ public class AndroidUtils {
 
     public static BroadcastBlank BroadcastBuilder(String action) {
         return new BroadcastBlank(action);
+    }
+
+    public static File CopyRawToTemp (Context context, int rawId, String targetName) {
+        InputStream rawIs = context.getResources().openRawResource(rawId);
+        File filesDir = context.getFilesDir();
+        File tempFile = new File(filesDir, targetName);
+        try {
+            if(tempFile.exists() && !tempFile.delete())
+                throw new IOException("Cant delete file");
+
+            if (tempFile.createNewFile()) {
+                FileOutputStream fos = new FileOutputStream(tempFile);
+
+                byte[] tempBuffer = new byte[1024];
+                int readen = 0;
+                while((readen = rawIs.read(tempBuffer)) > 0) {
+                    fos.write(tempBuffer, 0, readen);
+                }
+                fos.flush();
+                fos.close();
+                Dbg.Msg("Tempfile " + tempFile.getAbsolutePath() + " created");
+                return tempFile;
+            } else throw new IOException("Cant create file");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            rawIs.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

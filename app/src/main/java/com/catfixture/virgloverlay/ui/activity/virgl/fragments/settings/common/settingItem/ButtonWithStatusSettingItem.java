@@ -13,8 +13,9 @@ import java.util.Observer;
 public class ButtonWithStatusSettingItem extends SettingItem {
     private int statusDrawable;
     private String statusMessage;
+    private String actionButtonMessage;
     private Event event = new Event();
-    private boolean actionButtonVisible;
+    private boolean actionButtonVisible = true;
 
     public ButtonWithStatusSettingItem(String name, String description, IObjectProvider dto, String fieldName) {
         super(Boolean.class, name, description, dto, fieldName);
@@ -59,5 +60,12 @@ public class ButtonWithStatusSettingItem extends SettingItem {
 
     public String GetStatusMessage() {
         return statusMessage;
+    }
+
+    public void SetActionButtonMessage(String actionButtonMessage) {
+        this.actionButtonMessage = actionButtonMessage;
+    }
+    public String GetActionButtonMessage() {
+        return this.actionButtonMessage;
     }
 }

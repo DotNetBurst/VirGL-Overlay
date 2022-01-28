@@ -12,6 +12,14 @@ public class OverlayInitializer {
     public static void Init(Context context, IInputDevice device) {
         OverlayManager overlayManager = app.GetOverlayManager();
 
+        //RENDERING FRAG
+        RenderingOverlayFragment renderingOverlayFragment = new RenderingOverlayFragment(context);
+        overlayManager.Add(renderingOverlayFragment);
+        overlayManager.Show(renderingOverlayFragment);
+
+        //TOUCH CONTROLS DEVICE
+
+
         TouchDeviceOverlayFragment touchDeviceOverlayFragment = new TouchDeviceOverlayFragment(context, device);
         overlayManager.Add(touchDeviceOverlayFragment);
 
@@ -21,10 +29,13 @@ public class OverlayInitializer {
         touchDeviceEditorOverlayFragment.onSetChanged.addObserver((observable, o) -> touchDeviceOverlayFragment.InflateControls());
         touchDeviceEditorOverlayFragment.onClosed.addObserver((observable, o) -> touchDeviceOverlayFragment.OnEditorClosed());
 
+        //MAIN CONTROL PANEL
         MainControlsOverlayFragment mainControlsOverlayFragment = new MainControlsOverlayFragment(context);
         overlayManager.Add(mainControlsOverlayFragment);
 
+
         overlayManager.Show(touchDeviceOverlayFragment);
         overlayManager.Show(touchDeviceEditorOverlayFragment); //TODO LINK1
+
     }
 }
