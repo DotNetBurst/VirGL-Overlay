@@ -82,9 +82,6 @@ public class ConfigProfile {
     public void SetCenterViewportRect(Boolean centerViewportRect) { this.centerViewportRect=centerViewportRect; Save();}
 
 
-    public boolean showServicesOnTopOfOverlay;
-    public void SetShowServicesOnTopOfOverlay(Boolean showServicesOnTopOfOverlay) { this.showServicesOnTopOfOverlay=showServicesOnTopOfOverlay; Save();}
-
     public boolean showControlsOnTopOfOverlay;
     public void SetShowControlsOnTopOfOverlay(Boolean showControlsOnTopOfOverlay) { this.showControlsOnTopOfOverlay=showControlsOnTopOfOverlay; Save();}
 
@@ -97,10 +94,6 @@ public class ConfigProfile {
 
     public boolean enableToasts;
     public void SetEnableToasts(Boolean enableToasts) { this.enableToasts=enableToasts; Save();}
-
-
-    public boolean enableSystemKeyboard;
-    public void SetEnableSystemKeyboard(Boolean enableSystemKeyboard) { this.enableSystemKeyboard=enableSystemKeyboard; Save();}
 
     public boolean enableNativeInput;
     public void SetEnableNativeInput(Boolean enableNativeInput) { this.enableNativeInput=enableNativeInput; Save();}

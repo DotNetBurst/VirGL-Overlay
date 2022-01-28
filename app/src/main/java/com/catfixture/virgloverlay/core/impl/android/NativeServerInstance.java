@@ -23,6 +23,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.Process;
 import android.util.Log;
@@ -54,6 +55,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NativeServerInstance extends Service {
+    private Handler handler;
+
     private static native void initialize(MainConfigData settings);
     private static native int runServer();
     private static native void stopSocket(int fileDescriptor);
@@ -133,6 +136,7 @@ public class NativeServerInstance extends Service {
         mLinkerBinder.registerObject(mRemoteService);
         cfgData = app.GetMainConfigData();
 
+        handler = new Handler();
         inputDevice = new TouchDevice(getApplicationContext());
 
         windowsManager = new OverlayWindowsManager();
@@ -161,8 +165,6 @@ public class NativeServerInstance extends Service {
         Notification notification = notificationBuilder.build();
         startForeground(Const.SERVER_THREAD_CODE, notification);
         ShowToast("Server started");
-
-        OverlayInitializer.Init(this, inputDevice);
     }
 
     @Override
@@ -281,6 +283,12 @@ public class NativeServerInstance extends Service {
         Log.d(APP_TAG, "Running per socket loop");
         Log.d(APP_TAG, "Native-lib running");
         SetServiceState(service, SERVICE_STATE_RUNNING);
+
+        //TODO!
+        handler.postDelayed(() -> {
+            OverlayInitializer.Init(getApplicationContext(), inputDevice);
+        }, 30000);
+
         runSocketLoop(windowsManager, fileDescriptor);
         Log.d(APP_TAG, "Loop ended");
         serverStopRemoteCallback.onServerStopped();

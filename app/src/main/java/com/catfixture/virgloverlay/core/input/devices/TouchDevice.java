@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.catfixture.virgloverlay.core.debug.Dbg;
 import com.catfixture.virgloverlay.core.input.codes.KeyCodes;
+import com.catfixture.virgloverlay.core.overlay.OverlayInitializer;
 import com.catfixture.virgloverlay.core.vgobridge.VGOBridgeHandle;
 import com.catfixture.virgloverlay.core.vgobridge.VGOBridgeMarshall;
 import com.catfixture.virgloverlay.core.vgobridge.VGOBridgeProtocol;
@@ -11,7 +12,6 @@ import com.catfixture.virgloverlay.core.vgobridge.VGOBridgeProtocol;
 
 public class TouchDevice implements IInputDevice {
     private VGOBridgeMarshall vgoBridgeMarshall;
-    private VGOBridgeHandle handle;
     private Context context;
 
     public TouchDevice(Context context) {
@@ -28,6 +28,8 @@ public class TouchDevice implements IInputDevice {
         vgoBridgeMarshall.events.onSlaveConnected.addObserver((obs, handle) -> {
             Dbg.Msg("CREATING INPUT BRIDGE CONNECTION!");
             Dbg.Msg("INPUT BRIDGE CONNECTED!");
+
+            //OverlayInitializer.Init(context, this);
         });
         vgoBridgeMarshall.Run();
     }

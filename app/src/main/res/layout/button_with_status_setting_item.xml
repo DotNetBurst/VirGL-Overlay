@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/darkGray"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:textColor="@color/lightestGray"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/actionButton"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:layout_weight="0"
+            android:backgroundTint="@color/blueSat"
+            android:text="INSTALL" />
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/statusIndicator"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:visibility="gone"
+        android:layout_marginEnd="10dp"
+        android:layout_weight="0"
+        android:src="@drawable/vgob_installed"
+        />
+    <TextView
+        android:id="@+id/statusMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        />
+
+</LinearLayout>

@@ -26,10 +26,6 @@ public class OverlayFragment extends CoreSettingsFragment {
                 "show controls, helpful in case of fullscreen shrink", settingsDtoProvider, "showControlsOnTopOfOverlay");
         settingsViewAdapter.AddItem(showControlsOnTopOfOverlay);
 
-        SwitchSettingItem showServicesOnTopOfOverlay = new SwitchSettingItem("Show services [Not impl.]",
-                "show services status panel on top of overlay (warn!dbg)", settingsDtoProvider, "showServicesOnTopOfOverlay");
-        settingsViewAdapter.AddItem(showServicesOnTopOfOverlay);
-
         SwitchSettingItem enableToasts = new SwitchSettingItem("Enable toasts",
                 "enable annoying toasts, use for info about app", settingsDtoProvider, "enableToasts");
         settingsViewAdapter.AddItem(enableToasts);

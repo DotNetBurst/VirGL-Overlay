@@ -1,11 +1,16 @@
 package com.catfixture.virgloverlay.ui.utils;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,6 +23,7 @@ import com.catfixture.virgloverlay.core.utils.types.delegates.Action;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common.MultiGroupEntry;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common.SettingItem;
+import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common.settingItem.ButtonWithStatusSettingItem;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common.settingItem.MultiGroupSettingItem;
 import com.catfixture.virgloverlay.ui.common.genAdapter.GenericMultiViewListAdapter;
 
@@ -31,9 +37,7 @@ public class GenericSettingsList {
                 R.layout.int_setting_item,
                 R.layout.int_setting_item,
                 R.layout.multigroup_setting_item,
-                R.layout.int_setting_item,
-                R.layout.int_setting_item,
-                R.layout.int_setting_item,
+                R.layout.button_with_status_setting_item
         }, (item, itemView) -> {
             TextView name = itemView.findViewById(R.id.name);
             name.setText(item.GetName());
@@ -90,6 +94,27 @@ public class GenericSettingsList {
                             if (entry.id == selectedId) description.setText(entry.hint);
                         }
 
+                        break;
+                    }
+                    case Const.SETTING_DISPLAY_TYPE_BUTTON_WITH_STATUS: {
+                        ButtonWithStatusSettingItem setBtn = (ButtonWithStatusSettingItem) item;
+                        Button actionButton = itemView.findViewById(R.id.actionButton);
+                        ImageView statusIndicator = itemView.findViewById(R.id.statusIndicator);
+                        TextView statusMessage = itemView.findViewById(R.id.statusMessage);
+
+                        int statusDrawable = setBtn.GetStatusDrawable();
+                        boolean isStatusVisible = statusDrawable != -1;
+
+                        actionButton.setVisibility(setBtn.GetActionButtonVisible() ? VISIBLE : GONE);
+                        statusIndicator.setVisibility(isStatusVisible ? VISIBLE : GONE);
+                        if ( isStatusVisible)
+                            statusIndicator.setImageResource(statusDrawable);
+
+                        statusMessage.setText(setBtn.GetStatusMessage());
+
+                        actionButton.setOnClickListener((e) -> {
+                            setBtn.ExecuteAction();
+                        });
                         break;
                     }
                 }

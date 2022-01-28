@@ -9,6 +9,7 @@ import com.catfixture.virgloverlay.core.utils.types.delegates.Action;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class ProcUtils {
@@ -20,6 +21,41 @@ public class ProcUtils {
         new Thread(() -> {
             try {
                 Process p = Runtime.getRuntime().exec(command);
+                p.waitFor();
+                int res = p.exitValue();
+                if ( resultCode != null) {
+                    resultCode.Invoke(res);
+                }
+            } catch (IOException | InterruptedException e) {
+                Dbg.Error(e);
+                if ( resultCode != null) {
+                    resultCode.Invoke(-1);
+                }
+            }
+        }).start();
+    }
+    public static void RunSystemCommandWithOutput(String command, Action<Integer> resultCode) {
+        new Thread(() -> {
+            try {
+                Process p = Runtime.getRuntime().exec(command);
+
+                BufferedReader br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+                StringBuilder sb = new StringBuilder();
+                String tempLine = null;
+                while((tempLine = br.readLine()) != null) {
+                    sb.append(tempLine).append('\n');
+                }
+                Dbg.Msg(sb.toString());
+
+
+                br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                sb = new StringBuilder();
+                tempLine = null;
+                while((tempLine = br.readLine()) != null) {
+                    sb.append(tempLine).append('\n');
+                }
+                Dbg.Msg(sb.toString());
+
                 p.waitFor();
                 int res = p.exitValue();
                 if ( resultCode != null) {

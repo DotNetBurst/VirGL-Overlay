@@ -16,10 +16,8 @@ public class VGOBridgeMarshall {
     private final Handler handler;
     private final int targetFPS;
     private final ScheduledExecutorService exec;
-    private Object mutex = new Object();
     private Thread marshallThread;
-    private VGOBridgeFrame currentFrame;
-    private VGOBridgeHandle currentHandle;
+    private final VGOBridgeFrame currentFrame;
     private ServerSocket serverSocket;
     public final VGOBridgeEvents events = new VGOBridgeEvents();
 
@@ -70,10 +68,12 @@ public class VGOBridgeMarshall {
         while(!marshallThread.isInterrupted()) {
             long frameStartTime = System.currentTimeMillis();
 
-            currentFrame.Compile();
-            if ( currentFrame.IsReady()) {
-                vgoBridgeHandle.SendData(currentFrame.GetBuffer());
-                currentFrame.Flush();
+            synchronized (currentFrame) {
+                currentFrame.Compile();
+                if (currentFrame.IsReady()) {
+                    vgoBridgeHandle.SendData(currentFrame.GetBuffer());
+                    currentFrame.Flush();
+                }
             }
 
             lastFrameTime = (System.currentTimeMillis() - frameStartTime);
@@ -101,10 +101,14 @@ public class VGOBridgeMarshall {
     }
 
     public void SetEvent(byte type, int ... args) {
-        currentFrame.SetEvent(new VGOBridgeIntEvent(type, args));
+        synchronized (currentFrame) {
+            currentFrame.SetEvent(new VGOBridgeIntEvent(type, args));
+        }
     }
 
     public void AddEvent(byte type, int arg) {
-        currentFrame.EnqueueEvent(new VGOBridgeByteEvent(type, (byte)arg));
+        synchronized (currentFrame) {
+            currentFrame.EnqueueEvent(new VGOBridgeByteEvent(type, (byte) arg));
+        }
     }
 }

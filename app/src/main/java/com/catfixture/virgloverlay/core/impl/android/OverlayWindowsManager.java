@@ -78,6 +78,7 @@ public class OverlayWindowsManager {
 
     }
 
+    //TODO!
     private boolean initialized = false;
     private void UpdateWindow(final SurfaceView surface, final int x, final int y, final int width, final int height, final int visible) {
         handler.post(() -> {

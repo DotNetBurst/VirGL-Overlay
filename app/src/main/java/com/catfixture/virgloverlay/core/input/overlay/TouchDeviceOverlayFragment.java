@@ -87,9 +87,13 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
                     newTouchElement = new TextButton(context, touchControlElement.id, layout);
                     ((TextButton)newTouchElement).SetText(KeyCodes.GetCodeName(touchControlElement.buttonCode));
                     if (!isEditorOverlayShown) {
+                        newTouchElement.onDown.addObserver((observable, o) -> {
+                            KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_UP, touchControlElement.buttonCode);
+                            inputDevice.SendKeyDown(keyEvent.getKeyCode());
+                        });
                         newTouchElement.onUp.addObserver((observable, o) -> {
                             KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_UP, touchControlElement.buttonCode);
-                            inputDevice.SendKeyPressed(keyEvent.getKeyCode());
+                            inputDevice.SendKeyUp(keyEvent.getKeyCode());
                         });
                     }
 

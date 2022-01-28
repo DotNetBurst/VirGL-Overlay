@@ -5,6 +5,7 @@ public class Const {
     public static final int SETTING_DISPLAY_TYPE_TEXT = 1;
     public static final int SETTING_DISPLAY_TYPE_INT = 2;
     public static final int SETTING_DISPLAY_TYPE_MULTI_GROUP = 4;
+    public static final int SETTING_DISPLAY_TYPE_BUTTON_WITH_STATUS = 5;
     public static final String APP_TAG = "virgl";
     public static final String EXAGEAR_APP_PACKAGE = "com.eltechs.ed";
     public static final int PERMISSION_REQUEST_CODE = 390433450;
