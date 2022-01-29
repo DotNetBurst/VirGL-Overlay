@@ -53,6 +53,7 @@ public class InputFragment extends CoreSettingsFragment {
                 "Required to use native input", settingsDtoProvider, "enableNativeInput");
         statusedButtonSettingItem.SetSpacing(15);
         settingsViewAdapter.AddItem(statusedButtonSettingItem);
+        statusedButtonSettingItem.ToggleVisibility((Boolean)enableNativeInput.GetValue());
 
         UpdateVGOBRidgeInstalleState(getContext(), null);
 

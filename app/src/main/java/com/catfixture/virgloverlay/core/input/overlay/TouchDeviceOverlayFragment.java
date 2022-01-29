@@ -140,8 +140,8 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
                                         (int) motionEvent.getY() - elSize.y / 2);
 
                                 final int deadZone = 20;
-                                startAxis.Set(dt.y > deadZone ? 40 : dt.y < -deadZone ? 38 : -1,
-                                        dt.x > deadZone ? 39 : dt.x < -deadZone ? 37 : -1);
+                                startAxis.Set(dt.y > deadZone ? 83 : dt.y < -deadZone ? 87 : -1,
+                                        dt.x > deadZone ? 68 : dt.x < -deadZone ? 65 : -1);
 
                                 if ( startAxis.x != -1) {
                                     inputDevice.SendKeyDown(startAxis.x);
@@ -154,6 +154,25 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
                                 Dbg.Msg("Click poos " + startAxis.x + " _ " + startAxis.y);
                             });
                             newTouchElement.onMove.addObserver((observable, o) -> {
+                                MotionEvent motionEvent = (MotionEvent) o;
+                                final Int2 dt = new Int2((int) motionEvent.getX() - elSize.x / 2,
+                                        (int) motionEvent.getY() - elSize.y / 2);
+
+                                final int deadZone = 80;
+                                startAxis.Set(dt.y > deadZone ? 83 : dt.y < -deadZone ? 87 : -1,
+                                        dt.x > deadZone ? 68 : dt.x < -deadZone ? 65 : -1);
+
+                                if ( startAxis.x != -1 && startAxis.x != currentAxis.x) {
+                                    inputDevice.SendKeyUp(currentAxis.x);
+                                    currentAxis.x = startAxis.x;
+                                    inputDevice.SendKeyDown(currentAxis.x);
+                                }
+                                if ( startAxis.y != -1 && startAxis.y != currentAxis.y) {
+                                    inputDevice.SendKeyUp(currentAxis.y);
+                                    currentAxis.y = startAxis.y;
+                                    inputDevice.SendKeyDown(currentAxis.y);
+                                }
+                                Dbg.Msg("Click poos " + startAxis.x + " _ " + startAxis.y);
                             });
                             newTouchElement.onUp.addObserver((observable, o) -> {
                                 if ( currentAxis.x != -1)
