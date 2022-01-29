@@ -35,6 +35,16 @@ public class RenderingOverlayFragment implements IOverlayFragment {
         return container;
     }
 
+    @Override
+    public void OnFragmentShown() {
+
+    }
+
+    @Override
+    public void OnFragmentHidden() {
+
+    }
+
     public SurfaceView CreateSurface() {
         ThreadUtils.LockThreadUntilUITask(handler, (mutex) -> {
             surfaceView = new SurfaceView(context);

@@ -4,8 +4,8 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.catfixture.virgloverlay.core.App.app;
-import static com.catfixture.virgloverlay.core.input.overlay.TouchDeviceOverlayFragment.ID_TOUCH_CONTROLS_OVERLAY;
 import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_CIRCLE_BUTTON;
+import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_MOUSE_ZONE;
 import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_RECT_BUTTON;
 import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_ROUNDED_BUTTON;
 import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_STICK;
@@ -68,15 +68,15 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
     private View settingsContainer;
     private SeekBar uiOpacity;
     private Spinner type;
-    private TextView handleSizeText;
-    private SeekBar handleSize;
+    private TextView sensivityText;
+    private SeekBar sensivity;
 
     private ArrayAdapter<String> profilesAdapter;
     private boolean settingsViewToggled;
     private int selectedItemId = -1;
     private Context context;
     private InputConfigData cfg;
-    private TouchDeviceOverlayFragment tcWindow;
+    private TouchDeviceOverlayFragment parentWindow;
     private Int2 position = new Int2(0,0);;
 
     @Override
@@ -89,7 +89,17 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
         return root;
     }
 
-    public TouchDeviceEditorOverlayFragment(Context context) {
+    @Override
+    public void OnFragmentShown() {
+        onSetChanged.notifyObservers();
+    }
+
+    @Override
+    public void OnFragmentHidden() {
+
+    }
+
+    public TouchDeviceEditorOverlayFragment(Context context, TouchDeviceOverlayFragment parentWindow) {
         this.context = context;
         root = (ViewGroup) View.inflate(context, R.layout.touch_controls_editor, null);
 
@@ -109,10 +119,10 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
         uiOpacity = root.findViewById(R.id.uiOpacity);
         uiOpacityText = root.findViewById(R.id.uiOpacityText);
         type = root.findViewById(R.id.controlType);
-        handleSizeText = root.findViewById(R.id.handleSizeText);
-        handleSize = root.findViewById(R.id.handleSize);
+        sensivityText = root.findViewById(R.id.sensivitySliderText);
+        sensivity = root.findViewById(R.id.sensivitySlider);
 
-        tcWindow = (TouchDeviceOverlayFragment) app.GetOverlayManager().GetFragment(ID_TOUCH_CONTROLS_OVERLAY);
+        this.parentWindow = parentWindow;
         cfg = app.GetInputConfigData();
 
 
@@ -168,7 +178,7 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
 
         //SETTINGS
         ArrayAdapter<String> typesAdapter = Utils.InitSpinner(context, type, 0, i -> {
-            tcWindow.TryGetWindowElementById(selectedItemId, (selectedItem) -> {
+            this.parentWindow.TryGetWindowElementById(selectedItemId, (selectedItem) -> {
                 InputTouchControlElement data = (InputTouchControlElement) selectedItem.GetData();
                 if (i != data.type) {
                     data.SetType(i);
@@ -183,6 +193,7 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
         typesAdapter.add("Rect button");
         typesAdapter.add("Cross");
         typesAdapter.add("Stick");
+        typesAdapter.add("MouseZone");
         typesAdapter.notifyDataSetChanged();
 
 
@@ -205,7 +216,7 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
         buttonCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int is, long l) {
-                tcWindow.TryGetWindowElementById(selectedItemId, (selectedItem) -> {
+                TouchDeviceEditorOverlayFragment.this.parentWindow.TryGetWindowElementById(selectedItemId, (selectedItem) -> {
                     InputTouchControlElement data = (InputTouchControlElement) selectedItem.GetData();
                     if (is != data.buttonCode) {
                         data.SetButtonCode(buttonCodesAdapter.getItem(is).code);
@@ -220,7 +231,7 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
         alpha.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                tcWindow.TryGetWindowElementById(selectedItemId, (selectedItem) -> {
+                TouchDeviceEditorOverlayFragment.this.parentWindow.TryGetWindowElementById(selectedItemId, (selectedItem) -> {
                     float alpha = (i + 20) / 100.0f;
                     selectedItem.SetAlpha(alpha * cfg.uiOpacity);
                     InputTouchControlElement data = (InputTouchControlElement) selectedItem.GetData();
@@ -235,12 +246,26 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
         size.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                tcWindow.TryGetWindowElementById(selectedItemId, (selectedItem) -> {
+                TouchDeviceEditorOverlayFragment.this.parentWindow.TryGetWindowElementById(selectedItemId, (selectedItem) -> {
                     int scale = i + 20;
                     selectedItem.SetScale(scale);
                     InputTouchControlElement data = (InputTouchControlElement) selectedItem.GetData();
                     data.SetScale(scale);
                     sizeText.setText("Size : " + (scale) + "%");
+                });
+            }
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        sensivity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                TouchDeviceEditorOverlayFragment.this.parentWindow.TryGetWindowElementById(selectedItemId, (selectedItem) -> {
+                    InputTouchControlElement data = (InputTouchControlElement) selectedItem.GetData();
+                    data.SetSensivity(i);
+                    sensivityText.setText("Sensivity : " + (i) + "%");
                 });
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -321,7 +346,7 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
     }
 
     private void ResetSelection() {
-        tcWindow.TryGetWindowElementById( this.selectedItemId, (selectedItem) -> {
+        parentWindow.TryGetWindowElementById( this.selectedItemId, (selectedItem) -> {
             if (selectedItem != null)
                 ((LinearLayout) selectedItem).getBackground().setColorFilter(null);
         });
@@ -333,7 +358,7 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
         this.selectedItemId = selectedItemId;
         InitEditorView();
 
-        tcWindow.TryGetWindowElementById(selectedItemId, (selectedItem) -> {
+        parentWindow.TryGetWindowElementById(selectedItemId, (selectedItem) -> {
             ((LinearLayout)selectedItem).getBackground().setColorFilter(context.getColor(R.color.orange), PorterDuff.Mode.MULTIPLY);
 
             InputTouchControlElement data = (InputTouchControlElement) selectedItem.GetData();
@@ -343,12 +368,14 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
             buttonCode.setSelection(KeyCodes.GetCodeIndex(data.buttonCode));
             alphaText.setText("Opacity : " + (int)(data.alpha * 100) + "%");
             sizeText.setText("Size : " + (data.scale) + "%");
+            sensivityText.setText("Sensivity : " + (data.sensivity) + "%");
+            sensivity.setProgress(data.sensivity);
 
             buttonCode.setVisibility(data.type == TYPE_ROUNDED_BUTTON || data.type == TYPE_CIRCLE_BUTTON || data.type == TYPE_RECT_BUTTON ? VISIBLE : GONE);
 
-            int handleVis = data.type == TYPE_STICK ? VISIBLE : GONE;
-            handleSizeText.setVisibility(handleVis);
-            handleSize.setVisibility(handleVis);
+            int handleVis = data.type == TYPE_STICK || data.type == TYPE_MOUSE_ZONE ? VISIBLE : GONE;
+            sensivityText.setVisibility(handleVis);
+            sensivity.setVisibility(handleVis);
         });
 
         if (settingsViewToggled)

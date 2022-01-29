@@ -41,33 +41,33 @@ public class TouchDevice implements IInputDevice {
 
     @Override
     public void SendMouseClick(int button) {
-        vgoBridgeMarshall.AddEvent(VGOBridgeProtocol.ACTION_MOUSE_CLICK, button);
+        vgoBridgeMarshall.AddByteEvent(VGOBridgeProtocol.ACTION_MOUSE_CLICK, button);
     }
 
     @Override
     public void SendMouseDown(int button) {
-        vgoBridgeMarshall.AddEvent(VGOBridgeProtocol.ACTION_MOUSE_DOWN, button);
+        vgoBridgeMarshall.AddByteEvent(VGOBridgeProtocol.ACTION_MOUSE_DOWN, button);
     }
 
     @Override
     public void SendMouseUp(int button) {
-        vgoBridgeMarshall.AddEvent(VGOBridgeProtocol.ACTION_MOUSE_UP, button);
+        vgoBridgeMarshall.AddByteEvent(VGOBridgeProtocol.ACTION_MOUSE_UP, button);
     }
 
     @Override
     public void SendKeyPressed(int keyCode) {
         Dbg.Msg("DEV_KEY = " + keyCode);
-        vgoBridgeMarshall.AddEvent(VGOBridgeProtocol.ACTION_KEY_PRESSED, keyCode);
+        vgoBridgeMarshall.AddIntEvent(VGOBridgeProtocol.ACTION_KEY_PRESSED, keyCode);
     }
 
     @Override
     public void SendKeyDown(int keyCode) {
-        vgoBridgeMarshall.AddEvent(VGOBridgeProtocol.ACTION_KEY_DOWN, keyCode);
+        vgoBridgeMarshall.AddIntEvent(VGOBridgeProtocol.ACTION_KEY_DOWN, keyCode);
     }
 
     @Override
     public void SendKeyUp(int keyCode) {
-        vgoBridgeMarshall.AddEvent(VGOBridgeProtocol.ACTION_KEY_UP, keyCode);
+        vgoBridgeMarshall.AddIntEvent(VGOBridgeProtocol.ACTION_KEY_UP, keyCode);
     }
 
     @Override

@@ -68,4 +68,12 @@ public class Int2 {
 
         return x * v.x + y * v.y;
     }
+
+    @Override
+    public String toString() {
+        return "Int2{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }

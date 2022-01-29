@@ -7,4 +7,7 @@ import android.view.ViewGroup;
 public interface IOverlayFragment {
     int GetID();
     ViewGroup GetContainer();
+
+    void OnFragmentShown();
+    void OnFragmentHidden();
 }

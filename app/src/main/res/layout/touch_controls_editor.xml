@@ -187,7 +187,7 @@
                 android:popupBackground="@color/darkGray" />
 
             <TextView
-                android:id="@+id/handleSizeText"
+                android:id="@+id/sensivitySliderText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -197,7 +197,7 @@
                 android:textColor="@color/white" />
 
             <SeekBar
-                android:id="@+id/handleSize"
+                android:id="@+id/sensivitySlider"
                 style="@style/Widget.AppCompat.SeekBar.Discrete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

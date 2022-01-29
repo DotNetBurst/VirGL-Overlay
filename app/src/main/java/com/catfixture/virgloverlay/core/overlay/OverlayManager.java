@@ -72,11 +72,13 @@ public class OverlayManager implements ITouchable {
     public void Show(int id) {
         IOverlayFragment fragment = GetFragment(id);
         fragment.GetContainer().setVisibility(View.VISIBLE);
+        fragment.OnFragmentShown();
     }
     public void Hide(IOverlayFragment frag) { Hide(frag.GetID());}
     public void Hide(int id) {
         IOverlayFragment fragment = GetFragment(id);
         fragment.GetContainer().setVisibility(View.GONE);
+        fragment.OnFragmentHidden();
     }
 
     @Override

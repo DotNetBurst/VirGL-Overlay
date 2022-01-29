@@ -45,6 +45,7 @@ import com.catfixture.virgloverlay.core.ipc.IServerRemoteCallback;
 import com.catfixture.virgloverlay.core.ipc.IServerRemoteService;
 import com.catfixture.virgloverlay.core.ipc.IServerStopRemoteCallback;
 import com.catfixture.virgloverlay.core.ipc.ServiceParcelable;
+import com.catfixture.virgloverlay.core.utils.process.ThreadUtils;
 import com.catfixture.virgloverlay.core.utils.types.delegates.Functions;
 import com.catfixture.virgloverlay.data.MainConfigData;
 import com.catfixture.virgloverlay.data.ConfigProfile;
@@ -144,10 +145,9 @@ public class NativeServerInstance extends Service {
         windowsManager = new NativeSurfaceManager();
         windowsManager.Init(context);
 
-        Intent notificationIntent = new Intent(this, Virgl.class);
-        notificationIntent.putExtra("stopServer", "true");
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-                notificationIntent, PendingIntent.FLAG_IMMUTABLE | FLAG_ONE_SHOT);
+        //test
+
+        //OverlayInitializer.Init(getApplicationContext(), inputDevice);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         String channelId = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? AndroidUtils.createNotificationChannel(notificationManager) : "";
@@ -157,8 +157,17 @@ public class NativeServerInstance extends Service {
                 .setCategory(NotificationCompat.CATEGORY_SERVICE);
 
         if (cfgData.automaticMode) {
-            notificationBuilder.setContentText("Running in automatic mode");
+            Intent notificationIntent = new Intent(this, Virgl.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                    notificationIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+            notificationBuilder.setContentText("Running in automatic mode")
+                    .setContentText("Tap to open app")
+                    .setContentIntent(pendingIntent);
         } else {
+            Intent notificationIntent = new Intent(this, Virgl.class);
+            notificationIntent.putExtra("stopServer", "true");
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                    notificationIntent, PendingIntent.FLAG_IMMUTABLE | FLAG_ONE_SHOT);
             notificationBuilder
                     .setContentText("Tap to stop service")
                     .setContentIntent(pendingIntent);

@@ -3,8 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/dimas/Desktop/DEVEL/VIRGLOVERLAY/app/src/main/res/drawable/fx_tc_rect_rnd_btn.xml" value="0.246875" />
         <entry key="..\:/Users/dimas/Desktop/DEVEL/VIRGLOVERLAY/app/src/main/res/layout/button_with_status_setting_item.xml" value="0.23072916666666668" />
         <entry key="..\:/Users/dimas/Desktop/DEVEL/VIRGLOVERLAY/app/src/main/res/layout/multigroup_setting_item.xml" value="0.23072916666666668" />
+        <entry key="..\:/Users/dimas/Desktop/DEVEL/VIRGLOVERLAY/app/src/main/res/layout/touch_controls_editor.xml" value="0.14479166666666668" />
         <entry key="..\:/Users/dimas/Desktop/VirGL-Overlay-apk-10-v6/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.4203125" />
         <entry key="..\:/Users/dimas/Desktop/VirGL-Overlay-apk-10-v6/app/src/main/res/drawable/fx_pnb_pan.xml" value="0.2140625" />
         <entry key="..\:/Users/dimas/Desktop/VirGL-Overlay-apk-10-v6/app/src/main/res/drawable/fx_tc_circle_btn.xml" value="0.2140625" />

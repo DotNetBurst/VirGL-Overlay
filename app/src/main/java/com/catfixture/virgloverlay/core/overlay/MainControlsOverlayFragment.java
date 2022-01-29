@@ -88,6 +88,16 @@ public class MainControlsOverlayFragment implements IOverlayFragment {
         return root;
     }
 
+    @Override
+    public void OnFragmentShown() {
+
+    }
+
+    @Override
+    public void OnFragmentHidden() {
+
+    }
+
     private void SetCurrentInputDevice(Context context, int currentInputDevice) {
         this.currentInputDevice = currentInputDevice;
         UpdateButtonsColors(context, currentInputDevice);

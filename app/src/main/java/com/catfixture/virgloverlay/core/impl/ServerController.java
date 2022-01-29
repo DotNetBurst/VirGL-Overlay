@@ -44,20 +44,7 @@ public class ServerController implements AndLinker.BindCallback {
     public ServerController(Context context) {
         this.context = context;
     }
-
-    public boolean SwitchServer(IServerRemoteCallback mRemoteCallback) {
-        this.serverRemoteCallback = mRemoteCallback;
-
-        if (!started) {
-            Start(mRemoteCallback);
-        } else {
-            Stop(true);
-        }
-
-        started = !started;
-        return started;
-    }
-
+ 
     public void Start(IServerRemoteCallback mRemoteCallback) {
         Dbg.Msg("START CMD!");
         AndLinker.enableLogger(true);
@@ -70,10 +57,12 @@ public class ServerController implements AndLinker.BindCallback {
         mLinker.registerObject(mRemoteCallback);
         mLinker.registerObject(serverStopRemoteCallback);
         mLinker.bind();
+        started = true;
     }
 
     public void Stop(boolean forced) {
         if ( forced || started) {
+            if ( forced) started = false;
             try {
                 mLinker.unRegisterObject(serverStopRemoteCallback);
                 mLinker.unRegisterObject(serverRemoteCallback);
@@ -126,5 +115,15 @@ public class ServerController implements AndLinker.BindCallback {
                 Start(serverRemoteCallback);
             }
         }
+    }
+
+    public boolean SwitchServer(IServerRemoteCallback serverRemoteCallback) {
+        this.serverRemoteCallback = serverRemoteCallback;
+
+        if (started) {
+            Stop(true);
+        } else Start(serverRemoteCallback);
+
+        return started;
     }
 }

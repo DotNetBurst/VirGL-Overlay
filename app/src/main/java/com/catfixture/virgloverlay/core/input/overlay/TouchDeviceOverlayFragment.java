@@ -4,6 +4,7 @@ import static com.catfixture.virgloverlay.core.App.app;
 import static com.catfixture.virgloverlay.core.input.overlay.TouchDeviceEditorOverlayFragment.ID_TOUCH_CONTROLS_EDITOR_OVERLAY;
 import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_CIRCLE_BUTTON;
 import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_CROSS;
+import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_MOUSE_ZONE;
 import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_RECT_BUTTON;
 import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_ROUNDED_BUTTON;
 import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_STICK;
@@ -21,12 +22,14 @@ import com.catfixture.virgloverlay.core.input.data.InputConfigData;
 import com.catfixture.virgloverlay.core.input.data.InputConfigProfile;
 import com.catfixture.virgloverlay.core.input.data.InputTouchControlElement;
 import com.catfixture.virgloverlay.core.input.devices.IInputDevice;
+import com.catfixture.virgloverlay.core.input.overlay.touchControls.elements.MouseZoneElement;
 import com.catfixture.virgloverlay.core.input.overlay.touchControls.elements.StickElement;
 import com.catfixture.virgloverlay.core.input.overlay.touchControls.elements.TextButton;
 import com.catfixture.virgloverlay.core.input.overlay.touchControls.elements.TouchableWindowElement;
 import com.catfixture.virgloverlay.core.input.overlay.utils.DragAndDropHandle;
 import com.catfixture.virgloverlay.core.input.overlay.touchControls.elements.CrossButton;
 import com.catfixture.virgloverlay.core.overlay.IOverlayFragment;
+import com.catfixture.virgloverlay.core.overlay.OverlayManager;
 import com.catfixture.virgloverlay.core.utils.math.Int2;
 import com.catfixture.virgloverlay.core.utils.types.delegates.Action;
 
@@ -36,6 +39,7 @@ import java.util.List;
 
 public class TouchDeviceOverlayFragment implements IOverlayFragment {
     public final static int ID_TOUCH_CONTROLS_OVERLAY = 10001;
+    private TouchDeviceEditorOverlayFragment touchControlsEditor;
 
     private List<IInputWindowElement> windowElements;
     private IInputDevice inputDevice;
@@ -47,6 +51,7 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
         this.inputDevice = inputDevice;
         windowElements = new ArrayList<>();
         root = new RelativeLayout(context);
+
         InflateControls();
     }
 
@@ -68,21 +73,15 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
         if (cfgData.HasCurrentProfile()) {
             InputConfigProfile cfgProfile = cfgData.GetCurrentProfile();
 
-            TouchDeviceEditorOverlayFragment touchControlsEditor =
-                    (TouchDeviceEditorOverlayFragment) app.GetOverlayManager().GetFragment(ID_TOUCH_CONTROLS_EDITOR_OVERLAY);
-
-
             boolean isEditorOverlayShown = app.GetOverlayManager().IsShown(touchControlsEditor);
 
             for (InputTouchControlElement touchControlElement : cfgProfile.touchControlElements) {
                 TouchableWindowElement newTouchElement = null;
 
-                if ( touchControlElement.type == TYPE_ROUNDED_BUTTON ||
-                        touchControlElement.type == TYPE_CIRCLE_BUTTON ||
+                if ( touchControlElement.type == TYPE_ROUNDED_BUTTON || touchControlElement.type == TYPE_CIRCLE_BUTTON ||
                             touchControlElement.type == TYPE_RECT_BUTTON) {
                     int layout = touchControlElement.type == TYPE_ROUNDED_BUTTON ? R.drawable.fx_tc_rect_rnd_btn :
-                            touchControlElement.type == TYPE_CIRCLE_BUTTON ? R.drawable.fx_tc_circle_btn :
-                                    R.drawable.fx_tc_rect_rnd_btn;
+                            touchControlElement.type == TYPE_CIRCLE_BUTTON ? R.drawable.fx_tc_circle_btn : R.drawable.fx_tc_rect_rnd_btn;
 
                     newTouchElement = new TextButton(context, touchControlElement.id, layout);
                     ((TextButton)newTouchElement).SetText(KeyCodes.GetCodeName(touchControlElement.buttonCode));
@@ -102,6 +101,8 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
                     newTouchElement = new CrossButton(context, touchControlElement.id);
                 } else if ( touchControlElement.type == TYPE_STICK) {
                     newTouchElement = new StickElement(context, touchControlElement.id);
+                } else if ( touchControlElement.type == TYPE_MOUSE_ZONE) {
+                    newTouchElement = new MouseZoneElement(context, touchControlElement.id);
                 }
 
 
@@ -129,38 +130,38 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
                     final Int2 elSize = newTouchElement.GetSize();
                     if (!isEditorOverlayShown) {
                         if (touchControlElement.type == TYPE_CROSS) {
-                            newTouchElement.onUp.addObserver((observable, o) -> {
+
+                            final Int2 startAxis = new Int2(0,0);
+                            final Int2 currentAxis = new Int2(-1,-1);
+
+                            newTouchElement.onDown.addObserver((observable, o) -> {
                                 MotionEvent motionEvent = (MotionEvent) o;
-                                final Int2 clickPos = new Int2((int) motionEvent.getX() - elSize.x / 2,
+                                final Int2 dt = new Int2((int) motionEvent.getX() - elSize.x / 2,
                                         (int) motionEvent.getY() - elSize.y / 2);
 
+                                final int deadZone = 20;
+                                startAxis.Set(dt.y > deadZone ? 40 : dt.y < -deadZone ? 38 : -1,
+                                        dt.x > deadZone ? 39 : dt.x < -deadZone ? 37 : -1);
 
-                                final Int2 verticalAxis = new Int2(1, 0);
-                                final Int2 horizontalAxis = new Int2(0, 1);
-
-                                float vericalCos = verticalAxis.Dot(clickPos);
-                                float horizontalCos = horizontalAxis.Dot(clickPos);
-
-                                boolean analogVert = Math.abs(vericalCos) > 0;
-                                boolean analogHoriz = Math.abs(horizontalCos) > 0;
-
-                                float zone = 0.5f / 2f;
-                                if ( analogVert) {
-                                    Dbg.Msg("ANALOG VERT = " + vericalCos);
-                                    KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_DOWN,
-                                            vericalCos > -1 + zone && vericalCos < -0.5 - zone ? KeyEvent.KEYCODE_DPAD_UP :
-                                                    vericalCos > 1 + zone && vericalCos < 1 - zone ? KeyEvent.KEYCODE_DPAD_DOWN : 0);
-                                    inputDevice.SendKeyPressed(keyEvent.getKeyCode());
-                                }
-
-                                if ( analogHoriz) {
-                                    Dbg.Msg("ANALOG HORIZ = " + horizontalCos);
-                                    KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_DOWN,
-                                            horizontalCos > -1 + zone && horizontalCos <  -0.5 - zone ? KeyEvent.KEYCODE_DPAD_LEFT :
-                                                    horizontalCos > 1 + zone && horizontalCos < 1 - zone ? KeyEvent.KEYCODE_DPAD_RIGHT : 0);
-                                    inputDevice.SendKeyPressed(keyEvent.getKeyCode());
-                                }
+                                if ( startAxis.x != -1) {
+                                    inputDevice.SendKeyDown(startAxis.x);
+                                    currentAxis.x = startAxis.x;
+                                } else currentAxis.x = -1;
+                                if ( startAxis.y != -1) {
+                                    inputDevice.SendKeyDown(startAxis.y);
+                                    currentAxis.y = startAxis.y;
+                                } else currentAxis.y = -1;
+                                Dbg.Msg("Click poos " + startAxis.x + " _ " + startAxis.y);
                             });
+                            newTouchElement.onMove.addObserver((observable, o) -> {
+                            });
+                            newTouchElement.onUp.addObserver((observable, o) -> {
+                                if ( currentAxis.x != -1)
+                                    inputDevice.SendKeyUp(currentAxis.x);
+                                if ( currentAxis.y != -1)
+                                    inputDevice.SendKeyUp(currentAxis.y);
+                            });
+
                         } else if (touchControlElement.type == TYPE_STICK) {
                             final Int2 startClickPos = new Int2(0,0);
                             newTouchElement.onDown.addObserver((observable, o) -> {
@@ -173,8 +174,36 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
                                 final Int2 clickPos = new Int2((int) (motionEvent.getX() - elSize.x / 2.0),
                                         (int) (motionEvent.getY() - elSize.y / 2.0));
 
-                                final Int2 diff = clickPos.Sub(startClickPos);
+                                final Int2 diff = clickPos.Sub(startClickPos)
+                                        .Div(1.0f / (touchControlElement.sensivity));
+
                                 inputDevice.SendMouseShift(diff.x, diff.y);
+                            });
+                            newTouchElement.onUp.addObserver((observable, o) -> {
+                                inputDevice.SendMouseShift(0,0);
+                            });
+                        } else if (touchControlElement.type == TYPE_MOUSE_ZONE) {
+                            final Int2 startClickPos = new Int2(0,0);
+                            newTouchElement.onDown.addObserver((observable, o) -> {
+                                MotionEvent motionEvent = (MotionEvent) o;
+                                final Int2 clickPos = new Int2((int) (motionEvent.getX() - elSize.x / 2.0),
+                                        (int) (motionEvent.getY() - elSize.y / 2.0));
+                                startClickPos.Set(clickPos.x, clickPos.y);
+                            });
+                            newTouchElement.onMove.addObserver((observable, o) -> {
+                                MotionEvent motionEvent = (MotionEvent) o;
+                                final Int2 clickPos = new Int2((int) (motionEvent.getX() - elSize.x / 2.0),
+                                        (int) (motionEvent.getY() - elSize.y / 2.0));
+
+                                final Int2 diff = clickPos.Sub(startClickPos)
+                                        .Div(1.0f / (touchControlElement.sensivity));
+
+                                inputDevice.SendMouseShift(diff.x, diff.y);
+                                startClickPos.Set(clickPos.x, clickPos.y);
+                            });
+
+                            newTouchElement.onClick.addObserver((observable, o) -> {
+                                inputDevice.SendMouseClick(0);
                             });
                             newTouchElement.onUp.addObserver((observable, o) -> {
                                 inputDevice.SendMouseShift(0,0);
@@ -192,6 +221,21 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
     @Override
     public ViewGroup GetContainer() {
         return root;
+    }
+
+    @Override
+    public void OnFragmentShown() {
+        OverlayManager overlayManager = app.GetOverlayManager();
+        touchControlsEditor = new TouchDeviceEditorOverlayFragment(context, this);
+        overlayManager.Add(touchControlsEditor);
+        overlayManager.onClick.addObserver((observable, o) -> touchControlsEditor.SetSelected(-1));
+        touchControlsEditor.onSetChanged.addObserver((observable, o) -> InflateControls());
+        touchControlsEditor.onClosed.addObserver((observable, o) -> OnEditorClosed());
+    }
+
+    @Override
+    public void OnFragmentHidden() {
+
     }
 
     @Override

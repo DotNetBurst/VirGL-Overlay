@@ -6,5 +6,6 @@ public class TouchableWindowElementType {
     public static final int TYPE_RECT_BUTTON = 2;
     public static final int TYPE_CROSS = 3;
     public static final int TYPE_STICK = 4;
+    public static final int TYPE_MOUSE_ZONE = 5;
 
 }

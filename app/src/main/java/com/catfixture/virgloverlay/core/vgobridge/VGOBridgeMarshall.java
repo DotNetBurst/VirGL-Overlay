@@ -106,9 +106,14 @@ public class VGOBridgeMarshall {
         }
     }
 
-    public void AddEvent(byte type, int arg) {
+    public void AddByteEvent(byte type, int arg) {
         synchronized (currentFrame) {
             currentFrame.EnqueueEvent(new VGOBridgeByteEvent(type, (byte) arg));
+        }
+    }
+    public void AddIntEvent(byte type, int arg) {
+        synchronized (currentFrame) {
+            currentFrame.EnqueueEvent(new VGOBridgeIntEvent(type, arg));
         }
     }
 }

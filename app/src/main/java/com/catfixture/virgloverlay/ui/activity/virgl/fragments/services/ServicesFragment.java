@@ -247,10 +247,6 @@ public class ServicesFragment extends Fragment {
         return app.GetServerController().SwitchServer(remoteCallback);
     }
 
-
-
-
-
     private void ToggleView(View view, boolean b) {
         view.setVisibility(b ? View.VISIBLE : View.GONE);
     }

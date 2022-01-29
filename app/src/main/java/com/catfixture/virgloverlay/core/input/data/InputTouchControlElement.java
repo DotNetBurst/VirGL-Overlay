@@ -29,4 +29,9 @@ public class InputTouchControlElement {
     private void Save() {
         app.SaveInputConfig();
     }
+
+    public int sensivity = 100;
+    public void SetSensivity(int sensivity) {
+        this.sensivity = sensivity;Save();
+    }
 }
