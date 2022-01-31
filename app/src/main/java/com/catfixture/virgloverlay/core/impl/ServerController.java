@@ -3,6 +3,7 @@ package com.catfixture.virgloverlay.core.impl;
 import static com.catfixture.virgloverlay.core.App.app;
 
 import android.content.Context;
+import android.os.Handler;
 import android.os.Process;
 
 import com.catfixture.virgloverlay.BuildConfig;
@@ -10,43 +11,33 @@ import com.catfixture.virgloverlay.core.debug.Dbg;
 import com.catfixture.virgloverlay.core.ipc.IServerRemoteCallback;
 import com.catfixture.virgloverlay.core.ipc.IServerRemoteService;
 import com.catfixture.virgloverlay.core.ipc.IServerStopRemoteCallback;
+import com.catfixture.virgloverlay.core.utils.process.ThreadUtils;
+import com.catfixture.virgloverlay.core.utils.types.Event;
 import com.codezjx.andlinker.AndLinker;
 import com.codezjx.andlinker.adapter.OriginalCallAdapterFactory;
 
 public class ServerController implements AndLinker.BindCallback {
     private final Context context;
+    private final Handler handler = new Handler();
 
     private AndLinker mLinker;
     private IServerRemoteService mRemoteService;
-    private boolean started, opCompleted;
     private int serverPID = -1;
     private IServerRemoteCallback serverRemoteCallback;
+    public final Event onStateChanged = new Event();
 
     private IServerStopRemoteCallback serverStopRemoteCallback = () -> {
-        try {
-            if (app.GetMainConfigData().automaticMode) {
-                Dbg.Msg("RESTARTING FROM AUTOMODE!");
-                Stop(true);
-                started = false;
-                Thread.sleep(1000);
-                started = true;
-                Start(serverRemoteCallback);
-            } else {
-                Stop(false);
-                started = false;
-            }
-        } catch (Exception x) {
-            Dbg.Error("Cant run from automode");
-            Dbg.Error(x);
+        if ( mLinker != null && mLinker.isBind()) {
+            Stop();
         }
+        handler.postDelayed(this::Start,1000);
     };
 
     public ServerController(Context context) {
         this.context = context;
     }
  
-    public void Start(IServerRemoteCallback mRemoteCallback) {
-        opCompleted = false;
+    private void Start() {
         Dbg.Msg("START CMD!");
         AndLinker.enableLogger(true);
         mLinker = new AndLinker.Builder(context)
@@ -55,37 +46,31 @@ public class ServerController implements AndLinker.BindCallback {
                 .addCallAdapterFactory(OriginalCallAdapterFactory.create())
                 .build();
         mLinker.setBindCallback(this);
-        mLinker.registerObject(mRemoteCallback);
+        mLinker.registerObject(serverRemoteCallback);
         mLinker.registerObject(serverStopRemoteCallback);
         mLinker.bind();
-        started = true;
-        opCompleted = true;
     }
 
-    public void Stop(boolean forced) {
-        if ( forced || started) {
-            opCompleted = false;
-            if ( forced) started = false;
-            try {
-                mLinker.unRegisterObject(serverStopRemoteCallback);
-                mLinker.unRegisterObject(serverRemoteCallback);
-                mLinker.unbind();
-                mLinker.setBindCallback(null);
-            } catch (Exception x) {
-                Dbg.Error(x);
-            }
-            try {
-                if (serverPID != -1) {
-                    Process.killProcess(serverPID);
-                    serverPID = -1;
-                } else Dbg.Error("Wrong pid");
-            } catch (Exception x) {
-                Dbg.Error(x);
-            }
-            serverRemoteCallback.onServerStopped();
-            opCompleted = true;
-            Dbg.Msg("STOPPED force = " + forced);
+    public void Stop() {
+        try {
+            mLinker.unRegisterObject(serverStopRemoteCallback);
+            mLinker.unRegisterObject(serverRemoteCallback);
+            mLinker.unbind();
+            mLinker.setBindCallback(null);
+        } catch (Exception x) {
+            Dbg.Error(x);
         }
+        try {
+            if (serverPID != -1) {
+                Process.killProcess(serverPID);
+                serverPID = -1;
+            } else Dbg.Error("Wrong pid");
+        } catch (Exception x) {
+            Dbg.Error(x);
+        }
+        mLinker = null;
+        serverRemoteCallback.onServerStopped();
+        Dbg.Msg("STOPPED!");
     }
 
     public IServerRemoteService GetRemote() {
@@ -106,25 +91,19 @@ public class ServerController implements AndLinker.BindCallback {
         mRemoteService = null;
     }
 
-    public boolean IsStarted() {
-        return started;
-    }
-
     public void EnableAutomaticMode(IServerRemoteCallback serverRemoteCallback, boolean automaticMode) {
         this.serverRemoteCallback = serverRemoteCallback;
-
         if (automaticMode) {
-            if (!started) {
-                started = true;
-                Start(serverRemoteCallback);
+            if ( mLinker == null) {
+                Start();
             }
         }
     }
 
     public void SwitchServer(IServerRemoteCallback serverRemoteCallback) {
         this.serverRemoteCallback = serverRemoteCallback;
-        if (started) {
-            Stop(true);
-        } else Start(serverRemoteCallback);
+        if ( mLinker == null) {
+            Start();
+        } else if (mLinker.isBind()) Stop();
     }
 }

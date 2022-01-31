@@ -62,6 +62,7 @@ public class ServicesFragment extends Fragment {
                 view.post(() -> {
                     UpdateServerState(state);
                     UpdateServiceCount(servicesCount);
+                    SwitchManualServicesControlButtons(state != SERVER_STATE_IDLE);
                     if ( onChanged != null)
                         onChanged.run();
                 });
@@ -74,6 +75,7 @@ public class ServicesFragment extends Fragment {
                     servicesViewAdapter.Flush();
                     UpdateServerState(SERVER_STATE_IDLE);
                     UpdateServiceCount(0);
+                    SwitchManualServicesControlButtons(false);
                     if ( onChanged != null)
                         onChanged.run();
                 });
@@ -128,7 +130,6 @@ public class ServicesFragment extends Fragment {
 
         Utils.InitComposedButton(view, R.id.startServicesComposedButton, this::SwitchServerState);
         Utils.InitComposedButton(view, R.id.stopServicesComposedButton, this::SwitchServerState);
-
 
         UpdateAll();
 
@@ -220,7 +221,7 @@ public class ServicesFragment extends Fragment {
         if (serverInfo == null) {
             UpdateServerState(0);
             UpdateServiceCount(0);
-            SwitchManualServicesControlButtons();
+            SwitchManualServicesControlButtons(false);
         } else {
             UpdateServerState(serverInfo.GetState());
             UpdateServiceCount(serverInfo.GetServicesCount());
@@ -232,8 +233,7 @@ public class ServicesFragment extends Fragment {
                 srv.ChangeState(service.state);
                 servicesViewAdapter.AddItem(new ServiceViewAdapterItem(srv));
             }
-
-            SwitchManualServicesControlButtons();
+            SwitchManualServicesControlButtons(serverInfo.GetState() != SERVER_STATE_IDLE);
         }
     }
 
@@ -249,8 +249,7 @@ public class ServicesFragment extends Fragment {
         manualServicesControlsContainer.setVisibility(b ? View.GONE : View.VISIBLE);
     }
 
-    private void SwitchManualServicesControlButtons() {
-        boolean isServerRunning = app.GetServerController().IsStarted();
+    private void SwitchManualServicesControlButtons(boolean isServerRunning) {
         ToggleView(view.findViewById(R.id.startServicesComposedButton), !isServerRunning);
         ToggleView(view.findViewById(R.id.stopServicesComposedButton), isServerRunning);
     }

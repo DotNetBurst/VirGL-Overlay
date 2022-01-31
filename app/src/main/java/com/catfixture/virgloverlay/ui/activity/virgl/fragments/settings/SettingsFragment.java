@@ -1,6 +1,7 @@
 package com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings;
 
 import static com.catfixture.virgloverlay.core.App.app;
+import static com.catfixture.virgloverlay.core.impl.states.NativeServerState.SERVER_STATE_IDLE;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -161,7 +162,7 @@ public class SettingsFragment extends Fragment {
     public void UpdateMainView() {
         view.post(() -> {
             try {
-                boolean serverRunning = app.GetServerController().IsStarted();
+                boolean serverRunning = app.GetServerController().GetRemote().GetState() != SERVER_STATE_IDLE;
                 warningComponent.setVisibility(serverRunning ? View.VISIBLE : View.GONE);
                 profilesPanel.setVisibility(serverRunning ? View.GONE : View.VISIBLE);
             } catch (Exception x) {

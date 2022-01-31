@@ -55,7 +55,7 @@ public class Virgl extends AppCompatActivity implements IPermissionGrantable, IA
         String stopServerExtra = getIntent().getStringExtra("stopServer");
         if ( stopServerExtra != null) {
             try {
-                app.GetServerController().Stop(true);
+                app.GetServerController().Stop();
             } catch (Exception e) {
                 Dbg.Error(e);
             }
