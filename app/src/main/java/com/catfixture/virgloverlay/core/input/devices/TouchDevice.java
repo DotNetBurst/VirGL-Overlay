@@ -24,7 +24,7 @@ public class TouchDevice implements IInputDevice {
 
         KeyCodes.LoadKeyCodes(context);
 
-        vgoBridgeMarshall = new VGOBridgeMarshall(8888, 25);
+        vgoBridgeMarshall = new VGOBridgeMarshall(8888, 30);
         vgoBridgeMarshall.events.onSlaveConnected.addObserver((obs, handle) -> {
             Dbg.Msg("CREATING INPUT BRIDGE CONNECTION!");
             Dbg.Msg("INPUT BRIDGE CONNECTED!");

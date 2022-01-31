@@ -121,20 +121,14 @@ public class ServicesFragment extends Fragment {
             config.SetAutomaticMode(mode);
             svCont.EnableAutomaticMode(remoteCallback, mode);
             ToggleManualControlsPanel(manualServicesControlsContainer, mode);
-            SwitchManualServicesControlButtons(svCont.IsStarted());
         });
         if (!config.HasCurrentProfile()) config.SetAutomaticMode(false);
         else svCont.EnableAutomaticMode(remoteCallback, config.automaticMode);
         ToggleManualControlsPanel(manualServicesControlsContainer, config.automaticMode);
 
-        Utils.InitComposedButton(view, R.id.startServicesComposedButton, () -> {
-            boolean res = SwitchServerState();
-            SwitchManualServicesControlButtons(res);
-        });
-        Utils.InitComposedButton(view, R.id.stopServicesComposedButton, () -> {
-            boolean res = SwitchServerState();
-            SwitchManualServicesControlButtons(res);
-        });
+        Utils.InitComposedButton(view, R.id.startServicesComposedButton, this::SwitchServerState);
+        Utils.InitComposedButton(view, R.id.stopServicesComposedButton, this::SwitchServerState);
+
 
         UpdateAll();
 
@@ -226,7 +220,7 @@ public class ServicesFragment extends Fragment {
         if (serverInfo == null) {
             UpdateServerState(0);
             UpdateServiceCount(0);
-            SwitchManualServicesControlButtons(false);
+            SwitchManualServicesControlButtons();
         } else {
             UpdateServerState(serverInfo.GetState());
             UpdateServiceCount(serverInfo.GetServicesCount());
@@ -239,12 +233,12 @@ public class ServicesFragment extends Fragment {
                 servicesViewAdapter.AddItem(new ServiceViewAdapterItem(srv));
             }
 
-            SwitchManualServicesControlButtons(app.GetServerController().IsStarted());
+            SwitchManualServicesControlButtons();
         }
     }
 
-    public boolean SwitchServerState() {
-        return app.GetServerController().SwitchServer(remoteCallback);
+    public void SwitchServerState() {
+        app.GetServerController().SwitchServer(remoteCallback);
     }
 
     private void ToggleView(View view, boolean b) {
@@ -255,9 +249,10 @@ public class ServicesFragment extends Fragment {
         manualServicesControlsContainer.setVisibility(b ? View.GONE : View.VISIBLE);
     }
 
-    private void SwitchManualServicesControlButtons(boolean serverRunning) {
-        ToggleView(view.findViewById(R.id.startServicesComposedButton), !serverRunning);
-        ToggleView(view.findViewById(R.id.stopServicesComposedButton), serverRunning);
+    private void SwitchManualServicesControlButtons() {
+        boolean isServerRunning = app.GetServerController().IsStarted();
+        ToggleView(view.findViewById(R.id.startServicesComposedButton), !isServerRunning);
+        ToggleView(view.findViewById(R.id.stopServicesComposedButton), isServerRunning);
     }
 
     private void UpdateServiceCreate(IService service) {

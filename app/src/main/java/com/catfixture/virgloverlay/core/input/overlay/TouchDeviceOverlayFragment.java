@@ -127,6 +127,7 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
                         });
                     }
 
+                    final int deadZone = 80;
                     final Int2 elSize = newTouchElement.GetSize();
                     if (!isEditorOverlayShown) {
                         if (touchControlElement.type == TYPE_CROSS) {
@@ -139,7 +140,6 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
                                 final Int2 dt = new Int2((int) motionEvent.getX() - elSize.x / 2,
                                         (int) motionEvent.getY() - elSize.y / 2);
 
-                                final int deadZone = 20;
                                 startAxis.Set(dt.y > deadZone ? 83 : dt.y < -deadZone ? 87 : -1,
                                         dt.x > deadZone ? 68 : dt.x < -deadZone ? 65 : -1);
 
@@ -158,7 +158,6 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
                                 final Int2 dt = new Int2((int) motionEvent.getX() - elSize.x / 2,
                                         (int) motionEvent.getY() - elSize.y / 2);
 
-                                final int deadZone = 80;
                                 startAxis.Set(dt.y > deadZone ? 83 : dt.y < -deadZone ? 87 : -1,
                                         dt.x > deadZone ? 68 : dt.x < -deadZone ? 65 : -1);
 
@@ -216,6 +215,11 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
 
                                 final Int2 diff = clickPos.Sub(startClickPos)
                                         .Div(1.0f / (touchControlElement.sensivity));
+                                int dz = 4;
+                                if ( Math.abs(diff.x) > dz)
+                                    diff.x += (int)(diff.x * 0.5f);
+                                if ( Math.abs(diff.y) > dz)
+                                    diff.y += (int)(diff.y * 0.5f);
 
                                 inputDevice.SendMouseShift(diff.x, diff.y);
                                 startClickPos.Set(clickPos.x, clickPos.y);

@@ -22,6 +22,8 @@ public class RenderingOverlayFragment implements IOverlayFragment {
     public RenderingOverlayFragment(Context context) {
         this.context = context;
         this.container = new FrameLayout(context);
+        //container.setScaleX(0f);
+        //container.setScaleY(0f);
         handler = new Handler();
     }
 
