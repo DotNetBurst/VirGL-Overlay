@@ -98,6 +98,8 @@ public class ConfigProfile {
     public boolean enableNativeInput;
     public void SetEnableNativeInput(Boolean enableNativeInput) { this.enableNativeInput=enableNativeInput; Save();}
 
+    public boolean enableStatistics;
+    public void SetEnableStatistics(Boolean enableStatistics) { this.enableStatistics=enableStatistics; Save();}
 
 
     @NonNull

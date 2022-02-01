@@ -297,12 +297,8 @@ public class NativeServerInstance extends Service {
 
         runSocketLoop(windowsManager, fileDescriptor);
         Log.d(APP_TAG, "Loop ended");
-        try {
-            Process.killProcess(serverPID);
-            SetServerState(SERVER_STATE_IDLE);
-        } catch (Exception x) {
-            Dbg.Error("Cant kill server");
-        }
+        SetServerState(SERVER_STATE_IDLE);
+        onDestroy();
     }
 
     private void ShowToast(String text) {

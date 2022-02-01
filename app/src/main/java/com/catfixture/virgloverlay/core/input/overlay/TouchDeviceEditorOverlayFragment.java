@@ -91,6 +91,8 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
 
     @Override
     public void OnFragmentShown() {
+        selectedItemId = -1;
+        InitEditorView();
         onSetChanged.notifyObservers();
     }
 

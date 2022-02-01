@@ -10,5 +10,6 @@ public class MouseZoneElement extends TouchableWindowElement {
         super(context, id);
         initialSize.Set(400,300);
         setBackgroundResource(R.drawable.fx_tc_rect_rnd_btn);
+
     }
 }

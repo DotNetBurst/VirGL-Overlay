@@ -14,7 +14,14 @@ public class OverlayInitializer {
         //RENDERING FRAG
         RenderingOverlayFragment renderingOverlayFragment = new RenderingOverlayFragment(context);
         overlayManager.Add(renderingOverlayFragment);
-        overlayManager.Show(renderingOverlayFragment);
+
+        //STATS
+        app.TryGetProfile(obj -> {
+            if ( obj.enableStatistics) {
+                StatisticsOverlay statisticsOverlay = new StatisticsOverlay(context);
+                overlayManager.Add(statisticsOverlay);
+            }
+        });
 
         //TOUCH CONTROLS DEVICE
         TouchDeviceOverlayFragment touchDeviceOverlayFragment = new TouchDeviceOverlayFragment(context, device);

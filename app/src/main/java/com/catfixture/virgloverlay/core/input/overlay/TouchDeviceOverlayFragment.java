@@ -127,7 +127,6 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
                         });
                     }
 
-                    final int deadZone = 80;
                     final Int2 elSize = newTouchElement.GetSize();
                     if (!isEditorOverlayShown) {
                         if (touchControlElement.type == TYPE_CROSS) {
@@ -135,13 +134,28 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
                             final Int2 startAxis = new Int2(0,0);
                             final Int2 currentAxis = new Int2(-1,-1);
 
+                            final float dzMult = 0.5f;
+                            final float elScale = (touchControlElement.scale / 100.0f);
+                            final float deadZoneX = elScale * elSize.x * dzMult * 0.5f;
+                            final float deadZoneY = elScale * elSize.y * dzMult * 0.5f;
+
                             newTouchElement.onDown.addObserver((observable, o) -> {
                                 MotionEvent motionEvent = (MotionEvent) o;
                                 final Int2 dt = new Int2((int) motionEvent.getX() - elSize.x / 2,
                                         (int) motionEvent.getY() - elSize.y / 2);
 
-                                startAxis.Set(dt.y > deadZone ? 83 : dt.y < -deadZone ? 87 : -1,
-                                        dt.x > deadZone ? 68 : dt.x < -deadZone ? 65 : -1);
+                                Dbg.Msg("Click XXXX " + dt.x + " _ " + dt.y);
+
+                                boolean isInYAxisZone = (dt.x > -deadZoneY && dt.x < deadZoneY);
+                                boolean isInUpperZone = (dt.y > 0 && isInYAxisZone || dt.y > deadZoneY);
+                                boolean isInLowerZone = (dt.y < 0 && isInYAxisZone || dt.y < -deadZoneY);
+
+                                boolean isInXAxisZone = (dt.y > -deadZoneX && dt.y < deadZoneX);
+                                boolean isInRightZone = (dt.x > 0 && isInXAxisZone || dt.x > deadZoneX);
+                                boolean isInLeftZone = (dt.x < 0 && isInXAxisZone || dt.x < -deadZoneX);
+
+                                startAxis.Set(isInUpperZone ? 83 : isInLowerZone ? 87 : -1,
+                                        isInLeftZone ? 65 : isInRightZone ? 68 : -1);
 
                                 if ( startAxis.x != -1) {
                                     inputDevice.SendKeyDown(startAxis.x);
@@ -158,8 +172,20 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
                                 final Int2 dt = new Int2((int) motionEvent.getX() - elSize.x / 2,
                                         (int) motionEvent.getY() - elSize.y / 2);
 
-                                startAxis.Set(dt.y > deadZone ? 83 : dt.y < -deadZone ? 87 : -1,
-                                        dt.x > deadZone ? 68 : dt.x < -deadZone ? 65 : -1);
+                                Dbg.Msg("Click XXXX " + dt.x + " _ " + dt.y);
+
+
+                                boolean isInYAxisZone = (dt.x > -deadZoneY && dt.x < deadZoneY);
+                                boolean isInUpperZone = (dt.y > 0 && isInYAxisZone || dt.y > deadZoneY);
+                                boolean isInLowerZone = (dt.y < 0 && isInYAxisZone || dt.y < -deadZoneY);
+
+                                boolean isInXAxisZone = (dt.y > -deadZoneX && dt.y < deadZoneX);
+                                boolean isInRightZone = (dt.x > 0 && isInXAxisZone || dt.x > deadZoneX);
+                                boolean isInLeftZone = (dt.x < 0 && isInXAxisZone || dt.x < -deadZoneX);
+
+                                startAxis.Set(isInUpperZone ? 83 : isInLowerZone ? 87 : -1,
+                                        isInLeftZone ? 65 : isInRightZone ? 68 : -1);
+
 
                                 if ( startAxis.x != -1 && startAxis.x != currentAxis.x) {
                                     inputDevice.SendKeyUp(currentAxis.x);
@@ -215,11 +241,10 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
 
                                 final Int2 diff = clickPos.Sub(startClickPos)
                                         .Div(1.0f / (touchControlElement.sensivity));
-                                int dz = 4;
-                                if ( Math.abs(diff.x) > dz)
-                                    diff.x += (int)(diff.x * 0.5f);
-                                if ( Math.abs(diff.y) > dz)
-                                    diff.y += (int)(diff.y * 0.5f);
+
+                                float slope = 0.5f;
+                                diff.x += (int)(Math.max(Math.pow(Math.abs(diff.x), slope),0f));
+                                diff.y += (int)(Math.max(Math.pow(Math.abs(diff.y), slope),0f));
 
                                 inputDevice.SendMouseShift(diff.x, diff.y);
                                 startClickPos.Set(clickPos.x, clickPos.y);

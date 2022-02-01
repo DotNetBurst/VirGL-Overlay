@@ -81,6 +81,7 @@ public class SettingsFragment extends Fragment {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                settingsTabsController.InvalidateAll();
                 cfgData.SetCurrentProfile(i);
                 UpdateAll();
                 SettingItem.OnAppWideSettingsChanged.notifyObservers();
@@ -91,6 +92,7 @@ public class SettingsFragment extends Fragment {
         ImageView createNewConfigProfile = view.findViewById(R.id.createNewConfigProfile);
         createNewConfigProfile.setOnClickListener(view1 -> ConfirmDialog.Show(context, "Create configuration profile",
                 "Do you want to create new configuration profile?", "Create", () -> {
+                    settingsTabsController.InvalidateAll();
                     ConfigProfile newCfgProf = new ConfigProfile();
                     cfgData.AddProfile(newCfgProf);
                     ReselectProfileAndUpdate(spinner, cfgData);
@@ -102,6 +104,7 @@ public class SettingsFragment extends Fragment {
         editProfileName.setOnClickListener(view1 -> {
             ConfigProfile cfgProf = app.GetMainConfigData().GetCurrentProfile();
             InputDialog.Show(getContext(), "Edit name", cfgProf.name, "Save", (newName) -> {
+                settingsTabsController.InvalidateAll();
                 app.GetMainConfigData().GetCurrentProfile().SetName(newName);
                 UpdateAll();
                 SettingItem.OnAppWideSettingsChanged.notifyObservers();
@@ -113,6 +116,7 @@ public class SettingsFragment extends Fragment {
             int currProfile = app.GetMainConfigData().currentProfile;
             ConfirmDialog.Show(context, "Remove " + cfgData.FindProfileByID(currProfile).name +" configuration profile",
                     "Do you really want to remove this profile?", "Remove", () -> {
+                        settingsTabsController.InvalidateAll();
                         cfgData.RemoveProfile(currProfile);
                         ReselectProfileAndUpdate(spinner, cfgData);
                         settingsTabsController.UpdateAll();
@@ -164,12 +168,9 @@ public class SettingsFragment extends Fragment {
     public void UpdateMainView() {
         view.post(() -> {
             try {
-                IServerRemoteService rem = comCtx.GetServerController().GetRemote();
-                if ( rem != null) {
-                    boolean serverRunning = rem.GetState() != SERVER_STATE_IDLE;
-                    warningComponent.setVisibility(serverRunning ? View.VISIBLE : View.GONE);
-                    profilesPanel.setVisibility(serverRunning ? View.GONE : View.VISIBLE);
-                }
+                boolean serverRunning = comCtx.GetServerController().IsProbablyRunning();
+                warningComponent.setVisibility(serverRunning ? View.VISIBLE : View.GONE);
+                profilesPanel.setVisibility(serverRunning ? View.GONE : View.VISIBLE);
             } catch (Exception x) {
                 Dbg.Error(x);
             }

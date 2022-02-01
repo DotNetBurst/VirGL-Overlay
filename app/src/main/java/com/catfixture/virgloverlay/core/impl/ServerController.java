@@ -138,4 +138,9 @@ public class ServerController implements AndLinker.BindCallback {
     public void Destroy() {
         watcherThread.interrupt();
     }
+
+    public boolean IsProbablyRunning() {
+        return mLinker != null && mLinker.isBind() && mRemoteService != null &&
+                mRemoteService.GetState() != SERVER_STATE_IDLE && mRemoteService.GetState() != SERVER_STATE_ERROR;
+    }
 }

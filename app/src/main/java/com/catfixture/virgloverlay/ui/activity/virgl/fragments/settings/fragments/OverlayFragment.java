@@ -29,5 +29,10 @@ public class OverlayFragment extends CoreSettingsFragment {
         SwitchSettingItem enableToasts = new SwitchSettingItem("Enable toasts",
                 "enable annoying toasts, use for info about app", settingsDtoProvider, "enableToasts");
         settingsViewAdapter.AddItem(enableToasts);
+
+        SwitchSettingItem enableStatistics = new SwitchSettingItem("Enable statistics",
+                "Shows rendering statistics", settingsDtoProvider, "enableStatistics");
+        enableStatistics.SetSpacing(15);
+        settingsViewAdapter.AddItem(enableStatistics);
     }
 }

@@ -50,6 +50,10 @@ public abstract class CoreSettingsFragment extends Fragment {
         isInitialized = true;
     }
 
+    public void Invalidate () {
+        isInitialized = false;
+    }
+
     protected abstract void InitSettings(GenericMultiViewListAdapter<SettingItem> settingsViewAdapter);
     public void UpdateAll() {
         if (!isInitialized) BindGenericSettingsList();

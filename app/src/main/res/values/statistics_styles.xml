@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="StatisticCommonText" parent="android:Widget.TextView">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:fontFamily">@font/djakarta_free</item>
+        <item name="android:textColor">@color/fpsColor</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:shadowColor">@color/black</item>
+        <item name="android:shadowRadius">1</item>
+    </style>
+    <style name="StatisticMicroText" parent="StatisticCommonText">
+        <item name="android:textSize">10sp</item>
+    </style>
+</resources>

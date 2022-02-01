@@ -88,6 +88,12 @@ public class SettingsTabsController extends TabsController {
             @Override public void onTabReselected(TabLayout.Tab tab) { }
         });
     }
+    public void InvalidateAll() {
+        systemFragment.Invalidate();
+        renderingFragment.Invalidate();
+        overlayFragment.Invalidate();
+        inputFragment.Invalidate();
+    }
 
     public void UpdateAll() {
         systemFragment.UpdateAll();

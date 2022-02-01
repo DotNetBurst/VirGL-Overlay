@@ -66,15 +66,15 @@ public class MainControlsOverlayFragment implements IOverlayFragment {
         });
 
         keyboardToggle.setOnClickListener(view -> {
-            SetCurrentInputDevice(context, Devices.KEYBOARD_DEVICE);
-            app.GetInputConfigData().SetInputDevice(currentInputDevice);
+            //SetCurrentInputDevice(context, Devices.KEYBOARD_DEVICE);
+            //app.GetInputConfigData().SetInputDevice(currentInputDevice);
             SetExpanded(false);
         });
         touchControlsToggle.setOnClickListener(view -> {
-            SetCurrentInputDevice(context, TOUCH_DEVICE);
-            app.GetInputConfigData().SetInputDevice(currentInputDevice);
-            SetExpanded(false);
-            app.GetOverlayManager().Show(ID_TOUCH_CONTROLS_OVERLAY);
+            //SetCurrentInputDevice(context, TOUCH_DEVICE);
+            //app.GetInputConfigData().SetInputDevice(currentInputDevice);
+            //SetExpanded(false);
+            //app.GetOverlayManager().Show(ID_TOUCH_CONTROLS_OVERLAY);
         });
         touchControlsToggle.setOnLongClickListener(view -> {
             SetCurrentInputDevice(context, TOUCH_DEVICE);

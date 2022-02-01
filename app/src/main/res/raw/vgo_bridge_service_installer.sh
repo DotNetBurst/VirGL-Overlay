@@ -10,7 +10,7 @@ BIN_NAME=vgob.exe
 LAUNCHER_NAME=vgo
 NON_ROOT_USER_NAME=$(stat -c '%U' $EXAGEAR_INSTALLATION_PATH/bin/bash)
 #INFO
-echo "Source folder : $SOURCE"
+echo "Source folder : $SOURCE"0
 echo "User : $NON_ROOT_USER_NAME"
 #FAIL CHECK
 CheckFall() {
