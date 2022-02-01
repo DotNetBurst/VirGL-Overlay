@@ -14,13 +14,12 @@ import com.catfixture.virgloverlay.data.ConfigProfile;
 import com.catfixture.virgloverlay.data.GenericConfig;
 import com.catfixture.virgloverlay.core.impl.ServerController;
 
-public class App extends Application {
-    public static App app;
+public class AppContext extends Application {
+    public static AppContext app;
 
     private GenericConfig<MainConfigData> mainConfig;
     private GenericConfig<InputConfigData> inputConfig;
 
-    private ServerController serverController;
     private OverlayManager overlayManager;
 
     public MainConfigData GetMainConfigData() {
@@ -37,9 +36,6 @@ public class App extends Application {
         inputConfig.Save();
     }
 
-    public ServerController GetServerController() {
-        return serverController;
-    }
     public OverlayManager GetOverlayManager() { return overlayManager;}
 
     @Override
@@ -53,8 +49,6 @@ public class App extends Application {
         mainConfig = new GenericConfig<>(mainConfigPath, MainConfigData.class);
         String inputConfigPath = getFilesDir()+"/input.json";
         inputConfig = new GenericConfig<>( inputConfigPath, InputConfigData.class);
-
-        serverController = new ServerController(this);
         overlayManager = new OverlayManager(this);
 
         Log.d(APP_TAG, "Application created");

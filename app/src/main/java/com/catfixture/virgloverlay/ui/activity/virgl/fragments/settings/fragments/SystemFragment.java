@@ -1,6 +1,6 @@
 package com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.fragments;
 
-import static com.catfixture.virgloverlay.core.App.app;
+import static com.catfixture.virgloverlay.core.AppContext.app;
 import static com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const.APP_TAG;
 
 import android.app.Activity;

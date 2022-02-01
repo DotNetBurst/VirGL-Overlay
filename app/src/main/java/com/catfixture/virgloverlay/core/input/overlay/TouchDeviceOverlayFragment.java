@@ -1,7 +1,6 @@
 package com.catfixture.virgloverlay.core.input.overlay;
 
-import static com.catfixture.virgloverlay.core.App.app;
-import static com.catfixture.virgloverlay.core.input.overlay.TouchDeviceEditorOverlayFragment.ID_TOUCH_CONTROLS_EDITOR_OVERLAY;
+import static com.catfixture.virgloverlay.core.AppContext.app;
 import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_CIRCLE_BUTTON;
 import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_CROSS;
 import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_MOUSE_ZONE;
@@ -51,6 +50,7 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
         this.inputDevice = inputDevice;
         windowElements = new ArrayList<>();
         root = new RelativeLayout(context);
+
 
         InflateControls();
     }
@@ -231,6 +231,12 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
                             newTouchElement.onUp.addObserver((observable, o) -> {
                                 inputDevice.SendMouseShift(0,0);
                             });
+
+
+                            /*newTouchElement.setOnHoverListener((view, motionEvent) -> {
+                                Dbg.Msg("EVT " + motionEvent.getAction() + " " + motionEvent.getRawX() + " " + motionEvent.getRawY());
+                                return false;
+                            });*/
                         }
                     }
                     root.addView(newTouchElement);
@@ -254,6 +260,7 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
         overlayManager.onClick.addObserver((observable, o) -> touchControlsEditor.SetSelected(-1));
         touchControlsEditor.onSetChanged.addObserver((observable, o) -> InflateControls());
         touchControlsEditor.onClosed.addObserver((observable, o) -> OnEditorClosed());
+        overlayManager.Hide(touchControlsEditor);
     }
 
     @Override

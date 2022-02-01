@@ -1,6 +1,6 @@
 package com.catfixture.virgloverlay.core.input.data;
 
-import static com.catfixture.virgloverlay.core.App.app;
+import static com.catfixture.virgloverlay.core.AppContext.app;
 
 import com.catfixture.virgloverlay.ui.common.genAdapter.IAdapterItem;
 

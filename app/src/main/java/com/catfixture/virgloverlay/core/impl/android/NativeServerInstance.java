@@ -1,8 +1,10 @@
 package com.catfixture.virgloverlay.core.impl.android;
 
-import static android.app.PendingIntent.FLAG_ONE_SHOT;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import static androidx.core.app.NotificationCompat.PRIORITY_MAX;
 import static androidx.core.app.NotificationCompat.PRIORITY_MIN;
-import static com.catfixture.virgloverlay.core.App.app;
+import static com.catfixture.virgloverlay.core.AppContext.app;
 import static com.catfixture.virgloverlay.core.impl.states.NativeServerState.SERVER_STATE_ERROR;
 import static com.catfixture.virgloverlay.core.impl.states.NativeServerState.SERVER_STATE_IDLE;
 import static com.catfixture.virgloverlay.core.impl.states.NativeServerState.SERVER_STATE_INITIALIZING;
@@ -14,10 +16,12 @@ import static com.catfixture.virgloverlay.core.impl.states.NativeServiceState.SE
 import static com.catfixture.virgloverlay.core.impl.states.NativeServiceState.SERVICE_STATE_INITIALIZING;
 import static com.catfixture.virgloverlay.core.impl.states.NativeServiceState.SERVICE_STATE_LISTENING;
 import static com.catfixture.virgloverlay.core.impl.states.NativeServiceState.SERVICE_STATE_RUNNING;
+import static com.catfixture.virgloverlay.core.input.android.MessageReceiver.PrepareMessage;
 import static com.catfixture.virgloverlay.core.utils.process.ThreadUtils.LockThreadUntilUITask;
 import static com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const.APP_TAG;
+import static com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const.BCAST_ACTION_RESTART_SERVER;
+import static com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const.BCAST_ACTION_STOP_SERVER;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -28,11 +32,13 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Process;
 import android.util.Log;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
 import com.catfixture.virgloverlay.R;
+import com.catfixture.virgloverlay.core.input.android.MessageReceiver;
 import com.catfixture.virgloverlay.core.input.devices.IInputDevice;
 import com.catfixture.virgloverlay.core.input.devices.TouchDevice;
 import com.catfixture.virgloverlay.core.overlay.OverlayInitializer;
@@ -45,11 +51,9 @@ import com.catfixture.virgloverlay.core.ipc.IServerRemoteCallback;
 import com.catfixture.virgloverlay.core.ipc.IServerRemoteService;
 import com.catfixture.virgloverlay.core.ipc.IServerStopRemoteCallback;
 import com.catfixture.virgloverlay.core.ipc.ServiceParcelable;
-import com.catfixture.virgloverlay.core.utils.process.ThreadUtils;
 import com.catfixture.virgloverlay.core.utils.types.delegates.Functions;
 import com.catfixture.virgloverlay.data.MainConfigData;
 import com.catfixture.virgloverlay.data.ConfigProfile;
-import com.catfixture.virgloverlay.ui.activity.virgl.Virgl;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const;
 import com.codezjx.andlinker.AndLinkerBinder;
 
@@ -72,7 +76,6 @@ public class NativeServerInstance extends Service {
     private MainConfigData cfgData;
     private AndLinkerBinder mLinkerBinder;
     private IServerRemoteCallback serverRemoteCallback;
-    private IServerStopRemoteCallback serverStopRemoteCallback;
     private NativeSurfaceManager windowsManager;
     private IInputDevice inputDevice;
 
@@ -97,11 +100,6 @@ public class NativeServerInstance extends Service {
         }
 
         @Override
-        public void RegisterStopCallback(IServerStopRemoteCallback _serverStopRemoteCallback) {
-            serverStopRemoteCallback = _serverStopRemoteCallback;
-        }
-
-        @Override
         public int GetServerPID() {
             return serverPID;
         }
@@ -109,7 +107,6 @@ public class NativeServerInstance extends Service {
         @Override
         public void Stop() {
             serverRemoteCallback.onServerStopped();
-            serverStopRemoteCallback.onServerStopped();
             try {
                 Process.killProcess(serverPID);
                 SetServerState(SERVER_STATE_IDLE);
@@ -149,32 +146,31 @@ public class NativeServerInstance extends Service {
 
         //OverlayInitializer.Init(getApplicationContext(), inputDevice);
 
+
+        //NOTIFICATION SECTION
+        RemoteViews notificationLayout = new RemoteViews(getPackageName(), R.layout.notification_layout);
+        notificationLayout.setViewVisibility(R.id.restartVGO, cfgData.automaticMode ? GONE : VISIBLE);
+        if (cfgData.automaticMode) notificationLayout.setTextViewText(R.id.stopVGO, "Restart");
+
+        //RESTART SERVER
+        notificationLayout.setOnClickPendingIntent(R.id.restartVGO,
+                PendingIntent.getBroadcast(context, 0, PrepareMessage(context, BCAST_ACTION_RESTART_SERVER),
+                        PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT));
+        //STOP SERVER
+        notificationLayout.setOnClickPendingIntent(R.id.stopVGO,
+                PendingIntent.getBroadcast(context, 1, PrepareMessage(context, BCAST_ACTION_STOP_SERVER),
+                        PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT));
+
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         String channelId = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? AndroidUtils.createNotificationChannel(notificationManager) : "";
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, channelId).setOngoing(true)
                 .setSmallIcon(R.drawable.main_ico)
-                .setPriority(PRIORITY_MIN)
+                .setPriority(PRIORITY_MAX)
+                .setAutoCancel(true)
+                .setCustomContentView(notificationLayout)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE);
 
-        if (cfgData.automaticMode) {
-            Intent notificationIntent = new Intent(this, Virgl.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-                    notificationIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-            notificationBuilder.setContentText("Running in automatic mode")
-                    .setContentText("Tap to open app")
-                    .setContentIntent(pendingIntent);
-        } else {
-            Intent notificationIntent = new Intent(this, Virgl.class);
-            notificationIntent.putExtra("stopServer", "true");
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-                    notificationIntent, PendingIntent.FLAG_IMMUTABLE | FLAG_ONE_SHOT);
-            notificationBuilder
-                    .setContentText("Tap to stop service")
-                    .setContentIntent(pendingIntent);
-        }
-
-        Notification notification = notificationBuilder.build();
-        startForeground(Const.SERVER_THREAD_CODE, notification);
+        startForeground(Const.SERVER_THREAD_CODE, notificationBuilder.build());
         ShowToast("Server started");
     }
 
@@ -195,16 +191,15 @@ public class NativeServerInstance extends Service {
         Log.d(APP_TAG, "Stopping server");
 
         mLinkerBinder.unRegisterObject(mRemoteService);
-
         if (mainSocketDescriptor != -1) {
             stopSocket(mainSocketDescriptor);
         } else Log.e(APP_TAG, "Wrong file descriptor");
-        Process.killProcess(serverPID);
-        services.clear();
 
         Log.d(APP_TAG, "Server stopped");
         ShowToast("Server stopped");
-        stopSelf();
+        services.clear();
+        stopForeground(true);
+        Process.killProcess(serverPID);
     }
 
     private void Run() {
@@ -302,7 +297,6 @@ public class NativeServerInstance extends Service {
 
         runSocketLoop(windowsManager, fileDescriptor);
         Log.d(APP_TAG, "Loop ended");
-        serverStopRemoteCallback.onServerStopped();
         try {
             Process.killProcess(serverPID);
             SetServerState(SERVER_STATE_IDLE);

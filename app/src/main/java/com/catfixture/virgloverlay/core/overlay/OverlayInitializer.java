@@ -1,11 +1,10 @@
 package com.catfixture.virgloverlay.core.overlay;
 
-import static com.catfixture.virgloverlay.core.App.app;
+import static com.catfixture.virgloverlay.core.AppContext.app;
 
 import android.content.Context;
 
 import com.catfixture.virgloverlay.core.input.devices.IInputDevice;
-import com.catfixture.virgloverlay.core.input.overlay.TouchDeviceEditorOverlayFragment;
 import com.catfixture.virgloverlay.core.input.overlay.TouchDeviceOverlayFragment;
 
 public class OverlayInitializer {

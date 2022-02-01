@@ -1,6 +1,7 @@
 package com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings;
 
-import static com.catfixture.virgloverlay.core.App.app;
+import static com.catfixture.virgloverlay.core.AppContext.app;
+import static com.catfixture.virgloverlay.core.CommonContext.comCtx;
 import static com.catfixture.virgloverlay.core.impl.states.NativeServerState.SERVER_STATE_IDLE;
 
 import android.content.Context;
@@ -18,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.catfixture.virgloverlay.core.debug.Dbg;
+import com.catfixture.virgloverlay.core.ipc.IServerRemoteService;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common.SettingItem;
 import com.catfixture.virgloverlay.ui.custom.WarningComponent;
 import com.google.android.material.tabs.TabLayout;
@@ -162,9 +164,12 @@ public class SettingsFragment extends Fragment {
     public void UpdateMainView() {
         view.post(() -> {
             try {
-                boolean serverRunning = app.GetServerController().GetRemote().GetState() != SERVER_STATE_IDLE;
-                warningComponent.setVisibility(serverRunning ? View.VISIBLE : View.GONE);
-                profilesPanel.setVisibility(serverRunning ? View.GONE : View.VISIBLE);
+                IServerRemoteService rem = comCtx.GetServerController().GetRemote();
+                if ( rem != null) {
+                    boolean serverRunning = rem.GetState() != SERVER_STATE_IDLE;
+                    warningComponent.setVisibility(serverRunning ? View.VISIBLE : View.GONE);
+                    profilesPanel.setVisibility(serverRunning ? View.GONE : View.VISIBLE);
+                }
             } catch (Exception x) {
                 Dbg.Error(x);
             }

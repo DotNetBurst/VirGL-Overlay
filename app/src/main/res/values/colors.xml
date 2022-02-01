@@ -23,4 +23,5 @@
     <color name="orangeTrans">#39FF6600</color>
     <color name="orangeSat">#FF893A</color>
     <color name="blueSat">#0F8DBF</color>
+    <color name="lightRed">#FF483B</color>
 </resources>

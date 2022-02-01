@@ -1,6 +1,7 @@
 package com.catfixture.virgloverlay.ui.activity.virgl.fragments.services;
 
-import static com.catfixture.virgloverlay.core.App.app;
+import static com.catfixture.virgloverlay.core.AppContext.app;
+import static com.catfixture.virgloverlay.core.CommonContext.comCtx;
 import static com.catfixture.virgloverlay.core.impl.states.NativeServerState.SERVER_STATE_ERROR;
 import static com.catfixture.virgloverlay.core.impl.states.NativeServerState.SERVER_STATE_IDLE;
 import static com.catfixture.virgloverlay.core.impl.states.NativeServerState.SERVER_STATE_INITIALIZING;
@@ -102,6 +103,7 @@ public class ServicesFragment extends Fragment {
                 view.post(() -> UpdateServiceChange(id, state, fd));
             }
         };
+        comCtx.GetServerController().SetCallback(remoteCallback);
     }
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -118,14 +120,11 @@ public class ServicesFragment extends Fragment {
         View manualServicesControlsContainer = view.findViewById(R.id.manualServicesControlsContainer);
         SwitchCompat manServicesMode = view.findViewById(R.id.manualServicesMode);
         manServicesMode.setChecked(config.automaticMode);
-        ServerController svCont = app.GetServerController();
         manServicesMode.setOnCheckedChangeListener((compoundButton, mode) -> {
             config.SetAutomaticMode(mode);
-            svCont.EnableAutomaticMode(remoteCallback, mode);
             ToggleManualControlsPanel(manualServicesControlsContainer, mode);
         });
         if (!config.HasCurrentProfile()) config.SetAutomaticMode(false);
-        else svCont.EnableAutomaticMode(remoteCallback, config.automaticMode);
         ToggleManualControlsPanel(manualServicesControlsContainer, config.automaticMode);
 
         Utils.InitComposedButton(view, R.id.startServicesComposedButton, this::SwitchServerState);
@@ -216,7 +215,7 @@ public class ServicesFragment extends Fragment {
     }
     public void UpdateAll() {
         UpdateMainView();
-        IServerRemoteService serverInfo = app.GetServerController().GetRemote();
+        IServerRemoteService serverInfo = comCtx.GetServerController().GetRemote();
 
         if (serverInfo == null) {
             UpdateServerState(0);
@@ -238,7 +237,7 @@ public class ServicesFragment extends Fragment {
     }
 
     public void SwitchServerState() {
-        app.GetServerController().SwitchServer(remoteCallback);
+        comCtx.GetServerController().SwitchServer(remoteCallback);
     }
 
     private void ToggleView(View view, boolean b) {

@@ -1,6 +1,6 @@
 package com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.fragments;
 
-import static com.catfixture.virgloverlay.core.App.app;
+import static com.catfixture.virgloverlay.core.AppContext.app;
 
 import com.catfixture.virgloverlay.R;
 import com.catfixture.virgloverlay.core.utils.types.delegates.Action;

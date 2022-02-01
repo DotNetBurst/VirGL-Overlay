@@ -1,6 +1,6 @@
 package com.catfixture.virgloverlay.core.input.data;
 
-import static com.catfixture.virgloverlay.core.App.app;
+import static com.catfixture.virgloverlay.core.AppContext.app;
 import static com.catfixture.virgloverlay.core.input.overlay.touchControls.types.TouchableWindowElementType.TYPE_CIRCLE_BUTTON;
 
 import android.view.KeyEvent;

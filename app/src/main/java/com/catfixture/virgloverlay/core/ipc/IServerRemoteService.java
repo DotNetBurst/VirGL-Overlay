@@ -16,7 +16,6 @@ public interface IServerRemoteService {
     List<ServiceParcelable> GetServices();
 
     void RegisterCallback(@Callback IServerRemoteCallback onServerUpdate);
-    void RegisterStopCallback(@Callback IServerStopRemoteCallback serverRemoteCallback);
 
     int GetServerPID();
     void Stop();

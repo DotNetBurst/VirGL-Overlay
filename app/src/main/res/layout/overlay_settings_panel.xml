@@ -36,11 +36,12 @@
             android:src="@drawable/fx_ov_tc" />
 
         <ImageView
-            android:id="@+id/minimize"
+            android:id="@+id/miceKeyboard"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="20dp"
-            android:src="@drawable/fx_ov_min" />
+            android:src="@drawable/fx_ov_micekeyboard" />
+
         <ImageView
             android:id="@+id/close"
             android:layout_width="30dp"

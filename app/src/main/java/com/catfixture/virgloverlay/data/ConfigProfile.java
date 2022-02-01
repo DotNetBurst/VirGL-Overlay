@@ -1,7 +1,7 @@
 package com.catfixture.virgloverlay.data;
 
 
-import static com.catfixture.virgloverlay.core.App.app;
+import static com.catfixture.virgloverlay.core.AppContext.app;
 
 import androidx.annotation.NonNull;
 

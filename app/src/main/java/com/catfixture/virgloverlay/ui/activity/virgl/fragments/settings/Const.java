@@ -13,12 +13,11 @@ public class Const {
     public static final int SERVER_THREAD_CODE = 21355784;
 
 
-
-    public static final String BROADCAST_TYPE = "BCAST_TYPE";
+    public static final String BCAST_ACTION_NAME = "VGO_GBCASTNE";
+    public static final String BCAST_ACTION_TYPE = "VGO_GBCASTTP";
     public static final int BCAST_ERR_CODE = -1;
-    public static final int BCAST_STOP_SERVER = 4500;
-    public static final int BCAST_SHOW_KEYBOARD = 4501;
-    public static final int BCAST_SHOW_GAMEPAD = 4502;
-
-    public static final String ControlPanelOverlayReceiverAction = "com.catfixture.virgloverlay.action.ControlPanelOverlayReceiver";
+    public static final int BCAST_ACTION_STOP_SERVER = 4500;
+    public static final int BCAST_ACTION_RESTART_SERVER = 4501;
+    public static final int BCAST_ACTION_SHOW_KEYBOARD = 4502;
+    public static final int BCAST_ACTION_SHOW_GAMEPAD = 4503;
 }

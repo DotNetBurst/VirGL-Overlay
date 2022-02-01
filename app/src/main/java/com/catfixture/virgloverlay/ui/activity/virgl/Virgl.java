@@ -1,6 +1,7 @@
 package com.catfixture.virgloverlay.ui.activity.virgl;
 
-import static com.catfixture.virgloverlay.core.App.app;
+import static com.catfixture.virgloverlay.core.AppContext.app;
+import static com.catfixture.virgloverlay.core.CommonContext.comCtx;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.catfixture.virgloverlay.core.CommonContext;
 import com.catfixture.virgloverlay.core.utils.android.IActivityLaunchable;
 import com.catfixture.virgloverlay.core.utils.android.IPermissionGrantable;
 import com.catfixture.virgloverlay.core.debug.Dbg;
@@ -52,14 +54,7 @@ public class Virgl extends AppCompatActivity implements IPermissionGrantable, IA
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String stopServerExtra = getIntent().getStringExtra("stopServer");
-        if ( stopServerExtra != null) {
-            try {
-                app.GetServerController().Stop();
-            } catch (Exception e) {
-                Dbg.Error(e);
-            }
-        }
+        CommonContext.comCtx.Create(this);
 
         launchSomeActivity = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -73,6 +68,12 @@ public class Virgl extends AppCompatActivity implements IPermissionGrantable, IA
         com.catfixture.virgloverlay.databinding.ActivityVirglBinding binding = ActivityVirglBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         ConfigureStyle();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        CommonContext.comCtx.Destroy();
     }
 
     private void ConfigureStyle() {

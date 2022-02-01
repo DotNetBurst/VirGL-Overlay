@@ -1,8 +1,14 @@
 package com.catfixture.virgloverlay.core.impl;
 
-import static com.catfixture.virgloverlay.core.App.app;
+import static com.catfixture.virgloverlay.core.AppContext.app;
+import static com.catfixture.virgloverlay.core.CommonContext.comCtx;
+import static com.catfixture.virgloverlay.core.impl.states.NativeServerState.SERVER_STATE_ERROR;
+import static com.catfixture.virgloverlay.core.impl.states.NativeServerState.SERVER_STATE_IDLE;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Process;
 
@@ -13,30 +19,49 @@ import com.catfixture.virgloverlay.core.ipc.IServerRemoteService;
 import com.catfixture.virgloverlay.core.ipc.IServerStopRemoteCallback;
 import com.catfixture.virgloverlay.core.utils.process.ThreadUtils;
 import com.catfixture.virgloverlay.core.utils.types.Event;
+import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const;
 import com.codezjx.andlinker.AndLinker;
 import com.codezjx.andlinker.adapter.OriginalCallAdapterFactory;
 
 public class ServerController implements AndLinker.BindCallback {
+    public final static int ACTION_STOP_SERVER = 223;
+
     private final Context context;
     private final Handler handler = new Handler();
+    private final Thread watcherThread;
 
     private AndLinker mLinker;
     private IServerRemoteService mRemoteService;
     private int serverPID = -1;
     private IServerRemoteCallback serverRemoteCallback;
-    public final Event onStateChanged = new Event();
-
-    private IServerStopRemoteCallback serverStopRemoteCallback = () -> {
-        if ( mLinker != null && mLinker.isBind()) {
-            Stop();
-        }
-        handler.postDelayed(this::Start,1000);
-    };
 
     public ServerController(Context context) {
         this.context = context;
+
+        watcherThread = new Thread(() -> {
+            while(true) {
+                if (Thread.currentThread().isInterrupted()) return;
+                if ( app.GetMainConfigData().automaticMode) {
+                    if (serverRemoteCallback == null) {
+                        ThreadUtils.Sleep(1000);
+                        continue;
+                    }
+
+                    if ( mLinker != null && mLinker.isBind()) {
+                        boolean isServerStartedAndRunningNormally = mRemoteService != null &&
+                                mRemoteService.GetState() != SERVER_STATE_IDLE && mRemoteService.GetState() != SERVER_STATE_ERROR;
+                        if (!isServerStartedAndRunningNormally)
+                            Restart();
+                    } else if ( mLinker == null) {
+                        Start();
+                    }
+                }
+                ThreadUtils.Sleep(1000);
+            }
+        });
+        watcherThread.start();
     }
- 
+
     private void Start() {
         Dbg.Msg("START CMD!");
         AndLinker.enableLogger(true);
@@ -47,13 +72,11 @@ public class ServerController implements AndLinker.BindCallback {
                 .build();
         mLinker.setBindCallback(this);
         mLinker.registerObject(serverRemoteCallback);
-        mLinker.registerObject(serverStopRemoteCallback);
         mLinker.bind();
     }
 
-    public void Stop() {
+    private void Stop() {
         try {
-            mLinker.unRegisterObject(serverStopRemoteCallback);
             mLinker.unRegisterObject(serverRemoteCallback);
             mLinker.unbind();
             mLinker.setBindCallback(null);
@@ -81,7 +104,6 @@ public class ServerController implements AndLinker.BindCallback {
     public void onBind() {
         mRemoteService = mLinker.create(IServerRemoteService.class);
         mRemoteService.RegisterCallback(serverRemoteCallback);
-        mRemoteService.RegisterStopCallback(serverStopRemoteCallback);
         serverPID = mRemoteService.GetServerPID();
         Dbg.Msg("BINDED!");
     }
@@ -91,19 +113,29 @@ public class ServerController implements AndLinker.BindCallback {
         mRemoteService = null;
     }
 
-    public void EnableAutomaticMode(IServerRemoteCallback serverRemoteCallback, boolean automaticMode) {
-        this.serverRemoteCallback = serverRemoteCallback;
-        if (automaticMode) {
-            if ( mLinker == null) {
-                Start();
-            }
-        }
-    }
-
     public void SwitchServer(IServerRemoteCallback serverRemoteCallback) {
         this.serverRemoteCallback = serverRemoteCallback;
         if ( mLinker == null) {
             Start();
-        } else if (mLinker.isBind()) Stop();
+        } else TryStop();
+    }
+
+    public void Restart() {
+        TryStop();
+        handler.postDelayed(this::Start,1000);
+    }
+
+    public void TryStop() {
+        if ( mLinker != null && mLinker.isBind()) {
+            Stop();
+        }
+    }
+
+    public void SetCallback(IServerRemoteCallback serverRemoteCallback) {
+        this.serverRemoteCallback = serverRemoteCallback;
+    }
+
+    public void Destroy() {
+        watcherThread.interrupt();
     }
 }

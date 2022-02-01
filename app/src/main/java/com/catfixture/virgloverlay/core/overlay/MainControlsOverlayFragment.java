@@ -2,23 +2,28 @@ package com.catfixture.virgloverlay.core.overlay;
 
 import static android.view.View.MeasureSpec.UNSPECIFIED;
 
-import static com.catfixture.virgloverlay.core.App.app;
+import static com.catfixture.virgloverlay.core.AppContext.app;
+import static com.catfixture.virgloverlay.core.input.android.MessageReceiver.PrepareMessage;
 import static com.catfixture.virgloverlay.core.input.devices.Devices.DEVICE_NONE;
 import static com.catfixture.virgloverlay.core.input.devices.Devices.TOUCH_DEVICE;
 import static com.catfixture.virgloverlay.core.input.overlay.TouchDeviceEditorOverlayFragment.ID_TOUCH_CONTROLS_EDITOR_OVERLAY;
 import static com.catfixture.virgloverlay.core.input.overlay.TouchDeviceOverlayFragment.ID_TOUCH_CONTROLS_OVERLAY;
+import static com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const.BCAST_ACTION_RESTART_SERVER;
+import static com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const.BCAST_ACTION_STOP_SERVER;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.catfixture.virgloverlay.R;
+import com.catfixture.virgloverlay.core.input.android.MessageReceiver;
 import com.catfixture.virgloverlay.core.input.devices.Devices;
 import com.catfixture.virgloverlay.core.input.animations.ResizeWidthAnimation;
-import com.catfixture.virgloverlay.core.input.devices.TouchDevice;
-import com.catfixture.virgloverlay.core.overlay.IOverlayFragment;
 import com.catfixture.virgloverlay.core.utils.android.LayoutUtils;
+import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const;
+import com.codezjx.andlinker.annotation.In;
 
 
 public class MainControlsOverlayFragment implements IOverlayFragment {
@@ -28,6 +33,7 @@ public class MainControlsOverlayFragment implements IOverlayFragment {
     private int expandedWidth = 660;
     private ImageView keyboardToggle;
     private ImageView touchControlsToggle;
+    private ImageView miceKeyboardToggle;
     private int currentInputDevice = TOUCH_DEVICE;
     private ViewGroup root;
     private boolean isExpanded;
@@ -51,8 +57,13 @@ public class MainControlsOverlayFragment implements IOverlayFragment {
 
         keyboardToggle = root.findViewById(R.id.keyboardToggle);
         touchControlsToggle = root.findViewById(R.id.touchControlsToggle);
-        ImageView minimize = root.findViewById(R.id.minimize);
+        miceKeyboardToggle = root.findViewById(R.id.miceKeyboard);
         ImageView close = root.findViewById(R.id.close);
+
+        close.setOnClickListener(view -> {
+            Intent msg = PrepareMessage(context, BCAST_ACTION_STOP_SERVER);
+            context.sendBroadcast(msg);
+        });
 
         keyboardToggle.setOnClickListener(view -> {
             SetCurrentInputDevice(context, Devices.KEYBOARD_DEVICE);
