@@ -16,8 +16,10 @@ import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.catfixture.virgloverlay.R;
+import com.catfixture.virgloverlay.core.debug.Dbg;
 import com.catfixture.virgloverlay.core.input.android.MessageReceiver;
 import com.catfixture.virgloverlay.core.input.devices.Devices;
 import com.catfixture.virgloverlay.core.input.animations.ResizeWidthAnimation;
@@ -35,8 +37,9 @@ public class MainControlsOverlayFragment implements IOverlayFragment {
     private ImageView touchControlsToggle;
     private ImageView miceKeyboardToggle;
     private int currentInputDevice = TOUCH_DEVICE;
-    private ViewGroup root;
     private boolean isExpanded;
+    private final ViewGroup root;
+    private final ViewGroup mainCont;
 
     @Override
     public int GetID() {
@@ -44,10 +47,23 @@ public class MainControlsOverlayFragment implements IOverlayFragment {
     }
 
     public MainControlsOverlayFragment(Context context) {
+        //SEMI USELESS ROOT FOR STYLE
         root = (ViewGroup) View.inflate(context, R.layout.overlay_settings_panel, null);
-        LayoutUtils.SetWrapWrap(root);
+        LayoutUtils.SetMatchWrap(root);
 
-        View subPanel = root.findViewById(R.id.subPanel);
+        mainCont = root.findViewById(R.id.mainCont);
+        ViewGroup controlsCont = root.findViewById(R.id.controlsContainer);
+
+        mainCont.measure(UNSPECIFIED, UNSPECIFIED);
+        collapsedWidth = mainCont.getMeasuredWidth();
+        controlsCont.setVisibility(View.VISIBLE);
+
+        mainCont.measure(UNSPECIFIED, UNSPECIFIED);
+        expandedWidth = mainCont.getMeasuredWidth();
+
+        mainCont.getLayoutParams().width = collapsedWidth;
+        mainCont.requestLayout();
+
         ImageView settingsIco = root.findViewById(R.id.settingsIco);
 
         settingsIco.setOnClickListener((o) -> {
@@ -89,9 +105,6 @@ public class MainControlsOverlayFragment implements IOverlayFragment {
         else
             UpdateButtonsColors(context, currentInputDevice);
 
-        root.measure(UNSPECIFIED, UNSPECIFIED);
-        collapsedWidth = root.getMeasuredWidth();
-        SetExpanded(false);
     }
   
     @Override
@@ -122,19 +135,19 @@ public class MainControlsOverlayFragment implements IOverlayFragment {
     }
 
     private void SetExpanded(boolean is) {
-        root.clearAnimation();
+        mainCont.clearAnimation();
+        ResizeWidthAnimation anim;
         if ( is) {
-            ResizeWidthAnimation anim = new ResizeWidthAnimation(root, expandedWidth);
+            anim = new ResizeWidthAnimation(mainCont, expandedWidth);
             anim.setDuration(100);
-            root.setAlpha(1);
-            root.startAnimation(anim);
+            mainCont.setAlpha(1);
         } else {
-            ResizeWidthAnimation anim = new ResizeWidthAnimation(root, collapsedWidth);
+            anim = new ResizeWidthAnimation(mainCont, collapsedWidth);
             anim.setDuration(100);
-            root.postDelayed(() -> {
-                root.setAlpha(0.5f);
+            mainCont.postDelayed(() -> {
+                mainCont.setAlpha(0.5f);
             }, 100);
-            root.startAnimation(anim);
         }
+        mainCont.startAnimation(anim);
     }
 }

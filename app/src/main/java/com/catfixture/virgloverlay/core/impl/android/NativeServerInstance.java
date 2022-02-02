@@ -41,6 +41,7 @@ import com.catfixture.virgloverlay.R;
 import com.catfixture.virgloverlay.core.input.android.MessageReceiver;
 import com.catfixture.virgloverlay.core.input.devices.IInputDevice;
 import com.catfixture.virgloverlay.core.input.devices.TouchDevice;
+import com.catfixture.virgloverlay.core.overlay.MainControlsOverlayFragment;
 import com.catfixture.virgloverlay.core.overlay.OverlayInitializer;
 import com.catfixture.virgloverlay.core.utils.android.AndroidUtils;
 import com.catfixture.virgloverlay.core.impl.handles.IService;
@@ -143,9 +144,7 @@ public class NativeServerInstance extends Service {
         windowsManager.Init(context);
 
         //test
-
         //OverlayInitializer.Init(getApplicationContext(), inputDevice);
-
 
         //NOTIFICATION SECTION
         RemoteViews notificationLayout = new RemoteViews(getPackageName(), R.layout.notification_layout);

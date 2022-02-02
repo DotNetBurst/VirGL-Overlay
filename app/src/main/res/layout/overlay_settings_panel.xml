@@ -1,53 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@drawable/fx_pnb_pan"
-    android:orientation="horizontal"
-    android:padding="5dp">
-
-
-    <ImageView
-        android:id="@+id/settingsIco"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/fx_ov_settings" />
-
+    android:layout_width="match_parent"
+    android:gravity="end"
+    android:layout_height="wrap_content">
     <LinearLayout
-        android:id="@+id/subPanel"
+        android:id="@+id/mainCont"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="-200dp"
-        android:translationX="255dp"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:background="@drawable/fx_pnb_pan"
+        android:padding="5dp"
+        android:gravity="end"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/controlsContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginStart="7dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/keyboardToggle"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/fx_ov_kb" />
+            <ImageView
+                android:id="@+id/touchControlsToggle"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/fx_ov_tc" />
+
+            <ImageView
+                android:id="@+id/miceKeyboard"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/fx_ov_micekeyboard" />
+
+            <ImageView
+                android:id="@+id/close"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/fx_ov_off" />
+        </LinearLayout>
 
         <ImageView
-            android:id="@+id/keyboardToggle"
+            android:id="@+id/settingsIco"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/fx_ov_kb" />
-        <ImageView
-            android:id="@+id/touchControlsToggle"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="20dp"
-            android:src="@drawable/fx_ov_tc" />
-
-        <ImageView
-            android:id="@+id/miceKeyboard"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="20dp"
-            android:src="@drawable/fx_ov_micekeyboard" />
-
-        <ImageView
-            android:id="@+id/close"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="20dp"
-            android:src="@drawable/fx_ov_off" />
+            android:src="@drawable/fx_ov_settings" />
     </LinearLayout>
-
 </RelativeLayout>

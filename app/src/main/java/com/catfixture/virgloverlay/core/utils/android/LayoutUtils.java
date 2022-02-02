@@ -27,6 +27,11 @@ public class LayoutUtils {
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
     }
+    public static void SetMatchWrapRelative(View view) {
+        view.setLayoutParams(new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+    }
     public static void SetSizeRelative(View view, int x, int y) {
         view.setLayoutParams(new RelativeLayout.LayoutParams(x,y));
     }

@@ -37,6 +37,8 @@
 #include <epoxy/egl.h>
 #include "vrend_renderer.h"
 #include "vrend_object.h"
+#include "../axs/TMPShrinker.h"
+#include "../axs/Statistics.h"
 
 #ifdef X11
 #include <X11/extensions/shape.h>
@@ -58,6 +60,8 @@
 #endif
 
 extern struct vrend_context *overlay_ctx;
+struct ConfigProfile* commonConfigProfile;
+struct Statistics * statistics;
 
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -134,7 +138,6 @@ static void *renderer_thread(void *arg)
     return NULL;
 }
 
-struct ConfigProfile* commonConfigProfile;
 
 jstring getString(JNIEnv* env, jclass profileKlass, jobject settings, char* name) {
     jfieldID fId = (*env)->GetFieldID(env, profileKlass, name, "Ljava/lang/String;");
@@ -181,6 +184,8 @@ JNIEXPORT void JNICALL Java_com_catfixture_virgloverlay_core_impl_android_Native
 
 
     commonConfigProfile = malloc(sizeof(struct ConfigProfile));
+    memset(commonConfigProfile, 0, sizeof(commonConfigProfile));
+
     commonConfigProfile->useSocket = useSocket;
     commonConfigProfile->socketPath = socketPathPtr;
     commonConfigProfile->ringBufferPath = ringBufferPathPtr;
@@ -200,6 +205,8 @@ JNIEXPORT void JNICALL Java_com_catfixture_virgloverlay_core_impl_android_Native
     commonConfigProfile->deviceHeight = deviceHeight;
     commonConfigProfile->navBarHeight = navBarHeight;
     disp = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+
+    CreateStatistics(env);
 }
 
 JNIEXPORT jint JNICALL Java_com_catfixture_virgloverlay_core_impl_android_NativeServerInstance_runServer(JNIEnv *env, jclass cls) {
@@ -217,6 +224,8 @@ JNIEXPORT void JNICALL Java_com_catfixture_virgloverlay_core_impl_android_Native
         (*env)->ReleaseStringUTFChars(env, commonConfigProfile->ringBufferPath, ringBufferPath);
 
     printf("Socket closed %i", fileDescriptor);
+    free(commonConfigProfile);
+    free(statistics);
 }
 JNIEXPORT jint JNICALL Java_com_catfixture_virgloverlay_core_impl_android_NativeServerInstance_acceptSocket(JNIEnv *env, jclass cls, jint fileDescriptor) {
     return wait_for_socket_accept(fileDescriptor);
@@ -785,7 +794,7 @@ static void vtest_dt_destroy(struct vtest_renderer *r, struct dt_record *dt)
 }
 
 static void vtest_dt_flush(struct vtest_renderer *r, struct dt_record *dt, int handle,
-        int x, int y, int w, int h, int targetX, int targetY, int targetWidth, int targetHeight)
+        int x, int y, int w, int h)
 {
 #ifdef X11
     if((r->flags &FL_GLX))
@@ -815,15 +824,18 @@ static void vtest_dt_flush(struct vtest_renderer *r, struct dt_record *dt, int h
 
     glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, 0);
 
-
-    glViewport(targetX, targetY, targetWidth, targetHeight);
-    glBlitFramebuffer(x,y+h,w+x,y,targetX,targetY,targetWidth,targetHeight,GL_COLOR_BUFFER_BIT,GL_NEAREST);
+    if (!ApplyShrinking(x,y,w,h)) {
+        glBlitFramebuffer(x,y+h,w+x,y,x,y,w+x,h+y,GL_COLOR_BUFFER_BIT,GL_NEAREST);
+    }
 
 #ifdef X11
     if((r->flags &FL_GLX)) glXSwapBuffers(r->x11_dpy, dt->x11_win);
     else
 #endif
     eglSwapBuffers(r->egl_display, dt->egl_surf);
+
+    MeasureFPS();
+    UpdateStatistics(r->jni.env);
 }
 
 static void vtest_dt_set_rect(struct vtest_renderer *r, struct dt_record *dt, int visible, int x, int y, int w, int h)
@@ -923,52 +935,18 @@ static int vtest_dt_cmd(struct vtest_renderer *r)
     cmd = flush_buf[VCMD_DT_CMD];
     handle = flush_buf[VCMD_DT_HANDLE];
 
-    printf("dt_cmd %d %d %d %d %d %d %d %d\n", cmd, x, y, w, h, id, handle, drawable);
+    //printf("dt_cmd %d %d %d %d %d %d %d %d\n", cmd, x, y, w, h, id, handle, drawable);
     
     struct dt_record *dt = &r->dts[id];
 
-
-    int targetX = 0;
-    int targetY = 0;
-    int targetWidth = 0;
-    int targetHeight = 0;
-
-    if ( r->configProfile->useViewportShrink) {
-        switch (r->configProfile->viewportShrinkType) {
-            case 0: {
-                targetWidth = r->configProfile->shrinkWidth;
-                targetHeight = r->configProfile->shrinkHeight;
-
-                if ( r->configProfile->centerViewportRect) {
-                    targetX = r->configProfile->deviceWidth / 2 - r->configProfile->shrinkWidth / 2;
-                    targetY = r->configProfile->deviceHeight / 2 - r->configProfile->shrinkHeight / 2;
-                }
-                break;
-            }
-            case 1: {
-                targetWidth = r->configProfile->deviceWidth;
-                targetHeight = r->configProfile->deviceHeight;
-                break;
-            }
-            case 2: {
-                targetWidth = r->configProfile->deviceWidth - r->configProfile->navBarHeight;
-                targetHeight = r->configProfile->deviceHeight;
-                break;
-            }
-        }
-    } else {
-        targetWidth = w;
-        targetHeight = h;
-    }
-
     if( cmd == VCMD_DT_CMD_CREATE )
-        vtest_dt_create(r,dt,drawable,targetX,targetY,targetWidth,targetHeight);
+        vtest_dt_create(r,dt,drawable,x,y,w,h);
     else if(cmd == VCMD_DT_CMD_DESTROY)
        vtest_dt_destroy(r, dt);
-    else if(cmd == VCMD_DT_CMD_SET_RECT)
-        vtest_dt_set_rect(r,dt,drawable,targetX,targetY,targetWidth,targetHeight);
+    //else if(cmd == VCMD_DT_CMD_SET_RECT)
+    //    vtest_dt_set_rect(r,dt,drawable,targetX,targetY,targetWidth,targetHeight);
     if( cmd == VCMD_DT_CMD_FLUSH )
-        vtest_dt_flush(r, dt, handle, x, y, w, h, x, y, targetWidth, targetHeight);
+        vtest_dt_flush(r, dt, handle, x, y, w, h);
     return 0;
 }
 

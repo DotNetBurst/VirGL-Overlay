@@ -1,5 +1,7 @@
 package com.catfixture.virgloverlay.core.utils.windows;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
@@ -41,8 +43,7 @@ public class AndroidWindow implements IWindow {
 
     @Override
     public IWindow SetFullscreen() {
-        Size rd = GetRealDisplaySize(winMan);
-        SetSize(rd.getWidth(), rd.getHeight());
+        SetSize(MATCH_PARENT, MATCH_PARENT);
         return this;
     }
 
@@ -107,16 +108,16 @@ public class AndroidWindow implements IWindow {
     public IWindow CreateLinearLayoutContainer() {
         container = new LinearLayout(context);
         container.setLayoutParams(new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
+                MATCH_PARENT,
+                MATCH_PARENT));
         return this;
     }
     @Override
     public IWindow CreateRelativeLayoutContainer() {
         container = new RelativeLayout(context);
         container.setLayoutParams(new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
+                MATCH_PARENT,
+                MATCH_PARENT));
         return this;
     }
 

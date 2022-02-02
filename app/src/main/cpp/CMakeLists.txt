@@ -32,6 +32,7 @@ add_definitions(
         )
 
 include_directories(
+        axs
         src
         src/epoxy
         src/gallium/auxiliary
@@ -53,6 +54,9 @@ add_library( # Sets the name of the library.
              SHARED
 
         # Provides a relative path to your source file(s).
+
+        axs/TMPShrinker.c
+        axs/Statistics.c
 
         vtest/ring.c
         vtest/util.c

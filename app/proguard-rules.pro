@@ -23,3 +23,7 @@
 -keep class com.example.andlinker.model.** {
     public void readFromParcel(android.os.Parcel);
 }
+
+-keep class com.catfixture.virgloverlay.core.impl.android.NativeStatistics {
+    *;
+}

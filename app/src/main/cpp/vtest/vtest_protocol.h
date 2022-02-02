@@ -107,20 +107,20 @@
 #define VCMD_DT_CMD_FLUSH 3
 
 struct ConfigProfile {
-    bool useSocket;
     const char* socketPath;
     const char* ringBufferPath;
 
-    bool useGLES;
-    bool useS3TC;
-    bool useVertexShaderHack;
-    bool useBlendHack;
-    bool useStencilMirror;
-    bool useFragmentShaderHack;
-    bool useViewportShrink;
+    uint8_t useSocket;
+    uint8_t useGLES;
+    uint8_t useS3TC;
+    uint8_t useVertexShaderHack;
+    uint8_t useBlendHack;
+    uint8_t useStencilMirror;
+    uint8_t useFragmentShaderHack;
+    uint8_t useViewportShrink;
+    uint8_t centerViewportRect;
+    uint8_t useGLX;
     int viewportShrinkType;
-    bool centerViewportRect;
-    bool useGLX;
     int shrinkWidth;
     int shrinkHeight;
     int deviceWidth;
