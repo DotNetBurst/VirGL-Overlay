@@ -6,9 +6,7 @@ import static com.catfixture.virgloverlay.core.AppContext.app;
 import static com.catfixture.virgloverlay.core.input.android.MessageReceiver.PrepareMessage;
 import static com.catfixture.virgloverlay.core.input.devices.Devices.DEVICE_NONE;
 import static com.catfixture.virgloverlay.core.input.devices.Devices.TOUCH_DEVICE;
-import static com.catfixture.virgloverlay.core.input.overlay.TouchDeviceEditorOverlayFragment.ID_TOUCH_CONTROLS_EDITOR_OVERLAY;
-import static com.catfixture.virgloverlay.core.input.overlay.TouchDeviceOverlayFragment.ID_TOUCH_CONTROLS_OVERLAY;
-import static com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const.BCAST_ACTION_RESTART_SERVER;
+import static com.catfixture.virgloverlay.core.input.devices.touch.interaction.editor.TouchDeviceEditorOverlayFragment.ID_TOUCH_CONTROLS_EDITOR_OVERLAY;
 import static com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const.BCAST_ACTION_STOP_SERVER;
 
 import android.content.Context;
@@ -16,16 +14,11 @@ import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.catfixture.virgloverlay.R;
-import com.catfixture.virgloverlay.core.debug.Dbg;
-import com.catfixture.virgloverlay.core.input.android.MessageReceiver;
 import com.catfixture.virgloverlay.core.input.devices.Devices;
 import com.catfixture.virgloverlay.core.input.animations.ResizeWidthAnimation;
 import com.catfixture.virgloverlay.core.utils.android.LayoutUtils;
-import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.Const;
-import com.codezjx.andlinker.annotation.In;
 
 
 public class MainControlsOverlayFragment implements IOverlayFragment {

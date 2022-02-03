@@ -9,7 +9,7 @@ import java.util.List;
 
 public class InputConfigProfile implements IAdapterItem {
     private transient boolean isVisible = true;
-    public List<InputTouchControlElement> touchControlElements = new ArrayList<>();
+    public List<InputTouchControlElementData> touchControlElements = new ArrayList<>();
 
     @Override
     public void ToggleVisibility(boolean isVisible) {
@@ -36,9 +36,9 @@ public class InputConfigProfile implements IAdapterItem {
     }
 
     public void AddControlElement(int id) {
-        InputTouchControlElement el = new InputTouchControlElement();
-        touchControlElements.add(el);
-        el.SetId(id);
+        InputTouchControlElementData elementData = new InputTouchControlElementData();
+        elementData.SetId(id);
+        touchControlElements.add(elementData);
         Save();
     }
 
@@ -47,7 +47,7 @@ public class InputConfigProfile implements IAdapterItem {
     }
 
     public void RemoveControlElement(int id) {
-        for (InputTouchControlElement touchControlElement : touchControlElements) {
+        for (InputTouchControlElementData touchControlElement : touchControlElements) {
             if ( touchControlElement.id == id) {
                 touchControlElements.remove(touchControlElement);
                 Save();

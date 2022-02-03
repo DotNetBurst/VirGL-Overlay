@@ -3,7 +3,6 @@ package com.catfixture.virgloverlay.core.impl.android;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static androidx.core.app.NotificationCompat.PRIORITY_MAX;
-import static androidx.core.app.NotificationCompat.PRIORITY_MIN;
 import static com.catfixture.virgloverlay.core.AppContext.app;
 import static com.catfixture.virgloverlay.core.impl.states.NativeServerState.SERVER_STATE_ERROR;
 import static com.catfixture.virgloverlay.core.impl.states.NativeServerState.SERVER_STATE_IDLE;
@@ -38,10 +37,8 @@ import android.widget.Toast;
 import androidx.core.app.NotificationCompat;
 
 import com.catfixture.virgloverlay.R;
-import com.catfixture.virgloverlay.core.input.android.MessageReceiver;
 import com.catfixture.virgloverlay.core.input.devices.IInputDevice;
-import com.catfixture.virgloverlay.core.input.devices.TouchDevice;
-import com.catfixture.virgloverlay.core.overlay.MainControlsOverlayFragment;
+import com.catfixture.virgloverlay.core.input.devices.touch.TouchDevice;
 import com.catfixture.virgloverlay.core.overlay.OverlayInitializer;
 import com.catfixture.virgloverlay.core.utils.android.AndroidUtils;
 import com.catfixture.virgloverlay.core.impl.handles.IService;
@@ -50,7 +47,6 @@ import com.catfixture.virgloverlay.core.debug.logging.GlobalExceptions;
 import com.catfixture.virgloverlay.core.impl.handles.ServiceHandle;
 import com.catfixture.virgloverlay.core.ipc.IServerRemoteCallback;
 import com.catfixture.virgloverlay.core.ipc.IServerRemoteService;
-import com.catfixture.virgloverlay.core.ipc.IServerStopRemoteCallback;
 import com.catfixture.virgloverlay.core.ipc.ServiceParcelable;
 import com.catfixture.virgloverlay.core.utils.types.delegates.Functions;
 import com.catfixture.virgloverlay.data.MainConfigData;
@@ -144,7 +140,7 @@ public class NativeServerInstance extends Service {
         windowsManager.Init(context);
 
         //test
-        //OverlayInitializer.Init(getApplicationContext(), inputDevice);
+        OverlayInitializer.Init(getApplicationContext(), inputDevice);
 
         //NOTIFICATION SECTION
         RemoteViews notificationLayout = new RemoteViews(getPackageName(), R.layout.notification_layout);

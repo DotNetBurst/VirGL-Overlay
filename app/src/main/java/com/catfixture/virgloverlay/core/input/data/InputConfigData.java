@@ -66,6 +66,8 @@ public class InputConfigData implements ITypedProvider<Event> {
     public void RemoveCurrentProfile() {
         if (HasCurrentProfile()) {
             profiles.remove(currentProfile);
+            if ( profiles.size() == 0) currentProfile = -1;
+            else currentProfile = profiles.size() - 1;
             Save();
         }
     }

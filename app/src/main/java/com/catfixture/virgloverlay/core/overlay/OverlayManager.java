@@ -2,11 +2,10 @@ package com.catfixture.virgloverlay.core.overlay;
 
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.catfixture.virgloverlay.core.debug.Dbg;
-import com.catfixture.virgloverlay.core.input.overlay.utils.EventUtils;
-import com.catfixture.virgloverlay.core.input.overlay.utils.ITouchable;
+import com.catfixture.virgloverlay.core.input.utils.EventUtils;
+import com.catfixture.virgloverlay.core.input.utils.ITouchable;
 import com.catfixture.virgloverlay.core.utils.types.Event;
 import com.catfixture.virgloverlay.core.utils.windows.AndroidWindow;
 import com.catfixture.virgloverlay.core.utils.windows.IWindow;

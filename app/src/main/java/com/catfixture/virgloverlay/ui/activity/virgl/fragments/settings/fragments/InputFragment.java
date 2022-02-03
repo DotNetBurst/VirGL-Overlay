@@ -3,6 +3,7 @@ package com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.fragmen
 import static com.catfixture.virgloverlay.core.AppContext.app;
 import static com.catfixture.virgloverlay.core.utils.android.AndroidUtils.CopyRawToTemp;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
 
@@ -67,7 +68,7 @@ public class InputFragment extends CoreSettingsFragment {
                 }, "Close", null);
             } else {
                 ConfirmDialog.Show(getContext(), "Service uninstallation", "Do you really want to uninstall VGOBridge service, " +
-                        "it will be uninstalled in all containers?\n" +
+                        "it will be uninstalled from all containers?\n" +
                         "Please note! ROOT REQUIRED to uninstall", "Uninstall now", () -> {
                     Installer.InstallVGO(getContext(), false, handler, this::OnInstallComplete);
                 }, "Close", null);
@@ -92,7 +93,7 @@ public class InputFragment extends CoreSettingsFragment {
     private void UpdateVGOBRidgeInstalleState(Context context, Runnable onDone) {
         String filesDir = context.getFilesDir().getAbsolutePath();
         final String checkCmd = "su -c sh " + filesDir + "/installCheckScript.sh";
-        ProcUtils.RunSystemCommand(checkCmd, res -> {
+        ProcUtils.RunSystemCommandWithOutput(checkCmd, res -> {
             handler.post(() -> {
                 systemInstalledState = res;
                 UpdateVGOBRidgeInstallButton();

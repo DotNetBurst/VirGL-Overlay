@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/sensivitySliderText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sensivity : 0%"
+        android:textColor="@color/white"
+        android:layout_weight="0" />
+
+    <SeekBar
+        android:id="@+id/sensivitySlider"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:max="280"
+        android:progress="80"
+        android:progressBackgroundTint="@color/white" />
+</TableRow>

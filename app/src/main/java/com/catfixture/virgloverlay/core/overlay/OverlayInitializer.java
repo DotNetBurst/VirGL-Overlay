@@ -5,7 +5,7 @@ import static com.catfixture.virgloverlay.core.AppContext.app;
 import android.content.Context;
 
 import com.catfixture.virgloverlay.core.input.devices.IInputDevice;
-import com.catfixture.virgloverlay.core.input.overlay.TouchDeviceOverlayFragment;
+import com.catfixture.virgloverlay.core.input.devices.touch.interaction.TouchDeviceOverlayFragment;
 
 public class OverlayInitializer {
     public static void Init(Context context, IInputDevice device) {

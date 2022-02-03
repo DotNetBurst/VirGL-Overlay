@@ -2,6 +2,7 @@ package com.catfixture.virgloverlay.core.utils.android;
 
 import static com.catfixture.virgloverlay.core.utils.android.AndroidUtils.CopyRawToTemp;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
 
@@ -14,17 +15,24 @@ import java.io.File;
 
 public class Installer {
     public static void InstallVGO (Context context, boolean isInstallMode, Handler handler, Runnable onDone) {
+        final ProgressDialog pd = new ProgressDialog(context);
+        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        pd.setMessage((isInstallMode ? "Installing" : "Uninstalling") + "... please wait!\n");
+        pd.setIndeterminate(true);
+        pd.setCancelable(false);
+        pd.show();
+
         String filesDir = context.getFilesDir().getAbsolutePath();
-        File installCheckScript = CopyRawToTemp(context, R.raw.vgo_bridge_service_install_check, "/installCheckScript.sh");
+        CopyRawToTemp(context, R.raw.vgo_bridge_service_install_check, "/installCheckScript.sh");
         File installerScript = CopyRawToTemp(context, R.raw.vgo_bridge_service_installer, "/installerScript.sh");
         File binary = CopyRawToTemp(context, R.raw.vgob, "/vgob.exe");
         File launcher = CopyRawToTemp(context, R.raw.vgo, "/vgo");
 
         final String installCmd = "su -c sh " + filesDir + "/installerScript.sh " + (isInstallMode ? 0 : 1) + " " + filesDir;
-        Dbg.Msg("Running installer : " + installCmd);
         ProcUtils.RunSystemCommandWithOutput(installCmd, obj -> {
             Dbg.Msg("Installer returned : " + obj);
             handler.post(() -> {
+                pd.setMessage("Done!");
                 if (obj == 0) {
                     ConfirmDialog.Show(context, isInstallMode ? "Installed!" : "Uninstalled!", "VGOBridge was successfully " +
                             (isInstallMode ? "installed!" : "uninstalled!"), "Ok", () -> {
@@ -34,12 +42,11 @@ public class Installer {
                     }, "Close", null);
                 }
                 onDone.run();
+                pd.dismiss();
             });
             binary.delete();
             installerScript.delete();
             launcher.delete();
         });
-
-        //RUN INSTALLER BASH
     }
 }

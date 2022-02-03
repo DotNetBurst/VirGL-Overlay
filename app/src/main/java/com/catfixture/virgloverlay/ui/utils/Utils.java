@@ -47,10 +47,15 @@ public class Utils {
         button.setOnClickListener(view1 -> action.run());
     }
 
-    public static <T> ArrayAdapter<T> InitSpinner(Context context, Spinner spinner, int defaultValue, Action<Integer> onItemSelected) {
+    public static <T> ArrayAdapter<T> InitSpinner(Context context, Spinner spinner, int defaultValue) {
+        spinner.setOnItemSelectedListener(null);
         ArrayAdapter<T> profilesAdapter = new ArrayAdapter<>(context, R.layout.touch_controls_list_item);
         spinner.setAdapter(profilesAdapter);
+        spinner.setSelection(defaultValue);
+        return profilesAdapter;
+    }
 
+    public static void AttachSpinnerAction(Spinner spinner, Action<Integer> onItemSelected) {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -58,7 +63,5 @@ public class Utils {
             }
             @Override public void onNothingSelected(AdapterView<?> adapterView) {}
         });
-        spinner.setSelection(defaultValue);
-        return profilesAdapter;
     }
 }
