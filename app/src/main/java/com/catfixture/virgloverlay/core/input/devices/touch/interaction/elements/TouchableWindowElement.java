@@ -33,6 +33,7 @@ public abstract class TouchableWindowElement extends LinearLayout implements IIn
     protected Int2 initialSize = new Int2(100,100);
     private TouchableWindowElement handle;
     Runnable reinflate;
+    private Runnable editorReset;
 
     public TouchableWindowElement(Context context, InputTouchControlElementData data) {
         super(context);
@@ -157,5 +158,11 @@ public abstract class TouchableWindowElement extends LinearLayout implements IIn
     @Override
     public void Reinflate() {
         reinflate.run();
+    }
+    public void SetEditorReset(Runnable editorReset) { this.editorReset = editorReset;};
+
+    @Override
+    public void ResetEditor() {
+        editorReset.run();
     }
 }

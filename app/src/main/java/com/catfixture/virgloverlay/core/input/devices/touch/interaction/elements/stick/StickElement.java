@@ -1,6 +1,7 @@
 package com.catfixture.virgloverlay.core.input.devices.touch.interaction.elements.stick;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
@@ -8,6 +9,7 @@ import com.catfixture.virgloverlay.R;
 import com.catfixture.virgloverlay.core.input.data.InputTouchControlElementData;
 import com.catfixture.virgloverlay.core.input.devices.IInputDevice;
 import com.catfixture.virgloverlay.core.input.devices.touch.interaction.elements.TouchableWindowElement;
+import com.catfixture.virgloverlay.core.input.devices.touch.interaction.elements.mouseZone.MouseZoneElementEditable;
 import com.catfixture.virgloverlay.core.utils.math.Int2;
 
 
@@ -51,11 +53,15 @@ public class StickElement extends TouchableWindowElement {
 
     @Override
     public void Select(ViewGroup customContainer) {
+        getBackground().setColorFilter(context.getColor(R.color.orange), PorterDuff.Mode.MULTIPLY);
 
+        StickElementEditor editable = new StickElementEditor(context, this);
+        customContainer.removeAllViews();
+        customContainer.addView(editable.GetRoot());
     }
 
     @Override
     public void Deselect() {
-
+        getBackground().setColorFilter(null);
     }
 }

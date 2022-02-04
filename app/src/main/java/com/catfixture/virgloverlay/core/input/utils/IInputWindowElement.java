@@ -25,4 +25,5 @@ public interface IInputWindowElement {
     void Deselect();
 
     void Reinflate();
+    void ResetEditor();
 }

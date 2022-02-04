@@ -110,7 +110,7 @@ public class SettingsFragment extends Fragment {
                 app.GetMainConfigData().GetCurrentProfile().SetName(newName);
                 UpdateAll();
                 SettingItem.OnAppWideSettingsChanged.notifyObservers();
-            }, "Cancel", null);
+            });
         });
 
         removeProfile = view.findViewById(R.id.removeProfile);

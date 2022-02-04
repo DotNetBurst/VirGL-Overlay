@@ -16,19 +16,15 @@ import com.catfixture.virgloverlay.core.input.devices.touch.interaction.elements
 import com.catfixture.virgloverlay.core.input.utils.IInputWindowElement;
 
 public class CrossElementEditable extends CommonElementEditor {
-    private Spinner mappingType;
-    private TableRow root;
-    private ArrayAdapter<String> mappingTypesAdapter;
-
     public CrossElementEditable(Context context, IInputWindowElement parentItem) {
         super(context, parentItem);
 
         InputTouchControlElementData data = (InputTouchControlElementData) parentItem.GetData();
-        root = (TableRow) View.inflate(context, R.layout.editable_cross_element, null);
+        TableRow root = (TableRow) View.inflate(context, R.layout.editable_cross_element, null);
 
-        mappingType = root.findViewById(R.id.mappingType);
+        Spinner mappingType = root.findViewById(R.id.mappingType);
 
-        mappingTypesAdapter = new ArrayAdapter<>(context, R.layout.touch_controls_list_item);
+        ArrayAdapter<String> mappingTypesAdapter = new ArrayAdapter<>(context, R.layout.touch_controls_list_item);
         mappingTypesAdapter.addAll("WASD","Arrows","Numpad");
         mappingType.setAdapter(mappingTypesAdapter);
         mappingType.setSelection(data.mappingType);

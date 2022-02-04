@@ -1,6 +1,7 @@
 package com.catfixture.virgloverlay.core.input.devices.touch.interaction.elements;
 
 import static com.catfixture.virgloverlay.core.AppContext.app;
+import static com.catfixture.virgloverlay.core.input.devices.touch.interaction.editor.TouchDeviceEditorOverlayFragment.ID_TOUCH_CONTROLS_EDITOR_OVERLAY;
 import static com.catfixture.virgloverlay.core.input.devices.touch.interaction.types.TouchableWindowElementType.spinnerData;
 
 import android.content.Context;
@@ -17,6 +18,7 @@ import com.catfixture.virgloverlay.core.input.data.InputConfigData;
 import com.catfixture.virgloverlay.core.input.data.InputConfigProfile;
 import com.catfixture.virgloverlay.core.input.data.InputTouchControlElementData;
 import com.catfixture.virgloverlay.core.input.devices.touch.interaction.editor.IEditable;
+import com.catfixture.virgloverlay.core.input.devices.touch.interaction.editor.TouchDeviceEditorOverlayFragment;
 import com.catfixture.virgloverlay.core.input.devices.touch.interaction.types.TouchableWindowElementSpinnerData;
 import com.catfixture.virgloverlay.core.input.devices.touch.interaction.types.TouchableWindowElementType;
 import com.catfixture.virgloverlay.core.input.utils.IInputWindowElement;
@@ -94,7 +96,7 @@ public class CommonElementEditor implements IEditable {
             InputConfigData idt = app.GetInputConfigData();
             if( idt.HasCurrentProfile()) {
                 idt.GetCurrentProfile().RemoveControlElement(data.id);
-                parentItem.Reinflate();
+                parentItem.ResetEditor();
             }
         });
     }

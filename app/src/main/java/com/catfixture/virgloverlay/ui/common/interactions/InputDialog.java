@@ -2,6 +2,7 @@ package com.catfixture.virgloverlay.ui.common.interactions;
 
 import android.content.Context;
 import android.text.InputType;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -9,13 +10,14 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.catfixture.virgloverlay.R;
 import com.catfixture.virgloverlay.core.utils.types.delegates.Action;
+import com.catfixture.virgloverlay.core.utils.windows.AndroidWindow;
+
 import static android.widget.LinearLayout.LayoutParams;
 
 public class InputDialog {
-    public static void Show(Context context, String title, String iniText, String ok, Action<String> onOk, String no, Runnable onNo) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(title);
-
+    public static void Show(Context context, String title, String iniText, String okText, Action<String> onOk) {
+        LinearLayout lLay = new LinearLayout(context);
+        lLay.setOrientation(LinearLayout.VERTICAL);
 
         final EditText input = new EditText(context);
         input.setText(iniText);
@@ -32,20 +34,25 @@ public class InputDialog {
         input.setLayoutParams(lpars);
         input.setPadding(10,0,10,0);
 
-        LinearLayout lLay = new LinearLayout(context);
         lLay.addView(input);
 
-        builder.setView(lLay);
+        Button ok = new Button(context);
+        ok.setText(okText);
+        lLay.addView(ok);
 
-        builder.setPositiveButton(ok, (dialog, which) -> {
+        AndroidWindow androidWindow = new AndroidWindow(context);
+        androidWindow.SetTranlucent()
+                .SetOverlay()
+                .EnableEvents()
+                .SetContainer(lLay)
+                .SetSizeByContainer()
+                .SetVisibility(true);
+
+        ok.setOnClickListener((s) -> {
             onOk.Invoke(input.getText().toString());
-            dialog.cancel();
-        });
-        builder.setNegativeButton(no, (dialog, which) -> {
-            if (onNo != null) onNo.run();
-            dialog.cancel();
+            androidWindow.Detach();
         });
 
-        builder.show();
+        androidWindow.Attach();
     }
 }

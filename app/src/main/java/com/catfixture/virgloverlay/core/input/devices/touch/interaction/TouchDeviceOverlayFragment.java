@@ -99,6 +99,10 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
                     InflateControls();
                     touchControlsEditor.SetSelected(ntl.GetId());
                 });
+                newTouchElement.SetEditorReset(() -> {
+                    InflateControls();
+                    touchControlsEditor.SetSelected(-1);
+                });
 
                 newTouchElement.SetScale(touchControlElement.scale)
                     .SetAlpha(touchControlElement.alpha * cfgData.uiOpacity);
@@ -111,10 +115,10 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
                     });
                     dnd.EnableSnap(25);
 
+                    newTouchElement.CreateEditorEvents();
                     newTouchElement.onDown.addObserver((observable, o) -> {
                         touchControlsEditor.SetSelected(ntl.GetId());
                     });
-                    newTouchElement.CreateEditorEvents();
                 } else {
                     newTouchElement.CreateActionEvents(inputDevice);
                 }
@@ -137,7 +141,7 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
         overlayManager.onClick.addObserver((observable, o) -> touchControlsEditor.SetSelected(-1));
         touchControlsEditor.onSetChanged.addObserver((observable, o) -> InflateControls());
         touchControlsEditor.onClosed.addObserver((observable, o) -> OnEditorClosed());
-        //overlayManager.Hide(touchControlsEditor);
+        overlayManager.Hide(touchControlsEditor);
     }
 
     @Override
@@ -153,5 +157,11 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
 
     public void OnEditorClosed() {
         InflateControls();
+    }
+
+    public void DeselectAll() {
+        for (IInputWindowElement windowElement : windowElements) {
+            windowElement.Deselect();
+        }
     }
 }

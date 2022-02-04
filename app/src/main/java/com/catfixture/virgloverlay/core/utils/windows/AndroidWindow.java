@@ -194,6 +194,8 @@ public class AndroidWindow implements IWindow {
     public IWindow SetOverlay() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
         } else {
             LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_PHONE;
         }

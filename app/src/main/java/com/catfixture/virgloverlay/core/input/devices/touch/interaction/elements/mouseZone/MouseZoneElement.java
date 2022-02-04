@@ -74,6 +74,6 @@ public class MouseZoneElement extends TouchableWindowElement {
 
     @Override
     public void Deselect() {
-
+        getBackground().setColorFilter(null);
     }
 }

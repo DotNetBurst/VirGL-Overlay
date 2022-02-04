@@ -4,12 +4,14 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/dimas/Desktop/DEVEL/VIRGLOVERLAY/app/src/main/res/drawable/fx_tc_circle_btn.xml" value="2.4" />
+        <entry key="..\:/Users/dimas/Desktop/DEVEL/VIRGLOVERLAY/app/src/main/res/drawable/fx_tc_cross_btn.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/dimas/Desktop/DEVEL/VIRGLOVERLAY/app/src/main/res/drawable/fx_tc_rect_rnd_btn.xml" value="0.246875" />
         <entry key="..\:/Users/dimas/Desktop/DEVEL/VIRGLOVERLAY/app/src/main/res/layout/button_with_status_setting_item.xml" value="0.23072916666666668" />
         <entry key="..\:/Users/dimas/Desktop/DEVEL/VIRGLOVERLAY/app/src/main/res/layout/editable_button_element.xml" value="0.536" />
         <entry key="..\:/Users/dimas/Desktop/DEVEL/VIRGLOVERLAY/app/src/main/res/layout/editable_common_element.xml" value="0.6" />
         <entry key="..\:/Users/dimas/Desktop/DEVEL/VIRGLOVERLAY/app/src/main/res/layout/editable_cross_element.xml" value="0.22708333333333333" />
         <entry key="..\:/Users/dimas/Desktop/DEVEL/VIRGLOVERLAY/app/src/main/res/layout/editable_mouse_zone_element.xml" value="0.22708333333333333" />
+        <entry key="..\:/Users/dimas/Desktop/DEVEL/VIRGLOVERLAY/app/src/main/res/layout/editable_stick_element.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/dimas/Desktop/DEVEL/VIRGLOVERLAY/app/src/main/res/layout/multigroup_setting_item.xml" value="0.23072916666666668" />
         <entry key="..\:/Users/dimas/Desktop/DEVEL/VIRGLOVERLAY/app/src/main/res/layout/notification_layout.xml" value="0.31054977711738485" />
         <entry key="..\:/Users/dimas/Desktop/DEVEL/VIRGLOVERLAY/app/src/main/res/layout/overlay_panel_layout.xml" value="0.23072916666666668" />

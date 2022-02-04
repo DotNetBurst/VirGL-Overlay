@@ -19,8 +19,8 @@ android {
         minSdkVersion 23
         //noinspection OldTargetApi
         targetSdkVersion 30
-        versionCode 282
-        versionName '0.2.8.2'
+        versionCode 283
+        versionName '0.2.8.3'
         buildConfigField "String", "IME_ID", '"com.catfixture.test/.input.impl.MainInputMethodService"'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

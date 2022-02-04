@@ -155,13 +155,13 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
 
         editProfileName = root.findViewById(R.id.editProfileName);
         editProfileName.setOnClickListener(view1 -> {
-            /*InputConfigProfile cfgProf = app.GetInputConfigData().GetCurrentProfile();
+            InputConfigProfile cfgProf = app.GetInputConfigData().GetCurrentProfile();
             InputDialog.Show(context, "Edit name", cfgProf.name, "Save", (newName) -> {
                 app.GetInputConfigData().GetCurrentProfile().SetName(newName);
                 InitEditorView();
                 UpdateAll();
                 onSetChanged.notifyObservers();
-            }, "Cancel", null);*/
+            });
         });
 
         InflateProfiles();
@@ -260,10 +260,7 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
     }
 
     private void ResetSelection() {
-        parentWindow.TryGetWindowElementById( this.selectedItemId, (selectedItem) -> {
-            if (selectedItem != null)
-                ((LinearLayout) selectedItem).getBackground().setColorFilter(null);
-        });
+        parentWindow.DeselectAll();
         selectedItemId = -1;
         customContainer.removeAllViews();
     }
@@ -273,12 +270,16 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
         this.selectedItemId = selectedItemId;
         InitEditorView();
 
+        if (settingsViewToggled)
+            ToggleSettingsView();
+
+        if ( selectedItemId == -1) {
+            return;
+        }
+
         parentWindow.TryGetWindowElementById(selectedItemId, (selectedItem) -> {
             selectedItem.Select(customContainer);
         });
-
-        if (settingsViewToggled)
-            ToggleSettingsView();
     }
 
     @Override

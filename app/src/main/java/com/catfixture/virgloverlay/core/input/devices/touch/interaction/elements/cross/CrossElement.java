@@ -2,6 +2,7 @@ package com.catfixture.virgloverlay.core.input.devices.touch.interaction.element
 
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
@@ -97,6 +98,7 @@ public class CrossElement extends TouchableWindowElement {
 
     @Override
     public void Select(ViewGroup customContainer) {
+        setBackgroundResource(R.drawable.fx_tc_cross_btn_image);
         getBackground().setColorFilter(context.getColor(R.color.orange), PorterDuff.Mode.MULTIPLY);
 
         CrossElementEditable editable = new CrossElementEditable(context, this);
@@ -106,6 +108,7 @@ public class CrossElement extends TouchableWindowElement {
 
     @Override
     public void Deselect() {
+        setBackgroundResource(R.drawable.fx_tc_cross_btn);
         getBackground().setColorFilter(null);
     }
 }
