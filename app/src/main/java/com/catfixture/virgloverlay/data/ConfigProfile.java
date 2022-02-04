@@ -52,7 +52,7 @@ public class ConfigProfile {
     public int navBarHeight;
 
 
-    public boolean useGLES;
+    public boolean useGLES = true;
     public void SetUseGLES(Boolean useGLES) { this.useGLES=useGLES; Save();}
 
     public boolean useS3TC;
@@ -82,7 +82,7 @@ public class ConfigProfile {
     public void SetCenterViewportRect(Boolean centerViewportRect) { this.centerViewportRect=centerViewportRect; Save();}
 
 
-    public boolean showControlsOnTopOfOverlay;
+    public boolean showControlsOnTopOfOverlay = true;
     public void SetShowControlsOnTopOfOverlay(Boolean showControlsOnTopOfOverlay) { this.showControlsOnTopOfOverlay=showControlsOnTopOfOverlay; Save();}
 
     public boolean showOverlayByProcess;

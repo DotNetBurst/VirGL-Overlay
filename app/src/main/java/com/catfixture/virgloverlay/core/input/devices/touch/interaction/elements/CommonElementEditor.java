@@ -13,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.catfixture.virgloverlay.R;
+import com.catfixture.virgloverlay.core.input.data.InputConfigData;
 import com.catfixture.virgloverlay.core.input.data.InputConfigProfile;
 import com.catfixture.virgloverlay.core.input.data.InputTouchControlElementData;
 import com.catfixture.virgloverlay.core.input.devices.touch.interaction.editor.IEditable;
@@ -50,7 +51,7 @@ public class CommonElementEditor implements IEditable {
         sizeText.setText("Size : " + (data.scale) + "%");
 
 
-        ArrayAdapter<TouchableWindowElementSpinnerData> typesAdapter = Utils.InitSpinner(context, type, 0);
+        ArrayAdapter<TouchableWindowElementSpinnerData> typesAdapter = Utils.InitSpinner(context, type, 0, R.layout.touch_controls_list_item);
         typesAdapter.addAll(spinnerData);
         typesAdapter.notifyDataSetChanged();
         type.setSelection(TouchableWindowElementType.SpinnerDataPos(data.type));
@@ -90,8 +91,11 @@ public class CommonElementEditor implements IEditable {
         });
 
         removeControl.setOnClickListener(view -> {
-            app.GetInputConfigData().RemoveCurrentProfile();
-            parentItem.Reinflate();
+            InputConfigData idt = app.GetInputConfigData();
+            if( idt.HasCurrentProfile()) {
+                idt.GetCurrentProfile().RemoveControlElement(data.id);
+                parentItem.Reinflate();
+            }
         });
     }
 

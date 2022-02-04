@@ -47,9 +47,9 @@ public class Utils {
         button.setOnClickListener(view1 -> action.run());
     }
 
-    public static <T> ArrayAdapter<T> InitSpinner(Context context, Spinner spinner, int defaultValue) {
+    public static <T> ArrayAdapter<T> InitSpinner(Context context, Spinner spinner, int defaultValue, int layout) {
         spinner.setOnItemSelectedListener(null);
-        ArrayAdapter<T> profilesAdapter = new ArrayAdapter<>(context, R.layout.touch_controls_list_item);
+        ArrayAdapter<T> profilesAdapter = new ArrayAdapter<>(context, layout);
         spinner.setAdapter(profilesAdapter);
         spinner.setSelection(defaultValue);
         return profilesAdapter;

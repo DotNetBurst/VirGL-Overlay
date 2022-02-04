@@ -10,6 +10,7 @@ import java.util.List;
 public class InputConfigProfile implements IAdapterItem {
     private transient boolean isVisible = true;
     public List<InputTouchControlElementData> touchControlElements = new ArrayList<>();
+    public String name = "Input profile";
 
     @Override
     public void ToggleVisibility(boolean isVisible) {
@@ -32,7 +33,7 @@ public class InputConfigProfile implements IAdapterItem {
     }
 
     public String GetName() {
-        return "Input profile";
+        return name;
     }
 
     public void AddControlElement(int id) {
@@ -54,5 +55,9 @@ public class InputConfigProfile implements IAdapterItem {
                 return;
             }
         }
+    }
+
+    public void SetName(String name) {
+        this.name = name;
     }
 }

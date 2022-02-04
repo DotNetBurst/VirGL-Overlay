@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:padding="8dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_weight="0"
+        android:layout_marginEnd="5dp"
+        android:src="@drawable/tc_health_1"/>
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="13sp"
+        android:layout_weight="0"
+        android:textColor="@color/white"
+        />
+</LinearLayout>

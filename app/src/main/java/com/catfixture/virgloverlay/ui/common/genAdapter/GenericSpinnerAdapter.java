@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import com.catfixture.virgloverlay.R;
 import com.catfixture.virgloverlay.core.utils.types.delegates.Action;
 import com.catfixture.virgloverlay.core.utils.types.delegates.Action2;
+import com.catfixture.virgloverlay.core.utils.types.delegates.Action3;
 
 import java.util.List;
 
@@ -21,14 +22,17 @@ public class GenericSpinnerAdapter<T> extends ArrayAdapter<T> {
     private final Context context;
     private final int textViewResourceId;
     private final Action<Integer> onRemove;
-    private Action2<TextView, Integer> customTitleAction;
+    private Action3<View, Integer, DisplayType> customTitleAction;
 
-
-    private enum DisplayType {
-        Normal, Dropdown
-    }
 
     public GenericSpinnerAdapter(@NonNull Context context, int resource, List<T> items, Action<Integer> onRemove) {
+        super(context, R.layout.support_simple_spinner_dropdown_item, items);
+        this.context = context;
+        this.textViewResourceId = resource;
+        this.onRemove = onRemove;
+    }
+
+    public GenericSpinnerAdapter(@NonNull Context context, int resource, T[] items, Action<Integer> onRemove) {
         super(context, R.layout.support_simple_spinner_dropdown_item, items);
         this.context = context;
         this.textViewResourceId = resource;
@@ -45,7 +49,7 @@ public class GenericSpinnerAdapter<T> extends ArrayAdapter<T> {
         return prepareView(position, convertView, parent, DisplayType.Dropdown);
     }
 
-    public void EnableCustomTitleAction(Action2<TextView, Integer> customTitleAction) {
+    public void EnableCustomItemAction(Action3<View, Integer, DisplayType> customTitleAction) {
         this.customTitleAction = customTitleAction;
     }
 
@@ -57,10 +61,11 @@ public class GenericSpinnerAdapter<T> extends ArrayAdapter<T> {
         TextView tv = convertView.findViewById(R.id.text);
         tv.setText(getItem(position).toString());
 
+        if (customTitleAction != null) customTitleAction.Invoke(convertView, position, dType);
 
         ImageView removeBtn = convertView.findViewById(R.id.removeBtn);
+        if (removeBtn == null) return convertView;
         if ( dType == DisplayType.Dropdown) {
-            if (customTitleAction != null) customTitleAction.Invoke(tv, position);
             removeBtn.setOnClickListener(view -> {
                 if (onRemove != null) onRemove.Invoke(position);
                 notifyDataSetChanged();

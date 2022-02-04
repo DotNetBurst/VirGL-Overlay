@@ -41,6 +41,9 @@ import com.catfixture.virgloverlay.core.utils.android.LayoutUtils;
 import com.catfixture.virgloverlay.core.utils.math.Int2;
 import com.catfixture.virgloverlay.core.utils.objProvider.ITypedProvider;
 import com.catfixture.virgloverlay.core.utils.types.Event;
+import com.catfixture.virgloverlay.data.ConfigProfile;
+import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common.SettingItem;
+import com.catfixture.virgloverlay.ui.common.interactions.InputDialog;
 import com.catfixture.virgloverlay.ui.utils.Utils;
 
 import java.util.ArrayList;
@@ -75,6 +78,7 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
     private InputConfigData cfg;
     private TouchDeviceOverlayFragment parentWindow;
     private Int2 position = new Int2(0,0);
+    private View editProfileName;
 
     @Override
     public int GetID() {
@@ -140,13 +144,24 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
         });
 
         Spinner profilesSpinner = root.findViewById(R.id.inputProfiles);
-        profilesAdapter = Utils.InitSpinner(context, profilesSpinner, cfg.currentProfile);
+        profilesAdapter = Utils.InitSpinner(context, profilesSpinner, cfg.currentProfile, R.layout.touch_controls_list_item);
         Utils.AttachSpinnerAction(profilesSpinner, i -> {
             cfg.SetCurrentProfile(i);
             ResetSelection();
             InitEditorView();
             UpdateAll();
             onSetChanged.notifyObservers();
+        });
+
+        editProfileName = root.findViewById(R.id.editProfileName);
+        editProfileName.setOnClickListener(view1 -> {
+            /*InputConfigProfile cfgProf = app.GetInputConfigData().GetCurrentProfile();
+            InputDialog.Show(context, "Edit name", cfgProf.name, "Save", (newName) -> {
+                app.GetInputConfigData().GetCurrentProfile().SetName(newName);
+                InitEditorView();
+                UpdateAll();
+                onSetChanged.notifyObservers();
+            }, "Cancel", null);*/
         });
 
         InflateProfiles();
@@ -161,11 +176,11 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
         });
 
         toggleSettings.setOnClickListener(view -> {
-            if ( !settingsViewToggled) {
-                ResetSelection();
-            }
             ToggleSettingsView();
+            ResetSelection();
+            InitEditorView();
         });
+
         //EDITOR
 
         //SETTINGS

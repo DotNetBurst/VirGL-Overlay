@@ -18,7 +18,7 @@ import com.catfixture.virgloverlay.core.input.utils.IInputWindowElement;
 public class CrossElementEditable extends CommonElementEditor {
     private Spinner mappingType;
     private TableRow root;
-    private ArrayAdapter<KeyCode> mappingTypesAdapter;
+    private ArrayAdapter<String> mappingTypesAdapter;
 
     public CrossElementEditable(Context context, IInputWindowElement parentItem) {
         super(context, parentItem);
@@ -26,21 +26,20 @@ public class CrossElementEditable extends CommonElementEditor {
         InputTouchControlElementData data = (InputTouchControlElementData) parentItem.GetData();
         root = (TableRow) View.inflate(context, R.layout.editable_cross_element, null);
 
-        /*mappingType = root.findViewById(R.id.mappingType);
+        mappingType = root.findViewById(R.id.mappingType);
 
         mappingTypesAdapter = new ArrayAdapter<>(context, R.layout.touch_controls_list_item);
-        mappingTypesAdapter.addAll(KeyCodes.codes);
+        mappingTypesAdapter.addAll("WASD","Arrows","Numpad");
         mappingType.setAdapter(mappingTypesAdapter);
-        //mappingType.setSelection(KeyCodes.GetCodeIndex(data.buttonCode));
+        mappingType.setSelection(data.mappingType);
 
         mappingType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int is, long l) {
-                //InputTouchControlElementData data = (InputTouchControlElementData) parentItem.GetData();
-                //data.SetButtonCode(mappingTypesAdapter.getItem(is).code);
+                data.SetMappingType(is);
             }
             @Override public void onNothingSelected(AdapterView<?> adapterView) {}
-        });*/
+        });
 
         ((TableLayout)super.root.findViewById(R.id.table)).addView(root);
     }

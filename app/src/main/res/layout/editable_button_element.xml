@@ -1,21 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:gravity="center"
-    android:layout_height="wrap_content">
-    <TextView
-        android:id="@+id/sensivitySliderText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Key code"
-        android:textColor="@color/white"
-        android:layout_weight="0" />
-    <Spinner
-        android:id="@+id/buttonCode"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:backgroundTint="@color/white"
-        android:foreground="@color/lighterRecordBg"
-        android:layout_weight="1"
-        android:popupBackground="@color/darkGray" />
-</TableRow>
+    android:layout_height="match_parent"
+    android:visibility="visible">
+
+    <TableRow
+        android:theme="@style/TabLay">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="Type"
+            android:textColor="@color/white" />
+
+        <Spinner
+            android:id="@+id/buttonType"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:foreground="@color/lighterRecordBg"
+            android:popupBackground="@color/darkGray"/>
+    </TableRow>
+
+    <TableRow
+        android:theme="@style/TabLay">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="Shape"
+            android:textColor="@color/white" />
+
+        <Spinner
+            android:id="@+id/buttonShape"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:foreground="@color/lighterRecordBg"
+            android:popupBackground="@color/darkGray"/>
+    </TableRow>
+
+    <TableRow
+        android:theme="@style/TabLay">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="Icon"
+            android:textColor="@color/white" />
+
+        <Spinner
+            android:id="@+id/icon"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:foreground="@color/lighterRecordBg"
+            android:popupBackground="@color/darkGray"/>
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/kbcodeRow"
+        android:theme="@style/TabLay">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="Key code"
+            android:textColor="@color/white" />
+
+        <Spinner
+            android:id="@+id/buttonCode"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:foreground="@color/lighterRecordBg"
+            android:popupBackground="@color/darkGray"/>
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/mscodeRow"
+        android:theme="@style/TabLay">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="Mouse code"
+            android:textColor="@color/white" />
+
+        <Spinner
+            android:id="@+id/mouseCode"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:foreground="@color/lighterRecordBg"
+            android:popupBackground="@color/darkGray"/>
+    </TableRow>
+
+</TableLayout>

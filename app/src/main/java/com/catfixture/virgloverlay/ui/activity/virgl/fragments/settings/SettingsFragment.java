@@ -2,7 +2,6 @@ package com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings;
 
 import static com.catfixture.virgloverlay.core.AppContext.app;
 import static com.catfixture.virgloverlay.core.CommonContext.comCtx;
-import static com.catfixture.virgloverlay.core.impl.states.NativeServerState.SERVER_STATE_IDLE;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -13,13 +12,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.catfixture.virgloverlay.core.debug.Dbg;
-import com.catfixture.virgloverlay.core.ipc.IServerRemoteService;
 import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.common.SettingItem;
 import com.catfixture.virgloverlay.ui.custom.WarningComponent;
 import com.google.android.material.tabs.TabLayout;
@@ -30,6 +29,8 @@ import com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.tabs.Set
 import com.catfixture.virgloverlay.ui.common.genAdapter.GenericSpinnerAdapter;
 import com.catfixture.virgloverlay.ui.common.interactions.ConfirmDialog;
 import com.catfixture.virgloverlay.ui.common.interactions.InputDialog;
+
+import org.w3c.dom.Text;
 
 public class SettingsFragment extends Fragment {
     private View view;
@@ -68,9 +69,10 @@ public class SettingsFragment extends Fragment {
         Spinner spinner = view.findViewById(R.id.configProfileSelector);
         configProfilesAdapter = new GenericSpinnerAdapter<>(activity, R.layout.spinner_item, cfgData.profiles, (i) -> {
         });
-        configProfilesAdapter.EnableCustomTitleAction((textView, pos) -> {
+        configProfilesAdapter.EnableCustomItemAction((textView, pos, dtype) -> {
             if (cfgData.currentProfile == pos) {
-                textView.setTypeface(null, Typeface.BOLD);
+                TextView tv = textView.findViewById(R.id.text);
+                tv.setTypeface(null, Typeface.BOLD);
             }
         });
         spinner.setAdapter(configProfilesAdapter);

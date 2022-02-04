@@ -15,6 +15,8 @@ import com.catfixture.virgloverlay.core.utils.math.Int2;
 
 
 public class CrossElement extends TouchableWindowElement {
+    final float deadZoneX;
+    final float deadZoneY;
 
     public CrossElement(Context context, InputTouchControlElementData data) {
         super(context, data);
@@ -22,6 +24,21 @@ public class CrossElement extends TouchableWindowElement {
         initialSize.Set(300,300);
 
         setBackgroundResource(R.drawable.fx_tc_cross_btn);
+
+        final Int2 elSize = GetSize();
+        deadZoneX = elSize.x * 0.25f;
+        deadZoneY = elSize.y * 0.25f;
+    }
+    private void SetAxis(Int2 axisToSet, Int2 input) {
+        Binding binding = Binding.Retrieve(data.mappingType);
+
+        if (( input.x < -deadZoneX || input.x > deadZoneX) && ( input.y < -deadZoneY || input.y > deadZoneY)) {
+            axisToSet.Set(input.y > 0 ? binding.yPositive : binding.yNegative, input.x > 0 ? binding.xPositive : binding.xNegative);
+        } else {
+            boolean xGreater = Math.abs(input.x) > Math.abs(input.y);
+            if ( xGreater) axisToSet.Set(0, input.x > 0 ? binding.xPositive : binding.xNegative);
+            else axisToSet.Set(input.y > 0 ? binding.yPositive : binding.yNegative,0);
+        }
     }
 
     @Override
@@ -31,22 +48,12 @@ public class CrossElement extends TouchableWindowElement {
         final Int2 startAxis = new Int2(0,0);
         final Int2 currentAxis = new Int2(-1,-1);
 
-        final float deadZoneX = elSize.x * 0.25f;
-        final float deadZoneY = elSize.y * 0.25f;
-
         onDown.addObserver((observable, o) -> {
             MotionEvent motionEvent = (MotionEvent) o;
             final Int2 dt = new Int2((int) motionEvent.getX() - elSize.x / 2,
                     (int) motionEvent.getY() - elSize.y / 2);
 
-            if (( dt.x < -deadZoneX || dt.x > deadZoneX) && ( dt.y < -deadZoneY || dt.y > deadZoneY)) {
-                startAxis.Set(dt.y > 0 ? 83 : 87,
-                        dt.x > 0 ? 68 : 65);
-            } else {
-                boolean xGreater = Math.abs(dt.x) > Math.abs(dt.y);
-                if ( xGreater) startAxis.Set(0, dt.x > 0 ? 68 : 65);
-                else  startAxis.Set(dt.y > 0 ? 83 : 87,0);
-            }
+            SetAxis(startAxis, dt);
 
             if ( startAxis.x != -1) {
                 inputDevice.SendKeyDown(startAxis.x);
@@ -63,14 +70,7 @@ public class CrossElement extends TouchableWindowElement {
             final Int2 dt = new Int2((int) motionEvent.getX() - elSize.x / 2,
                     (int) motionEvent.getY() - elSize.y / 2);
 
-            if (( dt.x < -deadZoneX || dt.x > deadZoneX) && ( dt.y < -deadZoneY || dt.y > deadZoneY)) {
-                startAxis.Set(dt.y > 0 ? 83 : 87,
-                        dt.x > 0 ? 68 : 65);
-            } else {
-                boolean xGreater = Math.abs(dt.x) > Math.abs(dt.y);
-                if ( xGreater) startAxis.Set(0, dt.x > 0 ? 68 : 65);
-                else  startAxis.Set(dt.y > 0 ? 83 : 87,0);
-            }
+            SetAxis(startAxis, dt);
 
             if ( startAxis.x != -1 && startAxis.x != currentAxis.x) {
                 inputDevice.SendKeyUp(currentAxis.x);
