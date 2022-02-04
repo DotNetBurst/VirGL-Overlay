@@ -1,5 +1,7 @@
 package com.catfixture.virgloverlay.core.overlay;
 
+import static com.catfixture.virgloverlay.core.AppContext.app;
+
 import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Handler;
@@ -10,7 +12,8 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.catfixture.virgloverlay.R;
-import com.catfixture.virgloverlay.core.impl.android.NativeStatistics;
+import com.catfixture.virgloverlay.core.debug.Dbg;
+import com.catfixture.virgloverlay.core.utils.process.ThreadUtils;
 
 public class StatisticsOverlay implements IOverlayFragment {
     public static final int ID_STATISTICS_OVERLAY_FRAGMENT = 10005;
@@ -32,6 +35,25 @@ public class StatisticsOverlay implements IOverlayFragment {
 
         fpsText = ovstat.findViewById(R.id.fpsText);
         ramText = ovstat.findViewById(R.id.ramText);
+
+        new Thread(() -> {
+            while (true) {
+                handler.post(() -> {
+                    fpsText.setText(GetFPS() + "");
+
+                    ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
+                    ActivityManager activityManager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+                    activityManager.getMemoryInfo(mi);
+                    long availableMegs = mi.availMem / 1048576L;
+                    long totalMegs = mi.totalMem / 1048576L;
+                    long usedMegs = totalMegs - availableMegs;
+
+                    ramText.setText(Long.toString(usedMegs));
+
+                });
+                ThreadUtils.Sleep(1000);
+            }
+        }).start();
     }
 
     @Override
@@ -54,20 +76,6 @@ public class StatisticsOverlay implements IOverlayFragment {
 
     }
 
-    //TODO STR FORMAT
-    public void UpdateValues(int fps) {
-        handler.post(() -> {
-            fpsText.setText(Integer.toString(fps));
 
-
-            ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
-            ActivityManager activityManager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
-            activityManager.getMemoryInfo(mi);
-            long availableMegs = mi.availMem / 1048576L;
-            long totalMegs = mi.totalMem / 1048576L;
-            long usedMegs = totalMegs - availableMegs;
-
-            ramText.setText(Long.toString(usedMegs));
-        });
-    }
+    public native static int GetFPS();
 }

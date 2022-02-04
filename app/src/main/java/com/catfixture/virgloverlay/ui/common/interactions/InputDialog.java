@@ -16,8 +16,9 @@ import static android.widget.LinearLayout.LayoutParams;
 
 public class InputDialog {
     public static void Show(Context context, String title, String iniText, String okText, Action<String> onOk) {
-        LinearLayout lLay = new LinearLayout(context);
-        lLay.setOrientation(LinearLayout.VERTICAL);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(title);
+
 
         final EditText input = new EditText(context);
         input.setText(iniText);
@@ -27,32 +28,23 @@ public class InputDialog {
         input.setTextColor(context.getColor(R.color.white));
 
         LayoutParams lpars = new LayoutParams(
-            LayoutParams.MATCH_PARENT,
-            100
+                LayoutParams.MATCH_PARENT,
+                100
         );
         lpars.setMargins(60,10,60,0);
         input.setLayoutParams(lpars);
         input.setPadding(10,0,10,0);
 
+        LinearLayout lLay = new LinearLayout(context);
         lLay.addView(input);
 
-        Button ok = new Button(context);
-        ok.setText(okText);
-        lLay.addView(ok);
+        builder.setView(lLay);
 
-        AndroidWindow androidWindow = new AndroidWindow(context);
-        androidWindow.SetTranlucent()
-                .SetOverlay()
-                .EnableEvents()
-                .SetContainer(lLay)
-                .SetSizeByContainer()
-                .SetVisibility(true);
-
-        ok.setOnClickListener((s) -> {
+        builder.setPositiveButton(okText, (dialog, which) -> {
             onOk.Invoke(input.getText().toString());
-            androidWindow.Detach();
+            dialog.cancel();
         });
 
-        androidWindow.Attach();
+        builder.show();
     }
 }

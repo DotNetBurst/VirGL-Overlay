@@ -163,6 +163,7 @@ public class TouchDeviceEditorOverlayFragment implements IOverlayFragment, ITouc
                 onSetChanged.notifyObservers();
             });
         });
+        editProfileName.setEnabled(false);
 
         InflateProfiles();
         //PROFILES

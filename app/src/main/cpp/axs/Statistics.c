@@ -1,31 +1,42 @@
 #include "Statistics.h"
-#include "TMPShrinker.h"
 
-struct Statistics * statistics;
+
 struct timeval tv;
+pthread_t statisticsMainThread;
+bool isStopped = false;
+struct Statistics * statistics = NULL;
 
-void CreateStatistics(JNIEnv* env) {
+
+void CreateStatistics() {
+    printf("\nSTATS CREATED\n");
+    pthread_create(&statisticsMainThread, NULL, &Updater, NULL);
+    pthread_detach(statisticsMainThread);
+}
+void DestroyStatistics() {
+    isStopped = true;
+    pthread_join(statisticsMainThread, NULL);
+}
+
+void* Updater(void* arg) {
     statistics = malloc(sizeof(struct Statistics));
-    memset(statistics, 0, sizeof(statistics));
-
-    statistics->klass  = (*env)->FindClass (env, "com/catfixture/virgloverlay/core/impl/android/NativeStatistics");
-    statistics->UpdateStatisticsID = (*env)->GetStaticMethodID(env, statistics->klass, "UpdateStatistics", "(SJ)V");
-
+    memset(statistics, 0, sizeof(struct Statistics));
     gettimeofday(&tv,NULL);
+    while (!isStopped) {
+        statistics->fps = (statistics->fps + statistics->fpsCount) / 2;
+        statistics->fpsCount = 0;
+        usleep(1000000);
+    }
+
+    free(statistics);
 }
 
 void MeasureFPS() {
     statistics->fpsCount++;
 }
 
-void UpdateStatistics(JNIEnv* env) {
-    gettimeofday(&tv,NULL);
-    if ( tv.tv_sec - statistics->lastUpdateTime >= 1) {
-        statistics->fps = statistics->fpsCount;
-        statistics->fpsCount = 0;
-
-        (*env)->CallStaticVoidMethod(env, statistics->klass, statistics->UpdateStatisticsID,
-             statistics->fps, 0);
-        statistics->lastUpdateTime = tv.tv_sec;
-    }
+JNIEXPORT jint JNICALL
+Java_com_catfixture_virgloverlay_core_overlay_StatisticsOverlay_GetFPS(JNIEnv *env, jclass clazz) {
+    if ( statistics != NULL)
+        return statistics->fps;
+    else return 0;
 }

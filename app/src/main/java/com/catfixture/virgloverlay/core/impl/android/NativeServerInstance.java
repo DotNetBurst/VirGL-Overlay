@@ -62,7 +62,7 @@ public class NativeServerInstance extends Service {
 
     private static native void initialize(MainConfigData settings);
     private static native int runServer();
-    private static native void stopSocket(int fileDescriptor);
+    private static native void stopServer(int fileDescriptor);
     private static native int acceptSocket(int fileDescriptor);
     private static native void runSocketLoop(NativeSurfaceManager windowsManager, int fileDescriptor);
 
@@ -187,7 +187,7 @@ public class NativeServerInstance extends Service {
 
         mLinkerBinder.unRegisterObject(mRemoteService);
         if (mainSocketDescriptor != -1) {
-            stopSocket(mainSocketDescriptor);
+            stopServer(mainSocketDescriptor);
         } else Log.e(APP_TAG, "Wrong file descriptor");
 
         Log.d(APP_TAG, "Server stopped");
@@ -305,7 +305,8 @@ public class NativeServerInstance extends Service {
     void SetServerState(int serverState) {
         state = serverState;
         try {
-        serverRemoteCallback.onStateChanged(state, services.size());   } catch (Exception x) {
+            serverRemoteCallback.onStateChanged(state, services.size());
+        } catch (Exception x) {
             Dbg.Error(x);
         }
     }

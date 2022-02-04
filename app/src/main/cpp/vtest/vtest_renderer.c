@@ -61,7 +61,6 @@
 
 extern struct vrend_context *overlay_ctx;
 struct ConfigProfile* commonConfigProfile;
-struct Statistics * statistics;
 
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -206,14 +205,15 @@ JNIEXPORT void JNICALL Java_com_catfixture_virgloverlay_core_impl_android_Native
     commonConfigProfile->navBarHeight = navBarHeight;
     disp = eglGetDisplay(EGL_DEFAULT_DISPLAY);
 
-    CreateStatistics(env);
 }
 
 JNIEXPORT jint JNICALL Java_com_catfixture_virgloverlay_core_impl_android_NativeServerInstance_runServer(JNIEnv *env, jclass cls) {
     printf("path %s", commonConfigProfile->socketPath);
     return vtest_open_socket(commonConfigProfile->socketPath);
 }
-JNIEXPORT void JNICALL Java_com_catfixture_virgloverlay_core_impl_android_NativeServerInstance_stopSocket(JNIEnv *env, jclass cls, jint fileDescriptor) {
+JNIEXPORT void JNICALL Java_com_catfixture_virgloverlay_core_impl_android_NativeServerInstance_stopServer(JNIEnv *env, jclass cls, jint fileDescriptor) {
+    DestroyStatistics();
+
     shutdown(fileDescriptor, SHUT_RDWR);
     close(fileDescriptor);
     unlink(commonConfigProfile->socketPath);
@@ -225,7 +225,6 @@ JNIEXPORT void JNICALL Java_com_catfixture_virgloverlay_core_impl_android_Native
 
     printf("Socket closed %i", fileDescriptor);
     free(commonConfigProfile);
-    free(statistics);
 }
 JNIEXPORT jint JNICALL Java_com_catfixture_virgloverlay_core_impl_android_NativeServerInstance_acceptSocket(JNIEnv *env, jclass cls, jint fileDescriptor) {
     return wait_for_socket_accept(fileDescriptor);
@@ -243,6 +242,7 @@ JNIEXPORT void JNICALL Java_com_catfixture_virgloverlay_core_impl_android_Native
     r->jni.get_surface = (*env)->GetMethodID(env, windowsManagerKlass, "GetSurface", "(Landroid/view/SurfaceView;)Landroid/view/Surface;");
     r->jni.set_rect = (*env)->GetMethodID(env, windowsManagerKlass, "UpdateWindow", "(Landroid/view/SurfaceView;IIIII)V");
     r->jni.destroy = (*env)->GetMethodID(env, windowsManagerKlass, "DestroyWindow", "(Landroid/view/SurfaceView;)V");
+
     //int fd = vtest_open_socket("/data/media/0/multirom/roms/Linux4TegraR231/root/tmp/.virgl_test");
     r->configProfile = commonConfigProfile;
     if( !r->configProfile->useSocket)
@@ -250,6 +250,9 @@ JNIEXPORT void JNICALL Java_com_catfixture_virgloverlay_core_impl_android_Native
         ring_setup( &r->ring, r->fd, r->configProfile->ringBufferPath);
         ring_server_handshake( &r->ring );
     }
+
+    CreateStatistics();
+
     renderer_loop(r);
 }
 
@@ -835,7 +838,6 @@ static void vtest_dt_flush(struct vtest_renderer *r, struct dt_record *dt, int h
     eglSwapBuffers(r->egl_display, dt->egl_surf);
 
     MeasureFPS();
-    UpdateStatistics(r->jni.env);
 }
 
 static void vtest_dt_set_rect(struct vtest_renderer *r, struct dt_record *dt, int visible, int x, int y, int w, int h)

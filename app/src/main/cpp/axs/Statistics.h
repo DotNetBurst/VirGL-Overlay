@@ -11,19 +11,18 @@
 #include <jni.h>
 #include <string.h>
 
+#include <android/log.h>
+#define printf(...) __android_log_print(ANDROID_LOG_DEBUG, "virgl", __VA_ARGS__)
+
 struct Statistics {
     uint16_t fps;
     uint16_t fpsCount;
-
     __kernel_suseconds_t lastUpdateTime;
-    jmethodID UpdateStatisticsID;
-    jclass klass;
 };
 
-struct Statistics * statistics;
-
-void CreateStatistics(JNIEnv* env);
+void CreateStatistics();
+void DestroyStatistics();
 void MeasureFPS();
-void UpdateStatistics(JNIEnv * env);
+void* Updater(void* arg);
 
 #endif
