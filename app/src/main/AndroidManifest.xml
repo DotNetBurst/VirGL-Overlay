@@ -22,7 +22,7 @@
 
         <activity android:name="com.catfixture.virgloverlay.ui.activity.virgl.Virgl"
             android:exported="true"
-            android:screenOrientation="landscape"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.VirGLOverlay.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

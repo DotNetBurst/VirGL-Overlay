@@ -21,6 +21,16 @@ public class Icon {
             new Icon("No icon", -1),
             new Icon("Fire 1", R.drawable.tc_aim_1),
             new Icon("Health 1", R.drawable.tc_health_1),
+
+            new Icon("Up arrow 1", R.drawable.tc_up_1),
+            new Icon("Down arrow 1", R.drawable.tc_down_1),
+            new Icon("Left arrow 1", R.drawable.tc_left_1),
+            new Icon("Right arrow 1", R.drawable.tc_right_1),
+
+            new Icon("Plus 1", R.drawable.tc_plus_1),
+            new Icon("Minus 1", R.drawable.tc_minus_1),
+
+            new Icon("Close 1", R.drawable.tc_close_1),
     };
 
     public static int SpinnerIconPos(int drawable) {

@@ -39,7 +39,7 @@ public class OverlayManager implements ITouchable {
                 .Attach();
 
         //EVENTS
-        EventUtils.InitializeITouchableEvents( window.GetContainer(), this);
+        //EventUtils.InitializeITouchableEvents( window.GetContainer(), this);
         //EVENTS
     }
 

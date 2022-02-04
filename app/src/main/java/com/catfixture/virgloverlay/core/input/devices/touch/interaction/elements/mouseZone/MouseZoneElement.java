@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 import android.view.ViewGroup;
 
 import com.catfixture.virgloverlay.R;
+import com.catfixture.virgloverlay.core.debug.Dbg;
 import com.catfixture.virgloverlay.core.input.data.InputTouchControlElementData;
 import com.catfixture.virgloverlay.core.input.devices.IInputDevice;
 import com.catfixture.virgloverlay.core.input.devices.touch.interaction.elements.TouchableWindowElement;
@@ -21,6 +22,8 @@ public class MouseZoneElement extends TouchableWindowElement {
 
     }
 
+    private int firstMoveIndex = 0;
+    private boolean isDragging = false;
     @Override
     public void CreateActionEvents(IInputDevice inputDevice) {
         final Int2 elSize = GetSize();
@@ -28,17 +31,24 @@ public class MouseZoneElement extends TouchableWindowElement {
         final Int2 startClickPos = new Int2(0,0);
         onDown.addObserver((observable, o) -> {
             MotionEvent motionEvent = (MotionEvent) o;
+            Dbg.Msg("DOWN EVENT WITH SSS " + motionEvent.getPointerId(motionEvent.getActionIndex()));
+            if (isDragging) return;
+            firstMoveIndex = motionEvent.getPointerId(motionEvent.getActionIndex());
+            isDragging = true;
             final Int2 clickPos = new Int2((int) (motionEvent.getRawX() - elSize.x / 2.0),
                     (int) (motionEvent.getRawY() - elSize.y / 2.0));
             startClickPos.Set(clickPos.x, clickPos.y);
+            Dbg.Msg("DOWN EVENT WITH " + firstMoveIndex);
         });
         onMove.addObserver((observable, o) -> {
             MotionEvent motionEvent = (MotionEvent) o;
+            if (!isDragging) return;
+
             final Int2 clickPos = new Int2((int) (motionEvent.getRawX() - elSize.x / 2.0),
                     (int) (motionEvent.getRawY() - elSize.y / 2.0));
 
             final Int2 diff = clickPos.Sub(startClickPos)
-                    .Div(1.0f / (data.sensivity));
+                    .Div(10f / (data.sensivity));
 
             inputDevice.SendMouseShift(diff.x, diff.y);
             startClickPos.Set(clickPos.x, clickPos.y);
@@ -48,6 +58,9 @@ public class MouseZoneElement extends TouchableWindowElement {
             inputDevice.SendMouseClick(0);
         });
         onUp.addObserver((observable, o) -> {
+            isDragging = false;
+            MotionEvent motionEvent = (MotionEvent) o;
+            Dbg.Msg("UP EVENT WITH " + motionEvent.getActionIndex());
             inputDevice.SendMouseShift(0,0);
         });
 

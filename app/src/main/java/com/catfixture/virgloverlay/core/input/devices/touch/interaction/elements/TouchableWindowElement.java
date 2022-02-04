@@ -2,6 +2,8 @@ package com.catfixture.virgloverlay.core.input.devices.touch.interaction.element
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
+import static com.catfixture.virgloverlay.core.AppContext.app;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -68,6 +70,7 @@ public abstract class TouchableWindowElement extends LinearLayout implements IIn
 
     @Override
     public IInputWindowElement SetAlpha(float v) {
+        v *= app.GetInputConfigData().uiOpacity;
         setAlpha(v);
         return this;
     }

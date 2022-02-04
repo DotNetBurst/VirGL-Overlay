@@ -105,7 +105,7 @@ public class TouchDeviceOverlayFragment implements IOverlayFragment {
                 });
 
                 newTouchElement.SetScale(touchControlElement.scale)
-                    .SetAlpha(touchControlElement.alpha * cfgData.uiOpacity);
+                    .SetAlpha(touchControlElement.alpha);
                 newTouchElement.SetPosition(touchControlElement.position.x,touchControlElement.position.y);
 
                 if ( isEditorOverlayShown) {
