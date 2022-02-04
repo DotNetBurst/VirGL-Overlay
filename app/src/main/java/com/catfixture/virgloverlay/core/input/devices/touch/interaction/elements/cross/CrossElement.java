@@ -62,7 +62,7 @@ public class CrossElement extends TouchableWindowElement {
                 inputDevice.SendKeyDown(startAxis.y);
                 currentAxis.y = startAxis.y;
             } else currentAxis.y = -1;
-            Dbg.Msg("Click poos " + startAxis.x + " _ " + startAxis.y);
+            //Dbg.Msg("Click poos " + startAxis.x + " _ " + startAxis.y);
         });
         onMove.addObserver((observable, o) -> {
             MotionEvent motionEvent = (MotionEvent) o;
@@ -81,7 +81,7 @@ public class CrossElement extends TouchableWindowElement {
                 currentAxis.y = startAxis.y;
                 inputDevice.SendKeyDown(currentAxis.y);
             }
-            Dbg.Msg("Click poos " + startAxis.x + " _ " + startAxis.y);
+            //Dbg.Msg("Click poos " + startAxis.x + " _ " + startAxis.y);
         });
         onUp.addObserver((observable, o) -> {
             if ( currentAxis.x != -1)
