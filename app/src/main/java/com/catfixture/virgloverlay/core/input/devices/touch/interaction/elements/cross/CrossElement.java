@@ -15,8 +15,6 @@ import com.catfixture.virgloverlay.core.utils.math.Int2;
 
 
 public class CrossElement extends TouchableWindowElement {
-    final float deadZoneX;
-    final float deadZoneY;
 
     public CrossElement(Context context, InputTouchControlElementData data) {
         super(context, data);
@@ -25,11 +23,11 @@ public class CrossElement extends TouchableWindowElement {
 
         setBackgroundResource(R.drawable.fx_tc_cross_btn);
 
-        final Int2 elSize = GetSize();
-        deadZoneX = elSize.x * 0.25f;
-        deadZoneY = elSize.y * 0.25f;
     }
     private void SetAxis(Int2 axisToSet, Int2 input) {
+        final Int2 elSize = GetSize();
+        final float deadZoneX = elSize.x * 0.25f;
+        final float deadZoneY = elSize.y * 0.25f;
         Binding binding = Binding.Retrieve(data.mappingType);
 
         if (( input.x < -deadZoneX || input.x > deadZoneX) && ( input.y < -deadZoneY || input.y > deadZoneY)) {

@@ -28,21 +28,17 @@ public class MouseZoneElement extends TouchableWindowElement {
         final Int2 startClickPos = new Int2(0,0);
         onDown.addObserver((observable, o) -> {
             MotionEvent motionEvent = (MotionEvent) o;
-            final Int2 clickPos = new Int2((int) (motionEvent.getX() - elSize.x / 2.0),
-                    (int) (motionEvent.getY() - elSize.y / 2.0));
+            final Int2 clickPos = new Int2((int) (motionEvent.getRawX() - elSize.x / 2.0),
+                    (int) (motionEvent.getRawY() - elSize.y / 2.0));
             startClickPos.Set(clickPos.x, clickPos.y);
         });
         onMove.addObserver((observable, o) -> {
             MotionEvent motionEvent = (MotionEvent) o;
-            final Int2 clickPos = new Int2((int) (motionEvent.getX() - elSize.x / 2.0),
-                    (int) (motionEvent.getY() - elSize.y / 2.0));
+            final Int2 clickPos = new Int2((int) (motionEvent.getRawX() - elSize.x / 2.0),
+                    (int) (motionEvent.getRawY() - elSize.y / 2.0));
 
             final Int2 diff = clickPos.Sub(startClickPos)
                     .Div(1.0f / (data.sensivity));
-
-            float slope = 0.5f;
-            diff.x += (int)(Math.max(Math.pow(Math.abs(diff.x), slope),0f));
-            diff.y += (int)(Math.max(Math.pow(Math.abs(diff.y), slope),0f));
 
             inputDevice.SendMouseShift(diff.x, diff.y);
             startClickPos.Set(clickPos.x, clickPos.y);

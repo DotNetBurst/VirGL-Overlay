@@ -140,7 +140,7 @@ public class NativeServerInstance extends Service {
         windowsManager.Init(context);
 
         //test
-        OverlayInitializer.Init(getApplicationContext(), inputDevice);
+        //OverlayInitializer.Init(getApplicationContext(), inputDevice);
 
         //NOTIFICATION SECTION
         RemoteViews notificationLayout = new RemoteViews(getPackageName(), R.layout.notification_layout);
