@@ -103,7 +103,6 @@ public class ServicesFragment extends Fragment {
                 view.post(() -> UpdateServiceChange(id, state, fd));
             }
         };
-        comCtx.GetServerController().SetCallback(remoteCallback);
     }
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -131,6 +130,8 @@ public class ServicesFragment extends Fragment {
         Utils.InitComposedButton(view, R.id.stopServicesComposedButton, this::SwitchServerState);
 
         UpdateAll();
+
+        comCtx.GetServerController().SetCallback(remoteCallback);
 
         return view;
     }

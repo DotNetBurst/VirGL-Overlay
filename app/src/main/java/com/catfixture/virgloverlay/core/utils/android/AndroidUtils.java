@@ -217,15 +217,16 @@ public class AndroidUtils {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     public static String createNotificationChannel(NotificationManager notificationManager){
         String channelId = "virgloverlay_notifid";
         String channelName = "VirglOverlay";
 
-        NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_LOW);
-        channel.setImportance(NotificationManager.IMPORTANCE_NONE);
-        channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-        notificationManager.createNotificationChannel(channel);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_LOW);
+            channel.setImportance(NotificationManager.IMPORTANCE_NONE);
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            notificationManager.createNotificationChannel(channel);
+        }
         return channelId;
     }
 
@@ -257,36 +258,4 @@ public class AndroidUtils {
         return new BroadcastBlank(action);
     }
 
-    public static File CopyRawToTemp (Context context, int rawId, String targetName) {
-        InputStream rawIs = context.getResources().openRawResource(rawId);
-        File filesDir = context.getFilesDir();
-        File tempFile = new File(filesDir, targetName);
-        try {
-            if(tempFile.exists() && !tempFile.delete())
-                throw new IOException("Cant delete file");
-
-            if (tempFile.createNewFile()) {
-                FileOutputStream fos = new FileOutputStream(tempFile);
-
-                byte[] tempBuffer = new byte[1024];
-                int readen = 0;
-                while((readen = rawIs.read(tempBuffer)) > 0) {
-                    fos.write(tempBuffer, 0, readen);
-                }
-                fos.flush();
-                fos.close();
-                Dbg.Msg("Tempfile " + tempFile.getAbsolutePath() + " created");
-                return tempFile;
-            } else throw new IOException("Cant create file");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            rawIs.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }

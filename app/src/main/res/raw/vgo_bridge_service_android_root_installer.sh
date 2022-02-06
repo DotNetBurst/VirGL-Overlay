@@ -1,11 +1,12 @@
 #!/system/bin/sh
-echo " "
-echo " "
 echo "VGOBridge installer v0.3 by DotNetBurst"
 echo "This program designed to install and uninstall vgob.exe"
-echo "Vgob.exe - a native bridge service to provide new input in exagear!"
+echo "vo - a native linux launcher to launch vgob.exe with apps!"
+echo "vgob.exe - a native bridge service to provide new input in exagear!"
 echo "dotnetburst@gmail.com"
 echo " "
+
+
 
 #CONST PATHS
 ANDROID_DATA_PATH=/data/data
@@ -14,7 +15,7 @@ BASH_EXEC=/files/image/bin/bash
 
 #VARIABLES
 BIN_NAME=vgob.exe
-LAUNCHER_NAME=vgo
+LAUNCHER_NAME=vo
 INSTALL_MODE=$1
 FILES_DIR=$2
 

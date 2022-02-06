@@ -39,7 +39,7 @@ public class StatisticsOverlay implements IOverlayFragment {
         new Thread(() -> {
             while (true) {
                 handler.post(() -> {
-                    fpsText.setText(GetFPS() + "");
+                    fpsText.setText(GetFPS()+"");
 
                     ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
                     ActivityManager activityManager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);

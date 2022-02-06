@@ -143,8 +143,7 @@ jstring getString(JNIEnv* env, jclass profileKlass, jobject settings, char* name
     jstring jStr = (*env)->GetObjectField(env, settings, fId);
     return jStr;
 }
-jstring socketPath;
-jstring ringBufferPath;
+
 
 JNIEXPORT void JNICALL Java_com_catfixture_virgloverlay_core_impl_android_NativeServerInstance_initialize(JNIEnv *env, jclass cls, jobject settings) {
     jclass settingsKlass = (*env)->GetObjectClass(env, settings);
@@ -156,14 +155,11 @@ JNIEXPORT void JNICALL Java_com_catfixture_virgloverlay_core_impl_android_Native
 
     jboolean useSocket = (*env)->GetBooleanField(env, profileField, (*env)->GetFieldID(env, profileKlass, "useSocket", "Z"));
 
-    socketPath = getString(env, profileKlass, profileField, "socketPath");
-    char* socketPathPtr = NULL;
-    if (socketPath)
-        socketPathPtr = (*env)->GetStringUTFChars(env, socketPath, 0);
-    ringBufferPath = getString(env, profileKlass, profileField, "ringBufferPath");
-    char* ringBufferPathPtr = NULL;
-    if (ringBufferPathPtr)
-        ringBufferPathPtr = (*env)->GetStringUTFChars(env, socketPath, 0);
+    jstring socketPath = getString(env, profileKlass, profileField, "socketPath");
+    const char* socketPathPtr = (*env)->GetStringUTFChars(env, socketPath, 0);
+
+    jstring ringBufferPath = getString(env, profileKlass, profileField, "ringBufferPath");
+    const char* ringBufferPathPtr = (*env)->GetStringUTFChars(env, ringBufferPath, 0);
 
     jboolean useGLES = (*env)->GetBooleanField(env, profileField, (*env)->GetFieldID(env, profileKlass, "useGLES", "Z"));
     jboolean useS3TC = (*env)->GetBooleanField(env, profileField, (*env)->GetFieldID(env, profileKlass, "useS3TC", "Z"));
@@ -212,19 +208,12 @@ JNIEXPORT jint JNICALL Java_com_catfixture_virgloverlay_core_impl_android_Native
     return vtest_open_socket(commonConfigProfile->socketPath);
 }
 JNIEXPORT void JNICALL Java_com_catfixture_virgloverlay_core_impl_android_NativeServerInstance_stopServer(JNIEnv *env, jclass cls, jint fileDescriptor) {
-    DestroyStatistics();
-
-    shutdown(fileDescriptor, SHUT_RDWR);
-    close(fileDescriptor);
+    printf("Closing socket... %i", fileDescriptor);
     unlink(commonConfigProfile->socketPath);
 
-    if (socketPath && commonConfigProfile->socketPath)
-        (*env)->ReleaseStringUTFChars(env, commonConfigProfile->socketPath, socketPath);
-    if (socketPath && commonConfigProfile->ringBufferPath)
-        (*env)->ReleaseStringUTFChars(env, commonConfigProfile->ringBufferPath, ringBufferPath);
-
+    if (commonConfigProfile != NULL)
+        free(commonConfigProfile);
     printf("Socket closed %i", fileDescriptor);
-    free(commonConfigProfile);
 }
 JNIEXPORT jint JNICALL Java_com_catfixture_virgloverlay_core_impl_android_NativeServerInstance_acceptSocket(JNIEnv *env, jclass cls, jint fileDescriptor) {
     return wait_for_socket_accept(fileDescriptor);
@@ -250,9 +239,6 @@ JNIEXPORT void JNICALL Java_com_catfixture_virgloverlay_core_impl_android_Native
         ring_setup( &r->ring, r->fd, r->configProfile->ringBufferPath);
         ring_server_handshake( &r->ring );
     }
-
-    CreateStatistics();
-
     renderer_loop(r);
 }
 

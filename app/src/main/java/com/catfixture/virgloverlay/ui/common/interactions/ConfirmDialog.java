@@ -14,4 +14,20 @@ public class ConfirmDialog {
                     if ( onNo!=null) onNo.run();
                 }).show();
     }
+    public static void Show(Context context, String title, String iniText, String ok, Runnable onOk) {
+        new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(iniText)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(ok, (dialog, whichButton) -> onOk.run())
+                .show();
+    }
+    public static void Show(Context context, String title, String iniText) {
+        new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(iniText)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton("Ok", (dialog, whichButton) -> {})
+                .show();
+    }
 }

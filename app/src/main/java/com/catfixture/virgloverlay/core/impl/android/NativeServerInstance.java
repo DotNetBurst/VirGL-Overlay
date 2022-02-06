@@ -292,8 +292,9 @@ public class NativeServerInstance extends Service {
 
         runSocketLoop(windowsManager, fileDescriptor);
         Log.d(APP_TAG, "Loop ended");
-        SetServerState(SERVER_STATE_IDLE);
-        onDestroy();
+        SetServerState(SERVER_STATE_ERROR);
+
+        sendBroadcast(PrepareMessage(this, BCAST_ACTION_STOP_SERVER));
     }
 
     private void ShowToast(String text) {

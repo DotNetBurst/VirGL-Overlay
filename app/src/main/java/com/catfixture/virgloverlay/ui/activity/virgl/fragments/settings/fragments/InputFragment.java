@@ -1,14 +1,16 @@
 package com.catfixture.virgloverlay.ui.activity.virgl.fragments.settings.fragments;
 
 import static com.catfixture.virgloverlay.core.AppContext.app;
-import static com.catfixture.virgloverlay.core.utils.android.AndroidUtils.CopyRawToTemp;
+import static com.catfixture.virgloverlay.core.utils.android.Installer.CopyInstallerToDownload;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.Environment;
 import android.os.Handler;
 
 import com.catfixture.virgloverlay.R;
 import com.catfixture.virgloverlay.core.debug.Dbg;
+import com.catfixture.virgloverlay.core.utils.android.FileUtils;
 import com.catfixture.virgloverlay.core.utils.android.Installer;
 import com.catfixture.virgloverlay.core.utils.objProvider.IObjectProvider;
 import com.catfixture.virgloverlay.core.utils.process.ProcUtils;
@@ -60,17 +62,26 @@ public class InputFragment extends CoreSettingsFragment {
 
         statusedButtonSettingItem.AddAction((observable, o) -> {
             if ( currentInstallMode) {
-                ConfirmDialog.Show(getContext(), "Service installation", "Do you really want to install VGOBridge service, " +
-                        "it will be installed in all containers?\n" +
-                        "Please note! ROOT REQUIRED to install\n" +
-                        "VGOBridge service size: 15KB", "Install now", () -> {
-                    Installer.InstallVGO(getContext(), true, handler, this::OnInstallComplete);
-                }, "Close", null);
+                ConfirmDialog.Show(getContext(), "Service installation",
+                        "Auto mode:\n" +
+                                "Service will be installed in all Exagear containers\n" +
+                                "Note! Auto install requires root\n" +
+                                "\n" +
+                                "Manual mode:\n" +
+                                "Service installer (Download/VGOBridge/install.bat) will be copied to Download folder\n" +
+                                "Start Exagear and run installer, it will install service automatically\n" +
+                                "\n" +
+                                "Note! You can fully uninstall service later", "Auto", () -> {
+                    Installer.InstallVGO(getActivity(), true, handler, this::OnInstallComplete);
+                }, "Manual", () -> {
+                    CopyInstallerToDownload(getContext(), handler);
+                    OnInstallComplete();
+                });
             } else {
                 ConfirmDialog.Show(getContext(), "Service uninstallation", "Do you really want to uninstall VGOBridge service, " +
                         "it will be uninstalled from all containers?\n" +
                         "Please note! ROOT REQUIRED to uninstall", "Uninstall now", () -> {
-                    Installer.InstallVGO(getContext(), false, handler, this::OnInstallComplete);
+                    Installer.InstallVGO(getActivity(), false, handler, this::OnInstallComplete);
                 }, "Close", null);
             }
         });
@@ -94,11 +105,21 @@ public class InputFragment extends CoreSettingsFragment {
         String filesDir = context.getFilesDir().getAbsolutePath();
         final String checkCmd = "su -c sh " + filesDir + "/installCheckScript.sh";
         ProcUtils.RunSystemCommandWithOutput(checkCmd, res -> {
-            handler.post(() -> {
-                systemInstalledState = res;
-                UpdateVGOBRidgeInstallButton();
-                if ( onDone != null) onDone.run();
-            });
+            Dbg.Msg("VGOB installed state : " + res);
+            if ( res > 2 || res < 0) {
+                handler.post(() -> {
+                    boolean installerExists = FileUtils.CheckFileExists(Environment.DIRECTORY_DOWNLOADS + "/VGOBridge/install.bat");
+                    systemInstalledState = installerExists ? 3 : 13;
+                    UpdateVGOBRidgeInstallButton();
+                    if ( onDone != null) onDone.run();
+                });
+            } else {
+                handler.post(() -> {
+                    systemInstalledState = res;
+                    UpdateVGOBRidgeInstallButton();
+                    if ( onDone != null) onDone.run();
+                });
+            }
         });
     }
 
@@ -107,6 +128,8 @@ public class InputFragment extends CoreSettingsFragment {
             UpdateSettingItem(R.drawable.vgob_installed, "Fully installed", "UNINSTALL", false);
         } else if (systemInstalledState == 1) {
             UpdateSettingItem(R.drawable.vgob_not_fully_installed, "Partially installed", "REINSTALL", true);
+        } else if (systemInstalledState == 3) {
+            UpdateSettingItem(R.drawable.vgob_not_fully_installed, "Manual", "REINSTALL", true);
         } else {
             UpdateSettingItem(R.drawable.vgob_not_fully_installed, "Not installed", "INSTALL", true);
             statusedButtonSettingItem.SetNoStatusDrawable();
